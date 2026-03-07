@@ -1,0 +1,170 @@
+---
+title: Custom Page Development
+description: Build custom pages with JSON config, MDX, or custom route components.
+---
+
+## 1. How Pages Are Resolved
+
+Landing pages are resolved through:
+
+1. `src/app/[locale]/(landing)/page.tsx` (home page)
+2. `src/app/[locale]/(landing)/[...slug]/page.tsx` (catch-all pages)
+3. `src/themes/default/pages/dynamic-page.tsx` (section renderer)
+
+`[...slug]` resolves in this order:
+
+1. Static MDX page from `content/pages/*.mdx`
+2. Config-driven page from `src/config/locale/messages/{locale}/pages/*.json`
+3. `404` if neither exists
+
+## 2. Which Approach To Use
+
+1. JSON config page (recommended)
+Best for marketing pages and content-heavy pages with existing blocks.
+
+2. Static MDX page
+Best for legal pages and long-form static content.
+
+3. Custom route + React page
+Best for pages that require runtime data, advanced logic, or custom UX.
+
+## 3. Option A: Config-Driven Page
+
+### 3.1 Create locale page JSON files
+
+Example for an `about` page:
+
+1. `src/config/locale/messages/en/pages/about.json`
+2. `src/config/locale/messages/zh/pages/about.json`
+
+### 3.2 Register message path (required)
+
+Add this to `localeMessagesPaths` in `src/config/locale/index.ts`:
+
+```ts
+'pages/about';
+```
+
+Without this, `getTranslations('pages.about')` cannot read the namespace.
+
+### 3.3 Example structure
+
+```json
+{
+  "metadata": {
+    "title": "About",
+    "description": "Learn more about us"
+  },
+  "page": {
+    "title": "About",
+    "show_sections": ["hero", "features", "faq", "cta"],
+    "sections": {
+      "hero": {
+        "id": "hero",
+        "title": "We build AI-native products",
+        "description": "Ship production-ready AI SaaS faster."
+      }
+    }
+  }
+}
+```
+
+### 3.4 Access route
+
+1. Default locale route: `/about`
+2. Secondary locale route: `/zh/about` (depending on default locale)
+
+## 4. Option B: Static MDX Page
+
+Create:
+
+1. `content/pages/about.mdx`
+2. `content/pages/about.zh.mdx`
+
+Example:
+
+```mdx
+---
+title: About
+description: Static MDX page example
+created_at: 2026-03-07
+---
+
+## Who We Are
+
+This is MDX page content.
+```
+
+If the same slug exists in both MDX and JSON, MDX wins in the catch-all route.
+
+## 5. Option C: Custom Route Component
+
+Create:
+
+`src/app/[locale]/(landing)/about/page.tsx`
+
+Skeleton:
+
+```tsx
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+
+import { getThemePage } from '@/core/theme';
+import { getMetadata } from '@/shared/lib/seo';
+import { DynamicPage } from '@/shared/types/blocks/landing';
+
+export const revalidate = 3600;
+
+export const generateMetadata = getMetadata({
+  metadataKey: 'pages.about.metadata',
+  canonicalUrl: '/about',
+});
+
+export default async function AboutPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations('pages.about');
+
+  const page: DynamicPage = {
+    title: t.raw('page.title'),
+    sections: {
+      hero: {
+        ...t.raw('page.sections.hero'),
+      },
+    },
+  };
+
+  const Page = await getThemePage('dynamic-page');
+  return <Page locale={locale} page={page} />;
+}
+```
+
+For runtime data, inject it into `section.data`.
+
+## 6. Custom Block Development
+
+If existing blocks are not enough:
+
+1. Add `src/themes/default/blocks/feature-grid.tsx`
+2. Use `"block": "feature-grid"` in page section JSON
+
+The dynamic page renderer will load your block by name.
+
+## 7. Common Issues
+
+1. Page returns 404
+Check slug, route path, and `localeMessagesPaths`.
+
+2. Translation missing
+Check locale JSON file and JSON syntax.
+
+3. Section not rendered
+Check `show_sections` and `disabled: true`.
+
+4. No nav link
+Update `header.nav.items` in `src/config/locale/messages/{locale}/landing.json`.
+

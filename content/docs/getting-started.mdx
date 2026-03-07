@@ -1,0 +1,189 @@
+---
+title: Getting Started
+description: End-to-end onboarding guide from local development to deployment.
+---
+
+## 1. Overview
+
+This project is an AI SaaS starter built with `Next.js 15`, including:
+
+- Auth (email/password + optional Google/GitHub)
+- Payment integrations (Stripe / Creem / PayPal)
+- AI providers (Kie / Replicate / Fal / Gemini)
+- Admin panel with RBAC
+- Drizzle ORM and multiple database providers (default: PostgreSQL)
+
+## 2. Local Setup (PostgreSQL by Default)
+
+### 2.1 Prerequisites
+
+- `Node.js 20+`
+- `pnpm 8+`
+- `PostgreSQL 14+`
+
+### 2.2 Install Dependencies
+
+```bash
+pnpm install
+```
+
+### 2.3 Configure Environment
+
+```bash
+cp .env.example .env.development
+```
+
+Fill at least:
+
+```bash
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+NEXT_PUBLIC_APP_NAME="Your App Name"
+DATABASE_PROVIDER="postgresql"
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DBNAME"
+AUTH_SECRET="replace-with-a-random-secret"
+```
+
+Generate `AUTH_SECRET`:
+
+```bash
+openssl rand -base64 32
+```
+
+### 2.4 Run Migrations
+
+```bash
+pnpm db:generate
+pnpm db:migrate
+```
+
+### 2.5 Start Dev Server
+
+```bash
+pnpm dev
+```
+
+Default pages:
+
+- `http://localhost:3000/en`
+- `http://localhost:3000/en/docs`
+- `http://localhost:3000/en/admin`
+
+## 3. Config Precedence
+
+Runtime config is resolved from:
+
+1. Defaults in `src/config/index.ts`
+2. DB settings saved from `Admin -> Settings`
+3. Environment variable overrides (`UPPER_CASE` names take priority)
+
+Use environment variables for base infra (`DATABASE_URL`, `AUTH_SECRET`), and admin settings for feature toggles and provider credentials.
+
+## 4. First-Day Checklist
+
+1. Open home and docs pages without 500 errors.
+2. Sign up and sign in successfully.
+3. Run DB migrations once.
+4. Open `/{locale}/admin/settings/general`.
+5. Verify at least one AI page is accessible.
+
+## 5. RBAC Bootstrap
+
+Create a user first, then run:
+
+```bash
+pnpm rbac:init
+pnpm rbac:assign --email=you@example.com --role=super_admin
+```
+
+Sign in again and open `/{locale}/admin`.
+
+## 6. Integrations
+
+### Auth
+
+`Admin -> Settings -> Auth`
+
+- Email auth: `email_auth_enabled`
+- Email verification: `email_verification_enabled` (requires email provider)
+- Google auth: `google_client_id`, `google_client_secret`
+- GitHub auth: `github_client_id`, `github_client_secret`
+
+### Email (Resend)
+
+`Admin -> Settings -> Email`
+
+- `resend_api_key`
+- `resend_sender_email`
+
+### AI Providers
+
+`Admin -> Settings -> AI`
+
+- Kie: `kie_api_key`
+- Replicate: `replicate_api_token`
+- Fal: `fal_api_key`
+- Gemini: `gemini_api_key`
+
+### Payment
+
+`Admin -> Settings -> Payment`
+
+Webhook routes:
+
+- `POST /api/payment/notify/stripe`
+- `POST /api/payment/notify/creem`
+- `POST /api/payment/notify/paypal`
+
+Callback route used by the system:
+
+- `GET /api/payment/callback?order_no=...`
+
+## 7. Deployment
+
+### Vercel
+
+1. Import repo with `pnpm`.
+2. Set environment variables (`NEXT_PUBLIC_APP_URL`, `DATABASE_PROVIDER`, `DATABASE_URL`, `AUTH_SECRET`, and provider keys as needed).
+3. Run migrations as part of your deployment workflow.
+
+### Cloudflare (OpenNext)
+
+1. Copy `wrangler.toml.example` to `wrangler.toml`.
+2. Set worker name/vars/secrets and optional Hyperdrive.
+3. Preview:
+
+```bash
+pnpm cf:preview
+```
+
+4. Deploy:
+
+```bash
+pnpm cf:deploy
+```
+
+## 8. Common Issues
+
+### `DATABASE_URL is not set`
+
+- Verify `.env.development` exists and includes `DATABASE_URL`.
+- Verify DB credentials and network connectivity.
+
+### Auth errors on startup
+
+- Check `AUTH_SECRET`.
+- Ensure `NEXT_PUBLIC_APP_URL` matches the actual URL.
+
+### OAuth callback mismatch
+
+- Update callback URLs in provider console to match your current domain.
+
+### Payment webhook returns 500
+
+- Check provider signing secret.
+- Ensure webhook URL points to `/api/payment/notify/{provider}`.
+
+### Admin access still denied after role assignment
+
+- Sign out and sign in again.
+- Ensure assigned role includes `admin.access` (or use `super_admin`).
