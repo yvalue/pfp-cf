@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Coding Style Governance'
+  short_description: 'Enforce pfp-cf TypeScript style and quality gates'
+  default_prompt: 'Use $coding-style-governance to apply repository coding standards and run style quality checks.'

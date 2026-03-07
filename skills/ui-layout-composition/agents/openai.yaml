@@ -1,0 +1,4 @@
+interface:
+  display_name: 'UI Layout Composition'
+  short_description: 'Build pfp-cf pages with theme blocks and layout rules'
+  default_prompt: "Use $ui-layout-composition to implement pages with this repository's route groups, theme blocks, and layout patterns."
