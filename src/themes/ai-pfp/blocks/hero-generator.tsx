@@ -6,8 +6,8 @@ import {
   Coins,
   Crown,
   Download,
-  Info,
   ImagePlus,
+  Info,
   Loader2,
   Settings2,
   Sparkles,
@@ -85,6 +85,7 @@ const DEFAULT_ASPECT_RATIOS = ['1:1', '3:4', '4:3'];
 const MAX_PROMPT_LENGTH = 2000;
 const POLL_INTERVAL = 3500;
 const TASK_TIMEOUT = 180000;
+const TYPING_SPEED_MS = 70;
 
 function parseJson(raw: string | null): any {
   if (!raw) {
@@ -473,14 +474,7 @@ export function HeroGenerator({
         modelName: selectedModel.model,
       });
     },
-    [
-      aspectRatio,
-      mode,
-      pollTask,
-      referenceImageUrls,
-      selectedModel,
-      watermark,
-    ]
+    [aspectRatio, mode, pollTask, referenceImageUrls, selectedModel, watermark]
   );
 
   const handleGenerate = useCallback(async () => {
@@ -615,8 +609,10 @@ export function HeroGenerator({
   }, []);
 
   const logoName = section.logo_name || section.name || 'Image Fx';
-  const highlightTitle =
-    section.highlight_title || 'AI Image Generator';
+  const highlightTitle = section.highlight_title || 'AI Image Generator';
+  const [typedHighlightTitle, setTypedHighlightTitle] =
+    useState(highlightTitle);
+  const [isTypingTitle, setIsTypingTitle] = useState(false);
 
   const logoSrc = section.logo?.src || '';
   const logoAlt = section.logo?.alt || `${logoName} logo`;
@@ -624,6 +620,39 @@ export function HeroGenerator({
   const description = section.description || '';
   const announcementTitle = section.announcement?.title || '';
   const announcementUrl = section.announcement?.url || '/sign-in';
+
+  useEffect(() => {
+    if (!highlightTitle) {
+      setTypedHighlightTitle('');
+      setIsTypingTitle(false);
+      return;
+    }
+
+    if (
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    ) {
+      setTypedHighlightTitle(highlightTitle);
+      setIsTypingTitle(false);
+      return;
+    }
+
+    setTypedHighlightTitle('');
+    setIsTypingTitle(true);
+
+    let index = 0;
+    const timer = setInterval(() => {
+      index += 1;
+      setTypedHighlightTitle(highlightTitle.slice(0, index));
+
+      if (index >= highlightTitle.length) {
+        clearInterval(timer);
+        setIsTypingTitle(false);
+      }
+    }, TYPING_SPEED_MS);
+
+    return () => clearInterval(timer);
+  }, [highlightTitle]);
 
   return (
     <section
@@ -664,7 +693,16 @@ export function HeroGenerator({
             </span>
           </h1>
           <h2 className="mt-2 bg-gradient-to-r from-violet-500 to-indigo-500 bg-clip-text text-xl leading-tight font-semibold text-transparent md:text-2xl">
-            {highlightTitle}
+            {typedHighlightTitle}
+            <span
+              className={cn(
+                'ml-1 inline-block animate-pulse text-violet-500',
+                !isTypingTitle && 'opacity-0'
+              )}
+              aria-hidden
+            >
+              |
+            </span>
           </h2>
           {description && (
             <p className="text-muted-foreground mx-auto mt-6 max-w-3xl text-lg leading-relaxed">
