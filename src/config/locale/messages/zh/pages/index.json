@@ -23,6 +23,7 @@
         },
         "highlight_title": "在几秒钟内创建令人惊叹的 AI 头像",
         "placeholder": "描述你想生成的头像，例如：商务证件照、赛博朋克风、日系插画风",
+        "fast_mode_label": "极速模式",
         "modes": ["text-to-image", "image-to-image"],
         "default_mode": "text-to-image",
         "description": "一张自拍即可生成职业形象照、生活风格照与创意头像，自由更换穿搭、背景和场景。",

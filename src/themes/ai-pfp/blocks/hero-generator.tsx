@@ -3,15 +3,18 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import {
-  Coins,
-  Crown,
   Download,
   ImagePlus,
-  Info,
   Loader2,
   Settings2,
   Sparkles,
 } from 'lucide-react';
+import {
+  RiFlashlightFill,
+  RiInformationLine,
+  RiVipCrown2Fill,
+  RiVipDiamondFill,
+} from 'react-icons/ri';
 import { toast } from 'sonner';
 
 import { Link } from '@/core/i18n/navigation';
@@ -218,6 +221,9 @@ export function HeroGenerator({
   );
   const [count, setCount] = useState<number>(initialCount);
   const [watermark, setWatermark] = useState(true);
+  const [skipCaptcha, setSkipCaptcha] = useState(
+    Boolean(section.default_skip_captcha)
+  );
   const [referenceImageItems, setReferenceImageItems] = useState<
     ImageUploaderValue[]
   >([]);
@@ -411,7 +417,7 @@ export function HeroGenerator({
       const options: Record<string, any> = {
         aspect_ratio: aspectRatio,
         watermark,
-        skip_captcha: false,
+        skip_captcha: skipCaptcha,
       };
 
       if (mode === 'image-to-image') {
@@ -474,7 +480,15 @@ export function HeroGenerator({
         modelName: selectedModel.model,
       });
     },
-    [aspectRatio, mode, pollTask, referenceImageUrls, selectedModel, watermark]
+    [
+      aspectRatio,
+      mode,
+      pollTask,
+      referenceImageUrls,
+      selectedModel,
+      skipCaptcha,
+      watermark,
+    ]
   );
 
   const handleGenerate = useCallback(async () => {
@@ -620,6 +634,7 @@ export function HeroGenerator({
   const description = section.description || '';
   const announcementTitle = section.announcement?.title || '';
   const announcementUrl = section.announcement?.url || '/sign-in';
+  const fastModeLabel = section.fast_mode_label || 'Fast Mode';
 
   useEffect(() => {
     if (!highlightTitle) {
@@ -670,7 +685,7 @@ export function HeroGenerator({
             target={section.announcement?.target || '_self'}
             className="text-muted-foreground hover:text-foreground border-border bg-background/80 mx-auto flex w-fit items-center gap-2 rounded-xl border px-4 py-2 text-sm shadow-sm transition-colors"
           >
-            <Info className="size-4" />
+            <RiInformationLine className="size-4" />
             <span>{announcementTitle}</span>
           </Link>
         )}
@@ -720,7 +735,7 @@ export function HeroGenerator({
                 section.placeholder ||
                 'Describe the PFP you want to generate...'
               }
-              className="min-h-64 resize-none border-0 bg-transparent px-6 py-6 text-base shadow-none focus-visible:ring-0"
+              className="min-h-40 resize-none border-0 bg-transparent px-6 py-6 text-base shadow-none focus-visible:ring-0"
             />
             <Sparkles className="text-primary/35 absolute top-5 right-5 size-5" />
           </div>
@@ -825,17 +840,24 @@ export function HeroGenerator({
         <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
           <div className="text-muted-foreground flex items-center gap-5 text-sm">
             <label className="inline-flex items-center gap-2">
+              <Switch checked={skipCaptcha} onCheckedChange={setSkipCaptcha} />
+              <span className="inline-flex items-center gap-1 text-base">
+                {fastModeLabel}
+                <RiFlashlightFill className="size-4 text-amber-400" />
+              </span>
+            </label>
+            <label className="inline-flex items-center gap-2">
               <Switch checked={watermark} onCheckedChange={setWatermark} />
-              <span className="inline-flex items-center gap-1">
+              <span className="inline-flex items-center gap-1 text-base">
                 Watermark
-                <Crown className="size-3.5 text-amber-500" />
+                <RiVipCrown2Fill className="size-4 text-amber-400" />
               </span>
             </label>
           </div>
 
           <Button
             size="lg"
-            className="min-w-44 rounded-xl"
+            className="min-w-44 rounded-xl text-base"
             onClick={handleGenerate}
             disabled={
               isCheckSign ||
@@ -859,9 +881,9 @@ export function HeroGenerator({
             ) : (
               <>
                 Submit
-                <span className="ml-2 inline-flex items-center gap-1 rounded-md bg-black/10 px-1.5 text-xs dark:bg-white/15">
+                <span className="ml-2 inline-flex items-center gap-1 rounded-md bg-black/10 px-1.5 text-base dark:bg-white/15">
                   {totalCost}
-                  <Coins className="size-3 text-amber-500" />
+                  <RiVipDiamondFill className="size-4 text-amber-400" />
                 </span>
               </>
             )}
