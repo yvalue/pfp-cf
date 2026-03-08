@@ -51,41 +51,81 @@
         }
       },
       "logos": {
-        "title": "ShipAny 使用以下技术栈构建",
+        "title": "在这里升级你的社交形象",
         "items": [
           {
-            "title": "Next.js",
+            "title": "Instagram",
             "image": {
-              "src": "/imgs/logos/nextjs.svg",
-              "alt": "Next.js"
+              "src": "/imgs/logos/instagram.svg",
+              "alt": "Instagram"
             }
           },
           {
-            "title": "React",
+            "title": "Facebook",
             "image": {
-              "src": "/imgs/logos/react.svg",
-              "alt": "React"
+              "src": "/imgs/logos/facebook.svg",
+              "alt": "Facebook"
             }
           },
           {
-            "title": "TailwindCSS",
+            "title": "X",
             "image": {
-              "src": "/imgs/logos/tailwindcss.svg",
-              "alt": "TailwindCSS"
+              "src": "/imgs/logos/x.svg",
+              "alt": "X"
+            },
+            "image_invert": {
+              "src": "/imgs/logos/x-dark.svg",
+              "alt": "X"
             }
           },
           {
-            "title": "Shadcn/UI",
+            "title": "Pinterest",
             "image": {
-              "src": "/imgs/logos/shadcn.svg",
-              "alt": "Shadcn/UI"
+              "src": "/imgs/logos/pinterest.svg",
+              "alt": "Pinterest"
             }
           },
           {
-            "title": "Vercel",
+            "title": "LinkedIn",
             "image": {
-              "src": "/imgs/logos/vercel.svg",
-              "alt": "Vercel"
+              "src": "/imgs/logos/linkedin.svg",
+              "alt": "LinkedIn"
+            }
+          },
+          {
+            "title": "YouTube",
+            "image": {
+              "src": "/imgs/logos/youtube.svg",
+              "alt": "YouTube"
+            }
+          },
+          {
+            "title": "Threads",
+            "image": {
+              "src": "/imgs/logos/threads.svg",
+              "alt": "Threads"
+            },
+            "image_invert": {
+              "src": "/imgs/logos/threads-dark.svg",
+              "alt": "Threads"
+            }
+          },
+          {
+            "title": "TikTok",
+            "image": {
+              "src": "/imgs/logos/tiktok.svg",
+              "alt": "TikTok"
+            },
+            "image_invert": {
+              "src": "/imgs/logos/tiktok-dark.svg",
+              "alt": "TikTok"
+            }
+          },
+          {
+            "title": "Reddit",
+            "image": {
+              "src": "/imgs/logos/reddit.svg",
+              "alt": "Reddit"
             }
           }
         ]
