@@ -1,0 +1,150 @@
+---
+title: AI-PFP 首页 Hero-Generator 实现方案
+description: 仅记录 ai-pfp 首页 hero-generator 的实现范围、配置、链路与验证步骤（不包含设计稿内容）
+---
+
+## 1. 目标与范围
+
+- 开启 `ai-pfp` 主题后，首页第一屏由 `hero-generator` 完全替换默认 `hero`。
+- 仅覆盖 `hero-generator` block，其他 block（logos、features、faq 等）继续 fallback 到 `default` 主题。
+- 点击 `Submit` 后不跳转页面，在当前首页组件内完成生成流程展示（进度/状态）与结果展示（图片/下载）。
+- 复用既有后端链路：`/api/ai/generate` 与 `/api/ai/query`，并保留登录与积分校验。
+
+## 2. 目录结构
+
+```text
+src/themes/ai-pfp/
+           └── blocks/
+               └── hero-generator.tsx
+
+content/docs/
+        └── ai-pfp重构文档/
+            └── ai-pfp-hero-generator.zh.mdx
+```
+
+## 3. 激活主题
+
+在 `.env.local`（开发）或 Vercel / Cloudflare 环境变量（生产）中设置：
+
+```bash
+NEXT_PUBLIC_THEME=ai-pfp
+```
+
+重启开发服务后生效。`getThemeBlock` / `getThemePage` / `getThemeLayout` 会优先加载 `ai-pfp` 目录，缺失文件自动回退到 `default`。
+
+## 4. 首页配置字段（`pages/index.json`）
+
+在 `src/config/locale/messages/{lang}/pages/index.json` 的 `page.sections.hero` 中配置：
+
+| 字段名                 | 类型   | 说明                       | 示例                                                                                                                                                                      |
+| ---------------------- | ------ | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                   | string | section 标识               | `"hero"`                                                                                                                                                                  |
+| `block`                | string | 指向自定义 block           | `"hero-generator"`                                                                                                                                                        |
+| `logo_name`            | string | 第一行标题                 | `"AI-PFP"`                                                                                                                                                                |
+| `highlight_title`      | string | 第二行高亮标题             | `"Create Professional AI Profile Pictures in Seconds"`                                                                                                                    |
+| `description`          | string | 描述文本                   | `"Create professional AI profile pictures from one selfie: generate business headshots or lifestyle portraits, switch looks and backgrounds, and place yourself in dream destinations."` |
+| `announcement`         | object | 顶部提示，含 `title`/`url` | `{ "title": "...", "url": "/sign-in" }`                                                                                                                                   |
+| `placeholder`          | string | Prompt 输入框占位          | `"Describe the PFP you want to generate..."`                                                                                                                              |
+| `modes`                | array  | 支持模式列表               | `["text-to-image", "image-to-image"]`                                                                                                                                     |
+| `default_mode`         | string | 默认模式                   | `"text-to-image"`                                                                                                                                                         |
+| `aspect_ratios`        | array  | 比例选项                   | `["1:1", "3:4", "4:3"]`                                                                                                                                                   |
+| `default_aspect_ratio` | string | 默认比例                   | `"1:1"`                                                                                                                                                                   |
+| `default_count`        | number | 默认张数                   | `1`                                                                                                                                                                       |
+| `max_count`            | number | 最大张数                   | `4`                                                                                                                                                                       |
+
+## 5. 英文配置示例
+
+**文件**：`src/config/locale/messages/en/pages/index.json`
+
+```json
+{
+  "page": {
+    "show_sections": ["hero"],
+    "sections": {
+      "hero": {
+        "id": "hero",
+        "block": "hero-generator",
+        "logo_name": "AI-PFP",
+        "highlight_title": "Create Professional AI Profile Pictures in Seconds",
+        "description": "Create professional AI profile pictures from one selfie: generate business headshots or lifestyle portraits, switch looks and backgrounds, and place yourself in dream destinations.",
+        "announcement": {
+          "title": "Sign in to get 10 free credits",
+          "url": "/sign-in"
+        },
+        "placeholder": "Describe the PFP you want to generate...",
+        "modes": ["text-to-image", "image-to-image"],
+        "default_mode": "text-to-image",
+        "aspect_ratios": ["1:1", "3:4", "4:3"],
+        "default_aspect_ratio": "1:1",
+        "default_count": 1,
+        "max_count": 4
+      }
+    }
+  }
+}
+```
+
+## 6. 中文配置示例
+
+**文件**：`src/config/locale/messages/zh/pages/index.json`
+
+```json
+{
+  "page": {
+    "show_sections": ["hero"],
+    "sections": {
+      "hero": {
+        "id": "hero",
+        "block": "hero-generator",
+        "logo_name": "AI-PFP",
+        "highlight_title": "几秒生成专业 AI 头像",
+        "description": "一张自拍即可生成职业形象照、生活风格照与创意头像，自由更换穿搭、背景和场景。",
+        "announcement": {
+          "title": "登录领取 10 积分免费生成",
+          "url": "/sign-in"
+        },
+        "placeholder": "描述你想生成的头像，例如：商务证件照、赛博朋克风、日系插画风",
+        "modes": ["text-to-image", "image-to-image"],
+        "default_mode": "text-to-image",
+        "aspect_ratios": ["1:1", "3:4", "4:3"],
+        "default_aspect_ratio": "1:1",
+        "default_count": 1,
+        "max_count": 4
+      }
+    }
+  }
+}
+```
+
+## 7. 生成链路实现
+
+1. 用户提交 `prompt` 后，前端先做登录状态、积分余额、参数有效性校验。
+2. 调用 `/api/ai/generate` 创建任务，`mediaType=image`，`scene` 由模式决定（`text-to-image` 或 `image-to-image`）。
+3. `image-to-image` 模式下，参考图先上传，提交时通过 `options.image_input` 传给后端。
+4. 前端按轮询间隔调用 `/api/ai/query`，根据 `pending/processing/success/failed` 更新生成状态与进度。
+5. 任务成功后解析返回图片 URL，展示结果列表；下载走 `/api/proxy/file` 代理。
+
+## 8. 主题 Fallback 机制
+
+```text
+getThemeBlock('hero-generator')
+  -> ai-pfp/blocks/hero-generator  (命中)
+
+getThemeBlock('logos')
+  -> ai-pfp/blocks/logos            (不存在)
+  -> default/blocks/logos           (fallback 命中)
+```
+
+`ai-pfp` 仅需维护差异化 block，其余模块继续复用 `default`。
+
+## 9. 验证步骤
+
+1. 确认 `.env.local` 中已配置 `NEXT_PUBLIC_THEME=ai-pfp`。
+2. 启动开发服务：`pnpm dev`。
+3. 打开首页，确认第一屏为 `hero-generator`，默认 `hero` 不再渲染。
+4. 输入 prompt，点击 `Submit`，确认页面不跳转。
+5. 确认组件内出现生成过程状态（进度条/状态文案）。
+6. 任务成功后确认显示结果图，并可下载。
+7. 切换 `image-to-image`，上传参考图后再次提交，确认链路正常。
+8. 访问 `/zh` 检查中文文案，切换深色模式检查样式。
+9. 检查 logos / features / faq 等其他 section 仍可正常渲染（fallback 正常）。

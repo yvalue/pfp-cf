@@ -15,31 +15,21 @@
     "sections": {
       "hero": {
         "id": "hero",
-        "title": "一小时快速上线你的 AI 创业项目",
-        "highlight_text": "一小时",
-        "description": "ShipAny 是用于构建 AI SaaS 创业项目的 NextJS 项目模板。<br/>集成常用功能，快速上线你的产品。",
-        "announcement": {
-          "badge": "全新",
-          "title": "🎉 ShipAny 模板二已发布",
-          "url": "/pricing"
+        "block": "hero-generator",
+        "logo_name": "AI-PFP",
+        "logo": {
+          "src": "/logo.png",
+          "alt": "AI-PFP"
         },
-        "tip": "🎁 前 1000 名用户特价优惠",
-        "buttons": [
-          {
-            "title": "立即开始",
-            "icon": "Zap",
-            "url": "/pricing",
-            "target": "_self",
-            "variant": "default"
-          },
-          {
-            "title": "阅读文档",
-            "icon": "BookOpenText",
-            "url": "/docs",
-            "target": "_blank",
-            "variant": "outline"
-          }
-        ],
+        "highlight_title": "在几秒钟内创建令人惊叹的 AI 头像",
+        "placeholder": "描述你想生成的头像，例如：商务证件照、赛博朋克风、日系插画风",
+        "modes": ["text-to-image", "image-to-image"],
+        "default_mode": "text-to-image",
+        "description": "一张自拍即可生成职业形象照、生活风格照与创意头像，自由更换穿搭、背景和场景。",
+        "announcement": {
+          "title": "登录领取 10 积分免费生成",
+          "url": "/sign-in"
+        },
         "show_avatars": true,
         "avatars_tip": "999+ 用户在使用 ShipAny 上站",
         "show_award": false,
