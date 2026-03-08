@@ -15,15 +15,15 @@ export function FeaturesList({
   className?: string;
 }) {
   return (
-    // Prevent horizontal scrolling
+    // Prevent scrollbar overflow from scroll animations
     <section
       className={cn(
-        'overflow-x-hidden py-16 md:py-24',
+        'overflow-hidden py-16 md:py-24',
         section.className,
         className
       )}
     >
-      <div className="container overflow-x-hidden">
+      <div className="container overflow-hidden">
         <div className="flex flex-wrap items-center gap-8 pb-12 md:gap-24">
           <ScrollAnimation direction="left">
             <div className="mx-auto w-full max-w-[500px] flex-shrink-0 md:mx-0">
