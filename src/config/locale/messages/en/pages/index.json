@@ -135,47 +135,47 @@
       "introduce": {
         "block": "features-list",
         "id": "introduce",
-        "title": "What is ShipAny",
+        "title": "What is AI-PFP",
         "label": "Introduce",
-        "description": "ShipAny is a NextJS boilerplate for building AI SaaS startups, including templates, components, and documentation.",
+        "description": "AI-PFP uses advanced image models to create unique portraits in seconds for social platforms, virtual worlds, and online games. Whether you want to express your personality or improve online interaction, this ai pfp tool helps you build a vivid and memorable digital identity.",
         "image": {
-          "src": "/imgs/features/landing-page.png",
+          "src": "/imgs/features/features-list-landing-page.jpg",
           "alt": "introduce"
         },
         "items": [
           {
-            "title": "Ready-to-use Templates",
-            "description": "Choose from dozens of production-ready AI SaaS templates to quickly start your project.",
-            "icon": "RiNextjsFill",
+            "title": "Fast AI Headshot Creation",
+            "description": "Generate personalized headshots quickly with AI while preserving your unique visual traits.",
+            "icon": "RiCameraLensLine",
             "image": {
-              "src": "/imgs/features/1.png",
+              "src": "",
               "alt": "introduce"
             }
           },
           {
-            "title": "Infrastructure Setup",
-            "description": "Get instant access to scalable infrastructure with best practices built-in.",
-            "icon": "RiDatabase2Line",
+            "title": "Personalized Digital Identity",
+            "description": "Build a distinctive profile image for social media, online games, and virtual communities.",
+            "icon": "RiUserStarLine",
             "image": {
-              "src": "/imgs/features/2.png",
+              "src": "",
               "alt": "introduce"
             }
           },
           {
-            "title": "Quick Deployment",
-            "description": "Deploy your AI SaaS application to production in hours, not days.",
-            "icon": "RiCloudyFill",
+            "title": "Creative Profile Style Design",
+            "description": "Explore rich creative styles and templates so your profile photo or avatar stands out at first glance.",
+            "icon": "RiPaletteLine",
             "image": {
-              "src": "/imgs/features/3.png",
+              "src": "",
               "alt": "introduce"
             }
           },
           {
-            "title": "AI Integration",
-            "description": "Integrate AI into your project with ease using our built-in AI SDK.",
-            "icon": "RiRobot2Line",
+            "title": "Immersive Virtual Social Presence",
+            "description": "Improve online engagement with a clearer, more attractive, and more recognizable profile presence.",
+            "icon": "RiCommunityLine",
             "image": {
-              "src": "/imgs/features/4.png",
+              "src": "",
               "alt": "introduce"
             }
           }

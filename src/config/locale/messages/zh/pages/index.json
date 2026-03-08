@@ -134,47 +134,47 @@
       "introduce": {
         "block": "features-list",
         "id": "introduce",
-        "title": "ShipAny 是什么？",
+        "title": "什么是 AI-PFP",
         "label": "产品简介",
-        "description": "ShipAny 是专为 AI SaaS 创业项目打造的 NextJS 脚手架，包括丰富模板、组件及文档。",
+        "description": "AI-PFP 利用先进的图像模型，在几秒内为社交平台、虚拟世界和在线游戏生成独特肖像。无论你想表达个性，还是提升在线互动体验，这款 ai pfp 工具都能帮助你打造鲜明且易记的数字身份。",
         "image": {
-          "src": "/imgs/features/landing-page.png",
+          "src": "/imgs/features/features-list-landing-page.jpg",
           "alt": "introduce"
         },
         "items": [
           {
-            "title": "开箱即用的模板",
-            "description": "从数十款生产级 AI SaaS 模板中选择，快速开启你的项目。",
-            "icon": "RiNextjsFill",
+            "title": "快速 AI 头像生成",
+            "description": "通过 AI 快速生成个性化 headshot，同时保留你的独特视觉特征。",
+            "icon": "RiCameraLensLine",
             "image": {
-              "src": "/imgs/features/1.png",
+              "src": "",
               "alt": "introduce"
             }
           },
           {
-            "title": "基础设施搭建",
-            "description": "内置最佳实践，即刻拥有可扩展的基础设施。",
-            "icon": "RiDatabase2Line",
+            "title": "个性化数字身份",
+            "description": "为社交媒体、在线游戏和虚拟社区打造更具辨识度的个人形象。",
+            "icon": "RiUserStarLine",
             "image": {
-              "src": "/imgs/features/2.png",
+              "src": "",
               "alt": "introduce"
             }
           },
           {
-            "title": "极速部署",
-            "description": "AI SaaS 产品快速上线，助力小时级交付。",
-            "icon": "RiCloudyFill",
+            "title": "创意风格头像设计",
+            "description": "探索丰富的创意风格与模板，让你的 profile photo 或 avatar 一眼被记住。",
+            "icon": "RiPaletteLine",
             "image": {
-              "src": "/imgs/features/3.png",
+              "src": "",
               "alt": "introduce"
             }
           },
           {
-            "title": "AI 集成",
-            "description": "通过内置的 AI SDK，轻松为你的项目集成 AI 能力。",
-            "icon": "RiRobot2Line",
+            "title": "沉浸式虚拟社交形象",
+            "description": "提升在线互动效果，让你的社交形象更清晰、更吸引人、也更容易识别。",
+            "icon": "RiCommunityLine",
             "image": {
-              "src": "/imgs/features/4.png",
+              "src": "",
               "alt": "introduce"
             }
           }
