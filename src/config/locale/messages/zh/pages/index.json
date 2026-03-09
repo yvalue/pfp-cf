@@ -138,7 +138,7 @@
         "label": "产品简介",
         "description": "AI-PFP 利用先进的图像模型，在几秒内为社交平台、虚拟世界和在线游戏生成独特肖像。无论你想表达个性，还是提升在线互动体验，这款 ai pfp 工具都能帮助你打造鲜明且易记的数字身份。",
         "image": {
-          "src": "/imgs/features/features-list-landing-page.jpg",
+          "src": "/imgs/features/features-list-landing-page.png",
           "alt": "introduce"
         },
         "items": [
@@ -182,36 +182,49 @@
         "className": "bg-muted"
       },
       "benefits": {
-        "block": "features-accordion",
+        "block": "features-flow",
         "id": "benefits",
-        "title": "为何选择 ShipAny",
+        "title": "为什么选择 AI-PFP",
         "label": "产品优势",
-        "description": "你获得一切 AI 创业所需——从开箱即用的模板到专业技术支持。",
+        "description": "在信息流刷屏的时代，你的头像只有 0.5 秒的机会留住别人。AI-PFP 不是简单的滤镜，而是用顶尖人工智能为你量身定制的视觉名片。无论是想要领英上的精英商务感，还是 TikTok 上的高辨识度网红风，AI 都能在几秒钟内把你的普通生活照变成摄影师级别的视觉大片。",
         "items": [
           {
-            "title": "全栈解决方案",
-            "description": "基于 Next.js，集成认证、支付、AI，一站式开箱即用。",
-            "icon": "RiNextjsFill",
+            "title": "真实质感，呈现你最好的版本",
+            "description": "目前流行的是“真实的美”。为了拒绝假面，我们的 AI 技术告别了廉价的塑料感，能精准保留你的面部特征与眼神神韵。生成的头像像你，但更完美的你，拥有自然质感的皮肤纹理和光影效果，经得起高清放大。",
+            "image_position": "left",
+            "icon": "RiFocus3Line",
             "image": {
-              "src": "/imgs/features/user-billing.png",
+              "src": "/imgs/features/realism.jpg",
               "alt": "benefits"
             }
           },
           {
-            "title": "丰富模板库",
-            "description": "多样的 AI SaaS 模板，点击即用，涵盖聊天、图像生成等多场景。",
-            "icon": "RiClapperboardAiLine",
+            "title": "风格自由切换，轻松驾驭潮流造型",
+            "description": "想要今天变身诗人风（Poetcore）的忧郁少年，明天尝试极简主义（Minimalist）的职场精英？AI-PFP 让你无需换装、无需约拍，一键解锁潮流风格，完美适配 YouTube、TikTok、Instagram 等不同平台。",
+            "image_position": "right",
+            "icon": "RiMagicLine",
             "image": {
-              "src": "/imgs/features/admin-settings.png",
+              "src": "/imgs/features/freedom.jpg",
               "alt": "benefits"
             }
           },
           {
-            "title": "专属技术指导",
-            "description": "享受专属技术支持与开发者社区，为你的成功保驾护航。",
-            "icon": "RiCodeFill",
+            "title": "高质量头像，快速且高性价比",
+            "description": "告别线下影楼昂贵的预约和漫长的修图等待。只需上传 1 张日常照，Nano Banana 等顶尖 AI 引擎即可在几秒内为你生成多张方案。用一杯咖啡的价格，换取一整年的高清头像库存。",
+            "image_position": "left",
+            "icon": "RiFlashlightLine",
             "image": {
-              "src": "/imgs/features/landing-page.png",
+              "src": "/imgs/features/avatar.jpg",
+              "alt": "benefits"
+            }
+          },
+          {
+            "title": "虚拟分身隐私保护，守护你的身份安全",
+            "description": "在数字时代，保护真脸隐私至关重要。AI-PFP 能为你生成一个“神似”的虚拟分身。它既能在社交圈展示你的个人魅力和审美，又能有效防止真人照片被非法抓取，是你最时尚的数字护盾。",
+            "image_position": "right",
+            "icon": "RiShieldUserLine",
+            "image": {
+              "src": "/imgs/features/doppelganger.jpg",
               "alt": "benefits"
             }
           }
@@ -220,8 +233,8 @@
       "usage": {
         "block": "features-step",
         "id": "usage",
-        "title": "三步使用 ShipAny 极速上线",
-        "description": "只需三步，快速开启你的 AI SaaS 创业之路：",
+        "title": "如何使用 AI-PFP 进行创作",
+        "description": "四个步骤，快速生成并完善你的专属 AI 头像：",
         "image": {
           "src": "/imgs/features/1.png",
           "alt": "usage"
@@ -230,32 +243,32 @@
         "text_align": "center",
         "items": [
           {
-            "title": "获取 ShipAny",
-            "description": "一次性购买 ShipAny，查收邮件获取代码与文档。",
+            "title": "上传参考照片",
+            "description": "选择一张清晰正脸照片，帮助 AI-PFP 准确理解你的五官特征。",
             "image": {
               "src": "/imgs/features/5.png",
               "alt": "usage"
             }
           },
           {
-            "title": "启动你的项目",
-            "description": "阅读说明文档，克隆 ShipAny 代码，开始开发你的 AI SaaS 项目。",
+            "title": "输入创作提示词",
+            "description": "描述你想要的风格、场景与情绪，例如赛博朋克、商务形象或动漫风。",
             "image": {
               "src": "/imgs/features/6.png",
               "alt": "usage"
             }
           },
           {
-            "title": "个性化定制",
-            "description": "根据需求修改模板内容和数据，配置专属 AI 能力。",
+            "title": "生成并微调头像",
+            "description": "一键生成多版头像，对发型、服装、背景等细节继续迭代优化。",
             "image": {
               "src": "/imgs/features/7.png",
               "alt": "usage"
             }
           },
           {
-            "title": "部署上线",
-            "description": "简单几步将你的项目推向生产环境，立刻为客户提供服务。",
+            "title": "下载并应用",
+            "description": "导出高清头像，立即用于社交媒体、个人品牌或项目展示。",
             "image": {
               "src": "/imgs/features/8.png",
               "alt": "usage"

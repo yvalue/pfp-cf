@@ -139,7 +139,7 @@
         "label": "Introduce",
         "description": "AI-PFP uses advanced image models to create unique portraits in seconds for social platforms, virtual worlds, and online games. Whether you want to express your personality or improve online interaction, this ai pfp tool helps you build a vivid and memorable digital identity.",
         "image": {
-          "src": "/imgs/features/features-list-landing-page.jpg",
+          "src": "/imgs/features/features-list-landing-page.png",
           "alt": "introduce"
         },
         "items": [
@@ -183,36 +183,49 @@
         "className": "bg-muted"
       },
       "benefits": {
-        "block": "features-accordion",
+        "block": "features-flow",
         "id": "benefits",
-        "title": "Why Choose ShipAny",
+        "title": "Why Choose AI-PFP",
         "label": "Benefits",
-        "description": "Get everything you need to launch your AI startup - from ready-to-use templates to technical support.",
+        "description": "In the age of endless feeds, your profile photo has only 0.5 seconds to stop the scroll. AI-PFP is more than a filter: it uses top-tier AI to craft a visual calling card tailored to you. From a polished LinkedIn presence to a high-recognition TikTok style, it can transform everyday photos into photographer-level portraits in seconds.",
         "items": [
           {
-            "title": "Complete Framework",
-            "description": "Built on Next.js with authentication, payments, and AI integration - everything works out of the box.",
-            "icon": "RiNextjsFill",
+            "title": "Realism and Authenticity to Showcase the Best Version of You",
+            "description": "Real beauty is the trend. Our AI avoids the cheap plastic look and preserves your facial features and eye expression with precision. The result looks like you, only better, with natural skin texture and lighting that still holds up in high-resolution closeups.",
+            "image_position": "left",
+            "icon": "RiFocus3Line",
             "image": {
-              "src": "/imgs/features/user-billing.png",
+              "src": "/imgs/features/realism.jpg",
               "alt": "benefits"
             }
           },
           {
-            "title": "Rich Templates Library",
-            "description": "Choose from various AI SaaS templates to kickstart your project - chatbots, image generation, and more.",
-            "icon": "RiClapperboardAiLine",
+            "title": "Style Freedom to Effortlessly Switch Between Trendy Looks",
+            "description": "Want a Poetcore vibe today and a minimalist professional look tomorrow? AI-PFP lets you unlock trend-forward styles in one click without outfit changes or studio bookings, while adapting perfectly to YouTube, TikTok, and Instagram.",
+            "image_position": "right",
+            "icon": "RiMagicLine",
             "image": {
-              "src": "/imgs/features/admin-settings.png",
+              "src": "/imgs/features/freedom.jpg",
               "alt": "benefits"
             }
           },
           {
-            "title": "Technical Guidance",
-            "description": "Get dedicated support and join our developer community to ensure your successful launch.",
-            "icon": "RiCodeFill",
+            "title": "Fast and Affordable High-Quality Avatars at an Accessible Price",
+            "description": "Skip expensive studio appointments and long retouching waits. Upload one daily photo and top AI engines like Nano Banana can generate multiple high-quality options in seconds, for about the price of a coffee.",
+            "image_position": "left",
+            "icon": "RiFlashlightLine",
             "image": {
-              "src": "/imgs/features/landing-page.png",
+              "src": "/imgs/features/avatar.jpg",
+              "alt": "benefits"
+            }
+          },
+          {
+            "title": "Privacy Protection with a Virtual Doppelganger to Safeguard Your Identity",
+            "description": "In the digital era, protecting your real face matters. AI-PFP creates a highly similar virtual twin that shows your style while reducing the risk of illegal scraping of real photos.",
+            "image_position": "right",
+            "icon": "RiShieldUserLine",
+            "image": {
+              "src": "/imgs/features/doppelganger.jpg",
               "alt": "benefits"
             }
           }
@@ -221,8 +234,8 @@
       "usage": {
         "block": "features-step",
         "id": "usage",
-        "title": "How to Launch with ShipAny",
-        "description": "Get your AI SaaS startup running in three simple steps:",
+        "title": "How to Create with AI-PFP",
+        "description": "Generate and refine your perfect AI profile picture in four steps:",
         "image": {
           "src": "/imgs/features/1.png",
           "alt": "usage"
@@ -231,32 +244,32 @@
         "text_align": "center",
         "items": [
           {
-            "title": "Get ShipAny",
-            "description": "Buy ShipAny with a one-time payment. Check your email for the code and documentation.",
+            "title": "Upload a Reference Photo",
+            "description": "Use a clear front-facing photo so AI-PFP can capture your key facial features accurately.",
             "image": {
               "src": "/imgs/features/5.png",
               "alt": "usage"
             }
           },
           {
-            "title": "Start Your Project",
-            "description": "Read the documentation and clone the code of ShipAny. Start building your AI SaaS startup.",
+            "title": "Write Your Prompt",
+            "description": "Describe the style, scene, and mood you want, such as cyberpunk, business, or anime.",
             "image": {
               "src": "/imgs/features/6.png",
               "alt": "usage"
             }
           },
           {
-            "title": "Customize Your Project",
-            "description": "Modify the template with your data and contents. Specific AI functionality needs.",
+            "title": "Generate and Refine",
+            "description": "Create multiple versions in one click, then iterate on hair, outfit, background, and other details.",
             "image": {
               "src": "/imgs/features/7.png",
               "alt": "usage"
             }
           },
           {
-            "title": "Deploy to Production",
-            "description": "Deploy your project to production with a few steps and start serving customers immediately.",
+            "title": "Download and Use",
+            "description": "Export a high-resolution avatar and use it for social profiles, personal branding, or showcases.",
             "image": {
               "src": "/imgs/features/8.png",
               "alt": "usage"
