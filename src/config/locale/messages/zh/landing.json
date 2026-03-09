@@ -15,7 +15,7 @@
       "items": [
         {
           "title": "功能亮点",
-          "url": "/#features",
+          "url": "/#benefits",
           "icon": "Sparkles"
         },
         {
@@ -130,7 +130,7 @@
           "children": [
             {
               "title": "功能亮点",
-              "url": "/#features",
+              "url": "/#benefits",
               "target": "_self"
             },
             {

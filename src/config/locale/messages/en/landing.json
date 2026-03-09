@@ -15,7 +15,7 @@
       "items": [
         {
           "title": "Features",
-          "url": "/#features",
+          "url": "/#benefits",
           "icon": "Sparkles"
         },
         {
@@ -130,7 +130,7 @@
           "children": [
             {
               "title": "Features",
-              "url": "/#features",
+              "url": "/#benefits",
               "target": "_self"
             },
             {
