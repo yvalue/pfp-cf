@@ -1,0 +1,21 @@
+{
+  "pages": [
+    "guide",
+    "quick-start",
+    "customize",
+    "deploy",
+    "---Core---",
+    "config",
+    "page-builder",
+    "vibe-coding",
+    "---Extensions---",
+    "database",
+    "auth",
+    "payment",
+    "storage",
+    "email",
+    "analytics",
+    "ads",
+    "customer-service"
+  ]
+}
