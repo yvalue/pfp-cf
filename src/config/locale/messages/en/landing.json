@@ -114,7 +114,7 @@
     "id": "footer",
     "brand": {
       "title": "AI-PFP",
-      "description": "ShipAny is a NextJS boilerplate for building AI SaaS startups. Ship Fast with a variety of templates and components.",
+      "description": "AI Profile Picture Generator | Quickly create professional headshots, business portraits, social media avatars, and resume photos to boost your online presence.",
       "logo": {
         "src": "/logo.png",
         "alt": "AI-PFP",

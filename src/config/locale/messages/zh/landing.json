@@ -114,7 +114,7 @@
     "id": "footer",
     "brand": {
       "title": "AI-PFP",
-      "description": "ShipAny 是专为 AI SaaS 创业项目打造的 NextJS 模板。丰富模板与组件，极速交付你的产品。",
+      "description": "AI 头像生成器，可快速创建专业形象照、商务头像、社交媒体头像和简历照片，帮助你提升线上形象与个人品牌辨识度。",
       "logo": {
         "src": "/logo.png",
         "alt": "AI-PFP",
