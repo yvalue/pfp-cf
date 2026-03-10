@@ -2,10 +2,10 @@
   "header": {
     "id": "header",
     "brand": {
-      "title": "ShipAny Two",
+      "title": "AI-PFP",
       "logo": {
         "src": "/logo.png",
-        "alt": "ShipAny Two",
+        "alt": "AI-PFP",
         "width": 100,
         "height": 100
       },
@@ -113,11 +113,11 @@
   "footer": {
     "id": "footer",
     "brand": {
-      "title": "ShipAny Two",
+      "title": "AI-PFP",
       "description": "ShipAny 是专为 AI SaaS 创业项目打造的 NextJS 模板。丰富模板与组件，极速交付你的产品。",
       "logo": {
         "src": "/logo.png",
-        "alt": "ShipAny Two",
+        "alt": "AI-PFP",
         "width": 100,
         "height": 100
       },
