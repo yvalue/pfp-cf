@@ -131,7 +131,7 @@ export function Header({ header }: { header: HeaderType }) {
                   {item.title}
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className="min-w-2xs origin-top p-0.5">
-                  <div className="border-foreground/5 bg-card ring-foreground/5 rounded-[calc(var(--radius)-2px)] border border-transparent p-2 shadow ring-1">
+                  <div className="border-foreground/5 bg-card rounded-[calc(var(--radius)-2px)] p-2">
                     <ul className="mt-1 space-y-2">
                       {item.children?.map((subItem: NavItem, index: number) => (
                         <ListItem
