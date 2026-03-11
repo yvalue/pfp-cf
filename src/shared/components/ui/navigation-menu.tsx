@@ -57,7 +57,7 @@ function NavigationMenuItem({
 }
 
 const navigationMenuTriggerStyle = cva(
-  "group inline-flex h-8 w-max items-center justify-center rounded-md px-4 py-1 text-sm text-muted-foreground font-medium hover:bg-foreground/5 hover:text-primary focus:bg-foreground/5 focus:text-primary disabled:pointer-events-none disabled:opacity-50 data-[state=open]:hover:bg-foreground/5 data-[state=open]:text-primary data-[state=open]:focus:bg-foreground/5 data-[state=open]:bg-foreground/5 focus-visible:ring-ring/50 outline-none transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1"
+  "group inline-flex h-8 w-max items-center justify-center rounded-md px-4 py-1 text-sm text-muted-foreground font-medium hover:bg-foreground/5 hover:text-primary hover:dark:bg-foreground/10 hover:dark:text-foreground focus:bg-foreground/5 focus:text-primary focus:dark:bg-foreground/10 focus:dark:text-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=open]:hover:bg-foreground/5 data-[state=open]:text-primary data-[state=open]:dark:bg-foreground/10 data-[state=open]:dark:text-foreground data-[state=open]:focus:bg-foreground/5 data-[state=open]:bg-foreground/5 focus-visible:ring-ring/50 outline-none transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1"
 );
 
 function NavigationMenuTrigger({

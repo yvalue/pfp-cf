@@ -106,8 +106,8 @@ export function Header({ header }: { header: HeaderType }) {
                     target={item.target || '_self'}
                     className={`flex items-center px-4 py-1.5 text-base font-medium ${
                       isItemActive
-                        ? 'bg-muted/40 text-primary hover:text-primary'
-                        : 'text-muted-foreground hover:text-primary'
+                        ? 'bg-muted/40 text-primary hover:text-primary dark:bg-foreground/10 dark:text-foreground dark:hover:bg-foreground/10 dark:hover:text-foreground'
+                        : 'text-muted-foreground hover:text-primary dark:hover:bg-foreground/10 dark:hover:text-foreground'
                     }`}
                   >
                     {item.title}
@@ -121,7 +121,8 @@ export function Header({ header }: { header: HeaderType }) {
                 <NavigationMenuTrigger
                   className={cn(
                     'text-base',
-                    isParentActive && 'bg-muted/40 text-primary'
+                    isParentActive &&
+                      'bg-muted/40 text-primary dark:bg-foreground/10 dark:text-foreground'
                   )}
                 >
                   {item.title}
@@ -134,13 +135,10 @@ export function Header({ header }: { header: HeaderType }) {
                           key={index}
                           href={subItem.url || ''}
                           target={subItem.target || '_self'}
+                          iconName={subItem.icon as string | undefined}
                           title={subItem.title || ''}
                           description={subItem.description || ''}
-                        >
-                          {subItem.icon && (
-                            <SmartIcon name={subItem.icon as string} />
-                          )}
-                        </ListItem>
+                        />
                       ))}
                     </ul>
                   </div>
@@ -222,29 +220,104 @@ export function Header({ header }: { header: HeaderType }) {
   function ListItem({
     title,
     description,
-    children,
     href,
+    iconName,
     target,
     ...props
   }: React.ComponentPropsWithoutRef<'li'> & {
     href: string;
+    iconName?: string;
     title: string;
     description?: string;
     target?: string;
   }) {
+    const getMenuVisual = (itemTitle: string, fallbackIconName?: string) => {
+      const normalizedTitle = itemTitle.toLowerCase();
+
+      if (normalizedTitle.includes('image')) {
+        return {
+          iconName: 'RiImageAiLine',
+          iconClassName: 'text-sky-600',
+        };
+      }
+
+      if (normalizedTitle.includes('music')) {
+        return {
+          iconName: 'RiMusicAiLine',
+          iconClassName: 'text-emerald-600',
+        };
+      }
+
+      if (normalizedTitle.includes('video')) {
+        return {
+          iconName: 'RiVideoAiLine',
+          iconClassName: 'text-rose-600',
+        };
+      }
+
+      if (
+        normalizedTitle.includes('chat') ||
+        normalizedTitle.includes('bot')
+      ) {
+        return {
+          iconName: 'RiChatAiLine',
+          iconClassName: 'text-violet-600',
+        };
+      }
+
+      if (normalizedTitle.includes('blog')) {
+        return {
+          iconName: 'RiArticleLine',
+          iconClassName: 'text-amber-600',
+        };
+      }
+
+      if (normalizedTitle.includes('update')) {
+        return {
+          iconName: 'RiHistoryLine',
+          iconClassName: 'text-cyan-600',
+        };
+      }
+
+      if (normalizedTitle.includes('doc')) {
+        return {
+          iconName: 'RiBookOpenLine',
+          iconClassName: 'text-indigo-600',
+        };
+      }
+
+      return {
+        iconName: fallbackIconName || 'RiSparklingLine',
+        iconClassName: 'text-primary',
+      };
+    };
+
+    const menuVisual = getMenuVisual(title, iconName);
+
     return (
       <li {...props}>
-        <NavigationMenuLink asChild>
+        <NavigationMenuLink
+          asChild
+          className="hover:bg-foreground/5 focus:bg-foreground/5 data-[active=true]:bg-foreground/5 data-[active=true]:hover:bg-foreground/5 dark:hover:bg-foreground/10 dark:focus:bg-foreground/10 dark:data-[active=true]:bg-foreground/10 dark:data-[active=true]:hover:bg-foreground/10"
+        >
           <Link
             href={href}
             target={target || '_self'}
-            className="grid grid-cols-[auto_1fr] gap-3.5"
+            className="flex flex-col gap-2"
           >
-            <div className="bg-background ring-foreground/10 relative flex size-9 items-center justify-center rounded border border-transparent shadow-sm ring-1">
-              {children}
+            <div className="flex items-center gap-2.5">
+              <div className="relative flex items-center justify-center">
+                <SmartIcon
+                  name={menuVisual.iconName}
+                  size={25}
+                  className={cn(menuVisual.iconClassName, 'size-[25px]')}
+                />
+              </div>
+              <div className="text-foreground text-base font-medium">
+                {title}
+              </div>
             </div>
-            <div className="space-y-0.5">
-              <div className="text-foreground text-base font-medium">{title}</div>
+            <div>
               <p className="text-muted-foreground line-clamp-1 text-sm">
                 {description}
               </p>
