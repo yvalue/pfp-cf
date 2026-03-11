@@ -104,13 +104,12 @@ export function Header({ header }: { header: HeaderType }) {
                   <Link
                     href={item.url || ''}
                     target={item.target || '_self'}
-                    className={`flex flex-row items-center gap-2 px-4 py-1.5 text-base ${
+                    className={`flex items-center px-4 py-1.5 text-base font-medium ${
                       isItemActive
                         ? 'bg-muted/40 text-primary hover:text-primary'
                         : 'text-muted-foreground hover:text-primary'
                     }`}
                   >
-                    {item.icon && <SmartIcon name={item.icon as string} />}
                     {item.title}
                   </Link>
                 </NavigationMenuLink>
@@ -121,13 +120,10 @@ export function Header({ header }: { header: HeaderType }) {
               <NavigationMenuItem key={idx}>
                 <NavigationMenuTrigger
                   className={cn(
-                    'flex flex-row items-center gap-2 text-base',
+                    'text-base',
                     isParentActive && 'bg-muted/40 text-primary'
                   )}
                 >
-                  {item.icon && (
-                    <SmartIcon name={item.icon as string} className="h-4 w-4" />
-                  )}
                   {item.title}
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className="min-w-2xs origin-top p-0.5">
