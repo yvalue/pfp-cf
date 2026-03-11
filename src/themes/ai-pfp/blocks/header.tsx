@@ -100,11 +100,11 @@ export function Header({ header }: { header: HeaderType }) {
 
             if (!item.children || item.children.length === 0) {
               return (
-                <NavigationMenuLink key={idx} asChild>
+                <NavigationMenuLink key={idx} asChild className="text-base">
                   <Link
                     href={item.url || ''}
                     target={item.target || '_self'}
-                    className={`flex flex-row items-center gap-2 px-4 py-1.5 text-sm ${
+                    className={`flex flex-row items-center gap-2 px-4 py-1.5 text-base ${
                       isItemActive
                         ? 'bg-muted/40 text-primary hover:text-primary'
                         : 'text-muted-foreground hover:text-primary'
@@ -121,7 +121,7 @@ export function Header({ header }: { header: HeaderType }) {
               <NavigationMenuItem key={idx}>
                 <NavigationMenuTrigger
                   className={cn(
-                    'flex flex-row items-center gap-2 text-sm',
+                    'flex flex-row items-center gap-2 text-base',
                     isParentActive && 'bg-muted/40 text-primary'
                   )}
                 >
@@ -248,8 +248,8 @@ export function Header({ header }: { header: HeaderType }) {
               {children}
             </div>
             <div className="space-y-0.5">
-              <div className="text-foreground text-sm font-medium">{title}</div>
-              <p className="text-muted-foreground line-clamp-1 text-xs">
+              <div className="text-foreground text-base font-medium">{title}</div>
+              <p className="text-muted-foreground line-clamp-1 text-sm">
                 {description}
               </p>
             </div>
