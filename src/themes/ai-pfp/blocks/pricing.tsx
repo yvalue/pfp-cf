@@ -92,14 +92,13 @@ function getPricingGridClassName(itemCount: number): string {
   return 'max-w-7xl grid-cols-1 md:grid-cols-2 xl:grid-cols-4';
 }
 
-function getBaseFreeCard(
-  freeCards: PricingType['free_cards'],
-  activeGroup?: string
+function getDefaultFreeCard(
+  freeCards: PricingType['free_cards']
 ): PricingFreeCard | undefined {
   if (!freeCards) return undefined;
 
   return (
-    (activeGroup ? freeCards[activeGroup] : undefined) ||
+    freeCards.default ||
     freeCards.yearly ||
     freeCards.monthly ||
     freeCards['one-time']
@@ -361,19 +360,20 @@ export function Pricing({
     0,
     section.groups?.findIndex((item) => item.name === group) ?? 0
   );
-  const baseFreeCard = getBaseFreeCard(section.free_cards, group);
+  const baseFreeCard = getDefaultFreeCard(section.free_cards);
   const activeFreeCard = group ? section.free_cards?.[group] : undefined;
   const displayedFreeCard = baseFreeCard
     ? {
         ...baseFreeCard,
-        price: activeFreeCard?.price ?? baseFreeCard.price,
-        original_price:
-          activeFreeCard?.original_price ?? baseFreeCard.original_price,
-        unit: activeFreeCard?.unit ?? baseFreeCard.unit,
+        ...activeFreeCard,
+        button: {
+          ...baseFreeCard.button,
+          ...activeFreeCard?.button,
+        },
       }
     : undefined;
   const renderFreeCard = (cardClassName?: string) => {
-    if (!displayedFreeCard || !baseFreeCard) return null;
+    if (!displayedFreeCard) return null;
 
     return (
       <Card
@@ -386,12 +386,12 @@ export function Pricing({
           <div className="flex items-center justify-between gap-4">
             <CardTitle className="min-w-0 flex-1 font-medium">
               <h3 className="text-foreground text-3xl leading-none font-semibold tracking-tight">
-                {baseFreeCard.title}
+                {displayedFreeCard.title}
               </h3>
             </CardTitle>
           </div>
           <CardDescription className="text-muted-foreground mt-2 min-h-10 text-sm leading-6">
-            {baseFreeCard.description}
+            {displayedFreeCard.description}
           </CardDescription>
 
           <div className="mt-2 flex flex-wrap items-end gap-2">
@@ -422,19 +422,19 @@ export function Pricing({
             disabled
             className="border-border/80 bg-background text-foreground hover:bg-background h-11 w-full rounded-full border px-6 text-sm font-medium shadow-sm shadow-black/5"
           >
-            <span>{baseFreeCard.button?.title}</span>
+            <span>{displayedFreeCard.button?.title}</span>
           </Button>
         </div>
 
         <CardContent className="border-border/60 mt-2 flex flex-1 flex-col border-t p-0 pt-2">
-          {baseFreeCard.features_title && (
+          {displayedFreeCard.features_title && (
             <p className="text-muted-foreground mb-4 text-sm font-medium">
-              {baseFreeCard.features_title}
+              {displayedFreeCard.features_title}
             </p>
           )}
 
           <ul className="space-y-3 text-sm">
-            {baseFreeCard.features?.map((feature, index) => (
+            {displayedFreeCard.features?.map((feature, index) => (
               <li key={index} className="flex items-start gap-3">
                 {index === 0 ? (
                   <Check className="text-primary mt-1 size-4 shrink-0" />
@@ -526,7 +526,7 @@ export function Pricing({
 
         <div
           className={cn(
-            'mx-auto grid w-full gap-4 lg:gap-5',
+            'mx-auto grid w-full gap-6 lg:gap-8',
             pricingGridClassName
           )}
         >

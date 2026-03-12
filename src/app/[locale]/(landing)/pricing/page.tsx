@@ -38,12 +38,16 @@ export default async function PricingPage({
   // build page sections
   const page: DynamicPage = {
     title: t.raw('page.title'),
+    show_sections: ['pricing', 'faq'],
     sections: {
       pricing: {
         ...t.raw('page.sections.pricing'),
         data: {
           currentSubscription,
         },
+      },
+      faq: {
+        ...t.raw('page.sections.faq'),
       },
     },
   };

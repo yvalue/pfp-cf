@@ -26,12 +26,10 @@
           }
         ],
         "free_cards": {
-          "yearly": {
+          "default": {
             "title": "Free",
             "description": "For personal use only with limited features and support",
             "price": "$0",
-            "original_price": "$0",
-            "unit": "/ month",
             "button": {
               "title": "Get Started"
             },
@@ -44,44 +42,20 @@
               "Single Image Generation",
               "Verification Required"
             ]
+          },
+          "yearly": {
+            "original_price": "$0",
+            "unit": "/ month"
           },
           "monthly": {
-            "title": "Free",
-            "description": "For personal use only with limited features and support",
             "price": "$0",
             "original_price": "",
-            "unit": "/ month",
-            "button": {
-              "title": "Get Started"
-            },
-            "features_title": "Features",
-            "features": [
-              "Basic Image Generation",
-              "Basic Response Speed",
-              "Limited Model Access",
-              "Standard Image Dimensions",
-              "Single Image Generation",
-              "Verification Required"
-            ]
+            "unit": "/ month"
           },
           "one-time": {
-            "title": "Free",
-            "description": "For personal use only with limited features and support",
             "price": "$0",
             "original_price": "",
-            "unit": "",
-            "button": {
-              "title": "Get Started"
-            },
-            "features_title": "Features",
-            "features": [
-              "Basic Image Generation",
-              "Basic Response Speed",
-              "Limited Model Access",
-              "Standard Image Dimensions",
-              "Single Image Generation",
-              "Verification Required"
-            ]
+            "unit": ""
           }
         },
         "items": [
@@ -354,6 +328,38 @@
             "valid_days": 365,
             "group": "yearly",
             "plan_name": "Max"
+          }
+        ]
+      },
+      "faq": {
+        "id": "faq",
+        "block": "faq",
+        "title": "Pricing FAQ",
+        "description": "Answers to common questions about plans, credits, billing cycles, and upgrades.",
+        "items": [
+          {
+            "question": "What is included in the free experience?",
+            "answer": "The free experience lets you try the core product with limited features, lower priority processing, and smaller usage limits before upgrading."
+          },
+          {
+            "question": "What is the difference between one-time, monthly, and yearly plans?",
+            "answer": "One-time plans give you a fixed package of credits for a limited validity period. Monthly and yearly plans are recurring subscriptions with ongoing credits and different billing cycles."
+          },
+          {
+            "question": "Do credits expire?",
+            "answer": "Yes. Credits follow the validity period shown on each plan. Check the plan details on the card to see how long your credits remain available."
+          },
+          {
+            "question": "Can I switch plans later?",
+            "answer": "Yes. You can upgrade when your usage grows. If you already have an active subscription, the pricing page will also indicate your current plan."
+          },
+          {
+            "question": "Will the displayed price change when I switch billing tabs?",
+            "answer": "Yes. The pricing cards update when you switch between one-time, monthly, and yearly billing so you can compare the correct price and billing unit for each option."
+          },
+          {
+            "question": "Which payment methods are supported?",
+            "answer": "Available payment methods depend on the plan and currency you choose. The supported providers are applied automatically at checkout based on the selected pricing option."
           }
         ]
       }
