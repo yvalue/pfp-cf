@@ -84,7 +84,7 @@ export function Header({ header }: { header: HeaderType }) {
     return (
       <NavigationMenu
         viewport={false}
-        className="**:data-[slot=navigation-menu-content]:top-10 max-lg:hidden"
+        className="max-w-full **:data-[slot=navigation-menu-content]:top-10 max-lg:hidden"
       >
         <NavigationMenuList className="gap-2">
           {header.nav?.items?.map((item, idx) => {
@@ -104,7 +104,7 @@ export function Header({ header }: { header: HeaderType }) {
                   <Link
                     href={item.url || ''}
                     target={item.target || '_self'}
-                    className={`flex items-center px-4 py-1.5 text-base font-medium ${
+                    className={`flex items-center px-4 py-1.5 text-base font-normal ${
                       isItemActive
                         ? 'bg-muted/40 text-primary hover:text-primary dark:bg-foreground/10 dark:text-foreground dark:hover:bg-foreground/10 dark:hover:text-foreground'
                         : 'text-muted-foreground hover:text-primary dark:hover:bg-foreground/10 dark:hover:text-foreground'
@@ -120,7 +120,7 @@ export function Header({ header }: { header: HeaderType }) {
               <NavigationMenuItem key={idx}>
                 <NavigationMenuTrigger
                   className={cn(
-                    'text-base',
+                    'text-base font-normal',
                     isParentActive &&
                       'bg-muted/40 text-primary dark:bg-foreground/10 dark:text-foreground'
                   )}
@@ -172,7 +172,7 @@ export function Header({ header }: { header: HeaderType }) {
               >
                 {item.children && item.children.length > 0 ? (
                   <>
-                    <AccordionTrigger className="data-[state=open]:bg-muted flex items-center justify-between px-4 py-3 text-lg **:!font-normal">
+                    <AccordionTrigger className="data-[state=open]:bg-muted flex items-center justify-between px-4 py-3 text-lg font-normal">
                       {item.title}
                     </AccordionTrigger>
                     <AccordionContent className="pb-5">
@@ -192,7 +192,9 @@ export function Header({ header }: { header: HeaderType }) {
                                   <SmartIcon name={subItem.icon as string} />
                                 )}
                               </div>
-                              <div className="text-base">{subItem.title}</div>
+                              <div className="text-base font-normal">
+                                {subItem.title}
+                              </div>
                             </Link>
                           </li>
                         ))}
@@ -203,7 +205,7 @@ export function Header({ header }: { header: HeaderType }) {
                   <Link
                     href={item.url || ''}
                     onClick={closeMenu}
-                    className="data-[state=open]:bg-muted flex items-center justify-between px-4 py-3 text-lg **:!font-normal"
+                    className="data-[state=open]:bg-muted flex items-center justify-between px-4 py-3 text-lg font-normal"
                   >
                     {item.title}
                   </Link>
@@ -255,10 +257,7 @@ export function Header({ header }: { header: HeaderType }) {
         };
       }
 
-      if (
-        normalizedTitle.includes('chat') ||
-        normalizedTitle.includes('bot')
-      ) {
+      if (normalizedTitle.includes('chat') || normalizedTitle.includes('bot')) {
         return {
           iconName: 'RiChatAiLine',
           iconClassName: 'text-violet-600',
@@ -313,7 +312,7 @@ export function Header({ header }: { header: HeaderType }) {
                   className={cn(menuVisual.iconClassName, 'size-[25px]')}
                 />
               </div>
-              <div className="text-foreground text-base font-medium">
+              <div className="text-foreground text-base font-normal">
                 {title}
               </div>
             </div>
@@ -344,13 +343,11 @@ export function Header({ header }: { header: HeaderType }) {
           )}
         >
           <div className="container">
-            <div className="relative flex flex-wrap items-center justify-between lg:py-5">
-              <div className="flex justify-between gap-8 max-lg:h-14 max-lg:w-full max-lg:border-b">
+            <div className="relative flex flex-wrap items-center justify-between lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:gap-6 lg:py-5">
+              <div className="flex items-center justify-between gap-8 max-lg:h-14 max-lg:w-full max-lg:border-b lg:justify-self-start">
                 {/* Brand Logo */}
                 {header.brand && <BrandLogo brand={header.brand} />}
 
-                {/* Desktop Navigation Menu */}
-                {isLarge && <NavMenu />}
                 {/* Hamburger menu button for mobile navigation */}
                 <button
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -364,14 +361,21 @@ export function Header({ header }: { header: HeaderType }) {
                 </button>
               </div>
 
+              {/* Desktop Navigation Menu */}
+              {isLarge && (
+                <div className="hidden lg:block lg:max-w-full lg:min-w-0 lg:justify-self-center">
+                  <NavMenu />
+                </div>
+              )}
+
               {/* Show mobile menu if needed */}
               {!isLarge && isMobileMenuOpen && (
                 <MobileMenu closeMenu={() => setIsMobileMenuOpen(false)} />
               )}
 
               {/* Header right section: theme toggler, locale selector, sign, buttons */}
-              <div className="mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 in-data-[state=active]:flex max-lg:in-data-[state=active]:mt-6 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
-                <div className="flex w-full flex-row items-center gap-4 sm:flex-row sm:gap-6 sm:space-y-0 md:w-fit">
+              <div className="mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 in-data-[state=active]:flex max-lg:in-data-[state=active]:mt-6 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:justify-self-end lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
+                <div className="flex w-full flex-row items-center gap-4 sm:flex-row sm:gap-6 sm:space-y-0 md:w-fit lg:justify-end">
                   {header.buttons &&
                     header.buttons.map((button, idx) => (
                       <Link

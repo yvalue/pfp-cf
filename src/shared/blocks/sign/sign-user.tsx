@@ -147,9 +147,9 @@ export function SignUser({
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
-              className="relative h-10 w-10 rounded-full p-0"
+              className="relative size-8 rounded-full p-0"
             >
-              <Avatar>
+              <Avatar className="size-full">
                 <AvatarImage
                   src={displayUser.image || ''}
                   alt={displayUser.name || ''}

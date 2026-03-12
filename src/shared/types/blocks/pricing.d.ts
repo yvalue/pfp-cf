@@ -46,6 +46,17 @@ export interface PricingItem {
   group?: string;
 }
 
+export interface PricingFreeCard {
+  title?: string;
+  description?: string;
+  price?: string;
+  original_price?: string;
+  unit?: string;
+  features_title?: string;
+  features?: string[];
+  button?: Button;
+}
+
 export interface Pricing {
   id?: string;
   disabled?: boolean;
@@ -54,6 +65,7 @@ export interface Pricing {
   description?: string;
   items?: PricingItem[];
   groups?: PricingGroup[];
+  free_cards?: Record<string, PricingFreeCard>;
   className?: string;
   sr_only_title?: string;
 }
