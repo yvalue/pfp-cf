@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Check, Loader2 } from 'lucide-react';
+import { Check, Loader2, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
@@ -29,6 +29,7 @@ import { cn } from '@/shared/lib/utils';
 import { Subscription } from '@/shared/models/subscription';
 import {
   PricingCurrency,
+  PricingFreeCard,
   PricingItem,
   Pricing as PricingType,
 } from '@/shared/types/blocks/pricing';
@@ -89,6 +90,20 @@ function getPricingGridClassName(itemCount: number): string {
   }
 
   return 'max-w-7xl grid-cols-1 md:grid-cols-2 xl:grid-cols-4';
+}
+
+function getBaseFreeCard(
+  freeCards: PricingType['free_cards'],
+  activeGroup?: string
+): PricingFreeCard | undefined {
+  if (!freeCards) return undefined;
+
+  return (
+    (activeGroup ? freeCards[activeGroup] : undefined) ||
+    freeCards.yearly ||
+    freeCards.monthly ||
+    freeCards['one-time']
+  );
 }
 
 export function Pricing({
@@ -346,6 +361,96 @@ export function Pricing({
     0,
     section.groups?.findIndex((item) => item.name === group) ?? 0
   );
+  const baseFreeCard = getBaseFreeCard(section.free_cards, group);
+  const activeFreeCard = group ? section.free_cards?.[group] : undefined;
+  const displayedFreeCard = baseFreeCard
+    ? {
+        ...baseFreeCard,
+        price: activeFreeCard?.price ?? baseFreeCard.price,
+        original_price:
+          activeFreeCard?.original_price ?? baseFreeCard.original_price,
+        unit: activeFreeCard?.unit ?? baseFreeCard.unit,
+      }
+    : undefined;
+  const renderFreeCard = (cardClassName?: string) => {
+    if (!displayedFreeCard || !baseFreeCard) return null;
+
+    return (
+      <Card
+        className={cn(
+          'border-border/60 bg-background relative flex h-full flex-col rounded-3xl border px-6 py-6 shadow-sm shadow-zinc-950/5 transition-colors duration-200 hover:border-primary lg:px-7 lg:py-7',
+          cardClassName
+        )}
+      >
+        <CardHeader className="p-0">
+          <div className="flex items-center justify-between gap-4">
+            <CardTitle className="min-w-0 flex-1 font-medium">
+              <h3 className="text-foreground text-3xl leading-none font-semibold tracking-tight">
+                {baseFreeCard.title}
+              </h3>
+            </CardTitle>
+          </div>
+          <CardDescription className="text-muted-foreground mt-2 min-h-10 text-sm leading-6">
+            {baseFreeCard.description}
+          </CardDescription>
+
+          <div className="mt-2 flex flex-wrap items-end gap-2">
+            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+              <div className="text-foreground text-4xl leading-none font-bold tracking-tight">
+                {displayedFreeCard.price}
+              </div>
+              {(displayedFreeCard.original_price || displayedFreeCard.unit) && (
+                <div className="flex items-baseline gap-1.5 leading-none">
+                  {displayedFreeCard.original_price ? (
+                    <span className="text-muted-foreground text-xl font-bold line-through">
+                      {displayedFreeCard.original_price}
+                    </span>
+                  ) : null}
+                  {displayedFreeCard.unit ? (
+                    <span className="text-muted-foreground text-sm font-medium">
+                      {displayedFreeCard.unit}
+                    </span>
+                  ) : null}
+                </div>
+              )}
+            </div>
+          </div>
+        </CardHeader>
+
+        <div className="mt-2">
+          <Button
+            disabled
+            className="border-border/80 bg-background text-foreground hover:bg-background h-11 w-full rounded-full border px-6 text-sm font-medium shadow-sm shadow-black/5"
+          >
+            <span>{baseFreeCard.button?.title}</span>
+          </Button>
+        </div>
+
+        <CardContent className="border-border/60 mt-2 flex flex-1 flex-col border-t p-0 pt-2">
+          {baseFreeCard.features_title && (
+            <p className="text-muted-foreground mb-4 text-sm font-medium">
+              {baseFreeCard.features_title}
+            </p>
+          )}
+
+          <ul className="space-y-3 text-sm">
+            {baseFreeCard.features?.map((feature, index) => (
+              <li key={index} className="flex items-start gap-3">
+                {index === 0 ? (
+                  <Check className="text-primary mt-1 size-4 shrink-0" />
+                ) : (
+                  <X className="mt-1 size-4 shrink-0 text-red-500" />
+                )}
+                <span className="text-muted-foreground leading-normal">
+                  {feature}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
+    );
+  };
 
   return (
     <section
@@ -477,7 +582,7 @@ export function Pricing({
                       {(displayedItem.original_price || displayedItem.unit) && (
                         <div className="flex items-baseline gap-1.5 leading-none">
                           {displayedItem.original_price && (
-                            <span className="text-muted-foreground text-xl line-through">
+                            <span className="text-muted-foreground text-xl font-bold line-through">
                               {displayedItem.original_price}
                             </span>
                           )}
@@ -586,6 +691,7 @@ export function Pricing({
               </Card>
             );
           })}
+          {renderFreeCard('xl:col-start-2')}
         </div>
       </div>
 

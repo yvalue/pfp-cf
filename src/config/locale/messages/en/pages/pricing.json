@@ -31,56 +31,56 @@
             "description": "For personal use only with limited features and support",
             "price": "$0",
             "original_price": "$0",
-            "unit": "/ Month",
+            "unit": "/ month",
             "button": {
               "title": "Get Started"
             },
             "features_title": "Features",
             "features": [
               "Basic Image Generation",
-              "Fast Response",
-              "UnLimited AI Model",
-              "UnLimited Image Dimension",
-              "Batch Image Generation",
-              "No Captcha/Turnstile Verification"
+              "Basic Response Speed",
+              "Limited Model Access",
+              "Standard Image Dimensions",
+              "Single Image Generation",
+              "Verification Required"
             ]
           },
           "monthly": {
             "title": "Free",
             "description": "For personal use only with limited features and support",
             "price": "$0",
-            "original_price": "$0",
-            "unit": "/ Month",
+            "original_price": "",
+            "unit": "/ month",
             "button": {
               "title": "Get Started"
             },
             "features_title": "Features",
             "features": [
               "Basic Image Generation",
-              "Fast Response",
-              "UnLimited AI Model",
-              "UnLimited Image Dimension",
-              "Batch Image Generation",
-              "No Captcha/Turnstile Verification"
+              "Basic Response Speed",
+              "Limited Model Access",
+              "Standard Image Dimensions",
+              "Single Image Generation",
+              "Verification Required"
             ]
           },
           "one-time": {
             "title": "Free",
             "description": "For personal use only with limited features and support",
             "price": "$0",
-            "original_price": "$0",
-            "unit": "/ Month",
+            "original_price": "",
+            "unit": "",
             "button": {
               "title": "Get Started"
             },
             "features_title": "Features",
             "features": [
               "Basic Image Generation",
-              "Fast Response",
-              "UnLimited AI Model",
-              "UnLimited Image Dimension",
-              "Batch Image Generation",
-              "No Captcha/Turnstile Verification"
+              "Basic Response Speed",
+              "Limited Model Access",
+              "Standard Image Dimensions",
+              "Single Image Generation",
+              "Verification Required"
             ]
           }
         },
