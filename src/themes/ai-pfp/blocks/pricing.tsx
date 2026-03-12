@@ -7,7 +7,6 @@ import { toast } from 'sonner';
 
 import { SmartIcon } from '@/shared/blocks/common';
 import { PaymentModal } from '@/shared/blocks/payment/payment-modal';
-import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
 import {
   Card,
@@ -30,7 +29,6 @@ import { cn } from '@/shared/lib/utils';
 import { Subscription } from '@/shared/models/subscription';
 import {
   PricingCurrency,
-  PricingFreeCard,
   PricingItem,
   Pricing as PricingType,
 } from '@/shared/types/blocks/pricing';
@@ -114,11 +112,15 @@ export function Pricing({
       (i) => i.product_id === currentSubscription?.productId
     );
 
+    const preferredGroup = section.groups?.find((g) => g.name === 'yearly');
     // First look for a group with is_featured set to true
     const featuredGroup = section.groups?.find((g) => g.is_featured);
-    // If no featured group exists, fall back to the first group
+    // Prefer yearly for the initial view, then featured, then the first group
     return (
-      currentItem?.group || featuredGroup?.name || section.groups?.[0]?.name
+      currentItem?.group ||
+      preferredGroup?.name ||
+      featuredGroup?.name ||
+      section.groups?.[0]?.name
     );
   });
 
@@ -338,11 +340,12 @@ export function Pricing({
 
   const visibleItems =
     section.items?.filter((item) => !item.group || item.group === group) ?? [];
-  const activeGroup = group || section.groups?.[0]?.name || '';
-  const freeCard: PricingFreeCard | undefined = activeGroup
-    ? section.free_cards?.[activeGroup]
-    : undefined;
   const pricingGridClassName = getPricingGridClassName(visibleItems.length);
+  const groupCount = section.groups?.length ?? 0;
+  const activeGroupIndex = Math.max(
+    0,
+    section.groups?.findIndex((item) => item.name === group) ?? 0
+  );
 
   return (
     <section
@@ -374,22 +377,40 @@ export function Pricing({
         </div>
 
         {section.groups && section.groups.length > 0 && (
-          <div className="mx-auto mb-4 flex w-full justify-center md:mb-6">
-            <Tabs value={group} onValueChange={setGroup}>
-              <TabsList className="border-border/70 bg-background rounded-full border p-1 shadow-sm shadow-zinc-950/5">
+          <div className="mx-auto mb-4 flex w-full justify-center overflow-x-auto px-4 md:mb-6">
+            <Tabs value={group} onValueChange={setGroup} className="max-w-full">
+              <TabsList
+                className="border-zinc-300/80 bg-background/90 relative inline-grid h-auto w-max min-w-max rounded-full border p-1 shadow-none backdrop-blur-sm"
+                style={{
+                  gridTemplateColumns: `repeat(${groupCount}, minmax(0, 1fr))`,
+                }}
+              >
+                <div
+                  aria-hidden
+                  className="bg-primary absolute inset-y-1 left-1 rounded-full transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                  style={{
+                    width:
+                      groupCount > 0
+                        ? `calc((100% - 0.5rem) / ${groupCount})`
+                        : undefined,
+                    transform: `translateX(${activeGroupIndex * 100}%)`,
+                  }}
+                />
                 {section.groups.map((item, i) => {
                   return (
                     <TabsTrigger
                       key={i}
                       value={item.name || ''}
-                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-foreground/70 rounded-full px-5 py-2 text-sm font-medium data-[state=active]:shadow-sm"
+                      className="text-foreground relative z-10 h-8 min-w-[112px] shrink-0 rounded-full bg-transparent px-3.5 text-[0.84rem] font-[450] tracking-tight transition-[transform,color] duration-300 ease-out will-change-transform data-[state=active]:bg-transparent data-[state=active]:text-primary-foreground data-[state=active]:shadow-none active:scale-[0.98] md:h-9 md:min-w-[132px] md:px-4 md:text-[0.9rem]"
                     >
-                      {item.title}
-                      {item.label && (
-                        <Badge className="ml-2 rounded-full border-0 bg-white/10 px-2 py-0 text-xs font-semibold tracking-wide text-current uppercase shadow-none">
-                          {item.label}
-                        </Badge>
-                      )}
+                      <span className="flex items-center justify-center gap-1">
+                        <span>{item.title}</span>
+                        {item.label && (
+                          <span className="text-[0.74em] font-semibold opacity-80">
+                            {item.label}
+                          </span>
+                        )}
+                      </span>
                     </TabsTrigger>
                   );
                 })}
@@ -425,10 +446,10 @@ export function Pricing({
               <Card
                 key={idx}
                 className={cn(
-                  'relative flex h-full flex-col rounded-3xl border px-6 py-6 shadow-sm shadow-zinc-950/5 transition-colors duration-200 lg:px-7 lg:py-7',
+                  'relative flex h-full flex-col rounded-3xl border px-6 py-6 shadow-sm shadow-zinc-950/5 transition-colors duration-200 hover:border-primary lg:px-7 lg:py-7',
                   'border-border/60 bg-background',
                   isFeatured &&
-                    'border-primary/20 bg-primary/5 shadow-primary/10'
+                    'bg-primary/5 shadow-primary/10'
                 )}
               >
                 <CardHeader className="p-0">
@@ -520,8 +541,8 @@ export function Pricing({
                       className={cn(
                         'focus-visible:ring-ring inline-flex h-11 w-full items-center justify-center gap-2 rounded-full px-6 text-sm font-medium whitespace-nowrap transition-all focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
                         isFeatured
-                          ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-primary/10 border border-white/20 shadow-md'
-                          : 'border-border/80 bg-background text-foreground hover:bg-muted/50 border shadow-sm shadow-black/5'
+                          ? 'bg-primary text-primary-foreground hover:bg-primary/80 shadow-primary/10 border border-white/20 shadow-md'
+                          : 'border-border/80 bg-background text-foreground hover:bg-muted/90 border shadow-sm shadow-black/5'
                       )}
                     >
                       {isLoading && item.product_id === productId ? (
@@ -566,94 +587,6 @@ export function Pricing({
             );
           })}
         </div>
-
-        {freeCard && (
-          <div
-            className={cn(
-              'mx-auto mt-6 grid w-full gap-4 md:mt-8 lg:gap-5',
-              pricingGridClassName
-            )}
-          >
-            <div
-              className={cn(
-                'w-full',
-                visibleItems.length === 2 &&
-                  'md:col-span-2 md:mx-auto md:max-w-sm',
-                visibleItems.length >= 3 && 'xl:col-start-2'
-              )}
-            >
-              <Card className="border-border/60 bg-background relative flex h-full flex-col rounded-3xl border px-6 py-6 shadow-sm shadow-zinc-950/5 transition-colors duration-200 lg:px-7 lg:py-7">
-                <CardHeader className="p-0">
-                  <CardTitle className="font-medium">
-                    <h3 className="text-foreground text-3xl leading-none font-semibold tracking-tight">
-                      {freeCard.title}
-                    </h3>
-                  </CardTitle>
-                  <CardDescription className="text-muted-foreground mt-2 text-sm leading-6">
-                    {freeCard.description}
-                  </CardDescription>
-
-                  <div className="mt-2 flex flex-wrap items-end gap-2">
-                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                      <div className="text-foreground text-4xl leading-none font-bold tracking-tight">
-                        {freeCard.price}
-                      </div>
-                      {(freeCard.original_price || freeCard.unit) && (
-                        <div className="flex items-baseline gap-1.5 leading-none">
-                          {freeCard.original_price && (
-                            <span className="text-muted-foreground text-xl line-through">
-                              {freeCard.original_price}
-                            </span>
-                          )}
-                          {freeCard.unit ? (
-                            <span className="text-muted-foreground text-sm font-medium">
-                              {freeCard.unit}
-                            </span>
-                          ) : null}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </CardHeader>
-
-                <div className="mt-2">
-                  <Button
-                    variant="outline"
-                    disabled
-                    className="border-border/80 bg-background text-foreground h-11 w-full rounded-full border px-6 text-sm font-medium shadow-sm shadow-black/5"
-                  >
-                    {freeCard.button?.icon && (
-                      <SmartIcon
-                        name={freeCard.button.icon as string}
-                        className="size-4"
-                      />
-                    )}
-                    <span>{freeCard.button?.title}</span>
-                  </Button>
-                </div>
-
-                <CardContent className="border-border/60 mt-2 flex flex-1 flex-col border-t p-0 pt-2">
-                  {freeCard.features_title && (
-                    <p className="text-muted-foreground mb-4 text-sm font-medium">
-                      {freeCard.features_title}
-                    </p>
-                  )}
-
-                  <ul className="space-y-3 text-sm">
-                    {freeCard.features?.map((feature, index) => (
-                      <li key={index} className="flex items-start gap-3">
-                        <Check className="text-primary mt-1 size-4 shrink-0" />
-                        <span className="text-muted-foreground leading-normal">
-                          {feature}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        )}
       </div>
 
       <PaymentModal
