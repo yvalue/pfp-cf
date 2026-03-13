@@ -30,6 +30,64 @@ import { cn } from '@/shared/lib/utils';
 import { NavItem } from '@/shared/types/blocks/common';
 import { Header as HeaderType } from '@/shared/types/blocks/landing';
 
+function getMenuVisual(itemTitle: string, fallbackIconName?: string) {
+  const normalizedTitle = itemTitle.toLowerCase();
+
+  if (normalizedTitle.includes('image')) {
+    return {
+      iconName: 'RiImageAiLine',
+      iconClassName: 'text-sky-600',
+    };
+  }
+
+  if (normalizedTitle.includes('music')) {
+    return {
+      iconName: 'RiMusicAiLine',
+      iconClassName: 'text-emerald-600',
+    };
+  }
+
+  if (normalizedTitle.includes('video')) {
+    return {
+      iconName: 'RiVideoAiLine',
+      iconClassName: 'text-rose-600',
+    };
+  }
+
+  if (normalizedTitle.includes('chat') || normalizedTitle.includes('bot')) {
+    return {
+      iconName: 'RiChatAiLine',
+      iconClassName: 'text-violet-600',
+    };
+  }
+
+  if (normalizedTitle.includes('blog')) {
+    return {
+      iconName: 'RiArticleLine',
+      iconClassName: 'text-amber-600',
+    };
+  }
+
+  if (normalizedTitle.includes('update')) {
+    return {
+      iconName: 'RiHistoryLine',
+      iconClassName: 'text-cyan-600',
+    };
+  }
+
+  if (normalizedTitle.includes('doc')) {
+    return {
+      iconName: 'RiBookOpenLine',
+      iconClassName: 'text-indigo-600',
+    };
+  }
+
+  return {
+    iconName: fallbackIconName || 'RiSparklingLine',
+    iconClassName: 'text-primary',
+  };
+}
+
 // For Next.js hydration mismatch warning, conditionally render NavigationMenuTrigger only after mount to avoid inconsistency between server/client render
 function NavigationMenuTrigger(
   props: React.ComponentProps<typeof RawNavigationMenuTrigger>
@@ -179,23 +237,10 @@ export function Header({ header }: { header: HeaderType }) {
                       <ul>
                         {item.children?.map((subItem: NavItem, iidx) => (
                           <li key={iidx}>
-                            <Link
-                              href={subItem.url || ''}
-                              onClick={closeMenu}
-                              className="grid grid-cols-[auto_1fr] items-center gap-2.5 px-4 py-2"
-                            >
-                              <div
-                                aria-hidden
-                                className="flex items-center justify-center *:size-4"
-                              >
-                                {subItem.icon && (
-                                  <SmartIcon name={subItem.icon as string} />
-                                )}
-                              </div>
-                              <div className="text-base font-normal">
-                                {subItem.title}
-                              </div>
-                            </Link>
+                            <MobileSubmenuItem
+                              item={subItem}
+                              closeMenu={closeMenu}
+                            />
                           </li>
                         ))}
                       </ul>
@@ -233,64 +278,6 @@ export function Header({ header }: { header: HeaderType }) {
     description?: string;
     target?: string;
   }) {
-    const getMenuVisual = (itemTitle: string, fallbackIconName?: string) => {
-      const normalizedTitle = itemTitle.toLowerCase();
-
-      if (normalizedTitle.includes('image')) {
-        return {
-          iconName: 'RiImageAiLine',
-          iconClassName: 'text-sky-600',
-        };
-      }
-
-      if (normalizedTitle.includes('music')) {
-        return {
-          iconName: 'RiMusicAiLine',
-          iconClassName: 'text-emerald-600',
-        };
-      }
-
-      if (normalizedTitle.includes('video')) {
-        return {
-          iconName: 'RiVideoAiLine',
-          iconClassName: 'text-rose-600',
-        };
-      }
-
-      if (normalizedTitle.includes('chat') || normalizedTitle.includes('bot')) {
-        return {
-          iconName: 'RiChatAiLine',
-          iconClassName: 'text-violet-600',
-        };
-      }
-
-      if (normalizedTitle.includes('blog')) {
-        return {
-          iconName: 'RiArticleLine',
-          iconClassName: 'text-amber-600',
-        };
-      }
-
-      if (normalizedTitle.includes('update')) {
-        return {
-          iconName: 'RiHistoryLine',
-          iconClassName: 'text-cyan-600',
-        };
-      }
-
-      if (normalizedTitle.includes('doc')) {
-        return {
-          iconName: 'RiBookOpenLine',
-          iconClassName: 'text-indigo-600',
-        };
-      }
-
-      return {
-        iconName: fallbackIconName || 'RiSparklingLine',
-        iconClassName: 'text-primary',
-      };
-    };
-
     const menuVisual = getMenuVisual(title, iconName);
 
     return (
@@ -324,6 +311,35 @@ export function Header({ header }: { header: HeaderType }) {
           </Link>
         </NavigationMenuLink>
       </li>
+    );
+  }
+
+  function MobileSubmenuItem({
+    item,
+    closeMenu,
+  }: {
+    item: NavItem;
+    closeMenu: () => void;
+  }) {
+    const menuVisual = getMenuVisual(
+      item.title || '',
+      item.icon as string | undefined
+    );
+
+    return (
+      <Link
+        href={item.url || ''}
+        onClick={closeMenu}
+        className="grid grid-cols-[auto_1fr] items-center gap-2.5 px-4 py-2"
+      >
+        <div aria-hidden className="flex items-center justify-center">
+          <SmartIcon
+            name={menuVisual.iconName}
+            className={cn(menuVisual.iconClassName, 'size-4')}
+          />
+        </div>
+        <div className="text-base font-normal">{item.title}</div>
+      </Link>
     );
   }
 

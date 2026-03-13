@@ -71,9 +71,9 @@ function NavigationMenuTrigger({
       className={cn(navigationMenuTriggerStyle(), "group", className)}
       {...props}
     >
-      {children}{" "}
+      {children}
       <ChevronDownIcon
-        className="relative top-[1px] ml-1.5 size-3 opacity-75 transition duration-300 group-data-[state=open]:translate-y-px"
+        className="relative top-[1px] ml-1.5 size-3 opacity-75 transition-transform duration-200 group-data-[state=open]:rotate-180"
         aria-hidden="true"
         strokeWidth={2.5}
       />
