@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 
 import { SmartIcon } from '@/shared/blocks/common';
 import { PaymentModal } from '@/shared/blocks/payment/payment-modal';
+import { TextHighlight } from '@/shared/components/text-highlight';
 import { Button } from '@/shared/components/ui/button';
 import {
   Card,
@@ -442,7 +443,7 @@ export function Pricing({
                           <Check className="text-primary mt-1 size-4 shrink-0" />
                         )}
                         <span className="text-muted-foreground leading-normal">
-                          {feature}
+                          <TextHighlight text={feature} />
                         </span>
                       </li>
             ))}
@@ -686,7 +687,7 @@ export function Pricing({
                           <Check className="text-primary mt-1 size-4 shrink-0" />
                         )}
                         <span className="text-muted-foreground leading-normal">
-                          {feature}
+                          <TextHighlight text={feature} />
                         </span>
                       </li>
                     ))}

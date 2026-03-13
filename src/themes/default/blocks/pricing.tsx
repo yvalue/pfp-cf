@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 
 import { SmartIcon } from '@/shared/blocks/common';
 import { PaymentModal } from '@/shared/blocks/payment/payment-modal';
+import { TextHighlight } from '@/shared/components/text-highlight';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
 import {
@@ -511,7 +512,7 @@ export function Pricing({
                         ) : (
                           <Check className="size-3" />
                         )}
-                        {feature}
+                        <TextHighlight text={feature} />
                       </li>
                     ))}
                   </ul>

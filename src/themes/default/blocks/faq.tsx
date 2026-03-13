@@ -7,6 +7,7 @@ import {
   AccordionTrigger,
 } from '@/shared/components/ui/accordion';
 import { ScrollAnimation } from '@/shared/components/ui/scroll-animation';
+import { TextHighlight } from '@/shared/components/text-highlight';
 import { Section } from '@/shared/types/blocks/landing';
 
 export function Faq({
@@ -48,7 +49,9 @@ export function Faq({
                     </AccordionTrigger>
                     <AccordionContent>
                       <p className="text-base">
-                        {item.answer || item.description || ''}
+                        <TextHighlight
+                          text={item.answer || item.description || ''}
+                        />
                       </p>
                     </AccordionContent>
                   </AccordionItem>

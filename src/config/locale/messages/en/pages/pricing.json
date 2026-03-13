@@ -58,15 +58,9 @@
             "unit": "/ month"
           },
           "monthly": {
-            "price": "$0",
-            "original_price": "",
             "unit": "/ month"
           },
-          "one-time": {
-            "price": "$0",
-            "original_price": "",
-            "unit": ""
-          }
+          "one-time": {}
         },
         "items": [
           {
@@ -88,15 +82,11 @@
               "Credits Valid for 12 Months"
             ],
             "interval": "one-time",
-            "amount": 700,
+            "amount": 800,
             "currency": "USD",
-            "price": "$7",
-            "original_price": "",
-            "unit": "",
-            "is_featured": false,
+            "price": "$8",
             "button": {
-              "title": "Purchase",
-              "url": "/#pricing"
+              "title": "Purchase"
             },
             "product_id": "starter",
             "product_name": "Starter",
@@ -121,15 +111,12 @@
               "Credits Valid for 12 Months"
             ],
             "interval": "one-time",
-            "amount": 1500,
+            "amount": 1600,
             "currency": "USD",
-            "price": "$15",
-            "original_price": "",
-            "unit": "",
+            "price": "$16",
             "is_featured": true,
             "button": {
-              "title": "Purchase",
-              "url": "/#pricing"
+              "title": "Purchase"
             },
             "product_id": "standard",
             "product_name": "Growth",
@@ -156,12 +143,8 @@
             "amount": 2500,
             "currency": "USD",
             "price": "$25",
-            "original_price": "",
-            "unit": "",
-            "is_featured": false,
             "button": {
-              "title": "Purchase",
-              "url": "/#pricing"
+              "title": "Purchase"
             },
             "product_id": "premium",
             "product_name": "Power",
@@ -191,12 +174,9 @@
             "amount": 500,
             "currency": "USD",
             "price": "$5",
-            "original_price": "",
             "unit": "/ month",
-            "is_featured": false,
             "button": {
-              "title": "Purchase",
-              "url": "/#pricing"
+              "title": "Purchase"
             },
             "product_id": "starter-monthly",
             "product_name": "Basic Plan Monthly",
@@ -225,12 +205,10 @@
             "amount": 1200,
             "currency": "USD",
             "price": "$12",
-            "original_price": "",
             "unit": "/ month",
             "is_featured": true,
             "button": {
-              "title": "Purchase",
-              "url": "/#pricing"
+              "title": "Purchase"
             },
             "product_id": "standard-monthly",
             "product_name": "Pro Plan Monthly",
@@ -258,12 +236,9 @@
             "amount": 2000,
             "currency": "USD",
             "price": "$20",
-            "original_price": "",
             "unit": "/ month",
-            "is_featured": false,
             "button": {
-              "title": "Purchase",
-              "url": "/#pricing"
+              "title": "Purchase"
             },
             "product_id": "premium-monthly",
             "product_name": "Max Plan Monthly",
@@ -296,10 +271,8 @@
             "price": "$4",
             "original_price": "$5",
             "unit": "/ month",
-            "is_featured": false,
             "button": {
-              "title": "Purchase",
-              "url": "/#pricing"
+              "title": "Purchase"
             },
             "product_id": "starter-yearly",
             "product_name": "Basic Plan Yearly",
@@ -332,8 +305,7 @@
             "unit": "/ month",
             "is_featured": true,
             "button": {
-              "title": "Purchase",
-              "url": "/#pricing"
+              "title": "Purchase"
             },
             "product_id": "standard-yearly",
             "product_name": "Pro Plan Yearly",
@@ -363,10 +335,8 @@
             "price": "$16",
             "original_price": "$20",
             "unit": "/ month",
-            "is_featured": false,
             "button": {
-              "title": "Purchase",
-              "url": "/#pricing"
+              "title": "Purchase"
             },
             "product_id": "premium-yearly",
             "product_name": "Max Plan Yearly",
@@ -380,32 +350,28 @@
       "faq": {
         "id": "faq",
         "block": "faq",
-        "title": "Pricing FAQ",
-        "description": "Answers to common questions about plans, credits, billing cycles, and upgrades.",
+        "title": "Frequently Asked Questions",
+        "description": "Get answers to common questions and learn more about our paid services.",
         "items": [
           {
-            "question": "What is included in the free experience?",
-            "answer": "The free experience lets you try the core product with limited features, lower priority processing, and smaller usage limits before upgrading."
+            "question": "Why choose a subscription?",
+            "answer": "A subscription is the best fit if you create regularly. It gives you recurring credits and access to paid features such as the Advanced Image Model, faster response, batch image generation, and support without needing to repurchase Credit Packs each time."
           },
           {
-            "question": "What is the difference between one-time, monthly, and yearly plans?",
-            "answer": "One-time plans give you a fixed package of credits for a limited validity period. Monthly and yearly plans are recurring subscriptions with ongoing credits and different billing cycles."
+            "question": "Can I upgrade or cancel?",
+            "answer": "You can manage or cancel your active subscription from Billing settings at any time, and the pricing page will show your current plan. If you want to change plans, contact support@ai-pfp.com and we can help you choose the best option."
           },
           {
-            "question": "Do credits expire?",
-            "answer": "Yes. Credits follow the validity period shown on each plan. Check the plan details on the card to see how long your credits remain available."
+            "question": "Do I get higher-quality images if I subscribe?",
+            "answer": "Paid plans can improve your results because they unlock the Advanced Image Model and other paid features. The exact output still depends on your prompt, settings, and source image, but subscriptions are designed for users who need more consistent, higher-end results."
           },
           {
-            "question": "Can I switch plans later?",
-            "answer": "Yes. You can upgrade when your usage grows. If you already have an active subscription, the pricing page will also indicate your current plan."
+            "question": "Can I get a refund?",
+            "answer": "Paid purchases are generally non-refundable unless required by applicable law or stated otherwise on the purchase page. For a first-time subscription purchase, you may request a refund within 3 calendar days of the subscription start date by contacting support@ai-pfp.com. Renewal charges are generally not eligible for this policy."
           },
           {
-            "question": "Will the displayed price change when I switch billing tabs?",
-            "answer": "Yes. The pricing cards update when you switch between one-time, monthly, and yearly billing so you can compare the correct price and billing unit for each option."
-          },
-          {
-            "question": "Which payment methods are supported?",
-            "answer": "Available payment methods depend on the plan and currency you choose. The supported providers are applied automatically at checkout based on the selected pricing option."
+            "question": "Can I get help using the product?",
+            "answer": "Yes. If you need help with billing, plans, or using the product, contact us at support@ai-pfp.com and we will assist you."
           }
         ]
       }
