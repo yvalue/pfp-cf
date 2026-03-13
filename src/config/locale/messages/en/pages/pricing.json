@@ -13,7 +13,7 @@
         "groups": [
           {
             "name": "yearly",
-            "title": "Year (-50%)",
+            "title": "Year (-20%)",
             "is_featured": true
           },
           {
@@ -22,7 +22,7 @@
           },
           {
             "name": "one-time",
-            "title": "One-Time"
+            "title": "Credit Packs"
           }
         ],
         "free_cards": {
@@ -34,13 +34,23 @@
               "title": "Get Started"
             },
             "features_title": "Features",
+            "crossed_features": [
+              "Unlimited Image Dimension",
+              "Advanced Image Model",
+              "Fast Response",
+              "Priority Support",
+              "Batch Image Generation",
+              "No Captcha"
+            ],
             "features": [
-              "Basic Image Generation",
-              "Basic Response Speed",
-              "Limited Model Access",
-              "Standard Image Dimensions",
-              "Single Image Generation",
-              "Verification Required"
+              "Limited Credits",
+              "Standard Image Model",
+              "Unlimited Image Dimension",
+              "Advanced Image Model",
+              "Fast Response",
+              "Priority Support",
+              "Batch Image Generation",
+              "No Captcha"
             ]
           },
           "yearly": {
@@ -60,21 +70,27 @@
         },
         "items": [
           {
-            "title": "Basic",
-            "description": "For small businesses with all the features and support",
-            "features_title": "Everything in Free, and:",
+            "title": "Starter",
+            "description": "Ideal for occasional creative boosts.",
+            "features_title": "Includes:",
+            "crossed_features": [
+              "Priority Support"
+            ],
             "features": [
-              "100 Credits",
+              "400 Credits",
+              "Up to 100 Images",
               "Unlimited Image Dimension",
+              "Advanced Image Model",
               "Fast Response",
               "Priority Support",
               "Batch Image Generation",
-              "No Captcha/Turnstile Verification"
+              "No Captcha",
+              "Credits Valid for 12 Months"
             ],
             "interval": "one-time",
-            "amount": 9900,
+            "amount": 700,
             "currency": "USD",
-            "price": "$99",
+            "price": "$7",
             "original_price": "",
             "unit": "",
             "is_featured": false,
@@ -83,28 +99,31 @@
               "url": "/#pricing"
             },
             "product_id": "starter",
-            "product_name": "Basic Plan One-Time",
-            "credits": 100,
-            "valid_days": 30,
+            "product_name": "Starter",
+            "credits": 400,
+            "valid_days": 365,
             "group": "one-time"
           },
           {
-            "title": "Pro",
-            "description": "For teams and organizations with advanced features and support",
+            "title": "Growth",
+            "description": "Ideal for growing creative demands.",
             "label": "Popular",
-            "features_title": "Everything in Basic, and:",
+            "features_title": "Includes:",
             "features": [
-              "200 Credits",
+              "1,100 Credits",
+              "Up to 275 Images",
               "Unlimited Image Dimension",
+              "Advanced Image Model",
               "Fast Response",
               "Priority Support",
               "Batch Image Generation",
-              "No Captcha/Turnstile Verification"
+              "No Captcha",
+              "Credits Valid for 12 Months"
             ],
             "interval": "one-time",
-            "amount": 19900,
+            "amount": 1500,
             "currency": "USD",
-            "price": "$199",
+            "price": "$15",
             "original_price": "",
             "unit": "",
             "is_featured": true,
@@ -113,27 +132,30 @@
               "url": "/#pricing"
             },
             "product_id": "standard",
-            "product_name": "Pro Plan One-Time",
-            "credits": 200,
-            "valid_days": 90,
+            "product_name": "Growth",
+            "credits": 1100,
+            "valid_days": 365,
             "group": "one-time"
           },
           {
-            "title": "Max",
-            "description": "For teams and organizations with advanced features and support",
-            "features_title": "Everything in Basic, and:",
+            "title": "Power",
+            "description": "Ideal for high-volume creative production.",
+            "features_title": "Includes:",
             "features": [
-              "300 Credits",
+              "2,000 Credits",
+              "Up to 500 Images",
               "Unlimited Image Dimension",
+              "Advanced Image Model",
               "Fast Response",
               "Priority Support",
               "Batch Image Generation",
-              "No Captcha/Turnstile Verification"
+              "No Captcha",
+              "Credits Valid for 12 Months"
             ],
             "interval": "one-time",
-            "amount": 29900,
+            "amount": 2500,
             "currency": "USD",
-            "price": "$299",
+            "price": "$25",
             "original_price": "",
             "unit": "",
             "is_featured": false,
@@ -142,27 +164,33 @@
               "url": "/#pricing"
             },
             "product_id": "premium",
-            "product_name": "Max Plan One-Time",
-            "credits": 300,
+            "product_name": "Power",
+            "credits": 2000,
             "valid_days": 365,
             "group": "one-time"
           },
           {
             "title": "Basic",
-            "description": "For small businesses with all the features and support",
-            "features_title": "Everything in Free, and:",
+            "description": "Designed for hobbyists seeking creative skills.",
+            "features_title": "Includes:",
+            "crossed_features": [
+              "Priority Support"
+            ],
             "features": [
-              "100 Credits / Month",
+              "400 Credits / Month",
+              "Up to 100 Images / Month",
               "Unlimited Image Dimension",
+              "Advanced Image Model",
               "Fast Response",
               "Priority Support",
               "Batch Image Generation",
-              "No Captcha/Turnstile Verification"
+              "No Captcha",
+              "Credits Reset Each Month"
             ],
             "interval": "month",
-            "amount": 8900,
+            "amount": 500,
             "currency": "USD",
-            "price": "$89",
+            "price": "$5",
             "original_price": "",
             "unit": "/ month",
             "is_featured": false,
@@ -172,28 +200,31 @@
             },
             "product_id": "starter-monthly",
             "product_name": "Basic Plan Monthly",
-            "credits": 100,
+            "credits": 400,
             "valid_days": 30,
             "group": "monthly",
             "plan_name": "Basic"
           },
           {
             "title": "Pro",
-            "description": "For teams and organizations with advanced features and support",
+            "description": "Designed for creators seeking advanced tools.",
             "label": "Popular",
-            "features_title": "Everything in Basic, and:",
+            "features_title": "Includes:",
             "features": [
-              "200 Credits / Month",
+              "1,100 Credits / Month",
+              "Up to 275 Images / Month",
               "Unlimited Image Dimension",
+              "Advanced Image Model",
               "Fast Response",
               "Priority Support",
               "Batch Image Generation",
-              "No Captcha/Turnstile Verification"
+              "No Captcha",
+              "Credits Reset Each Month"
             ],
             "interval": "month",
-            "amount": 16900,
+            "amount": 1200,
             "currency": "USD",
-            "price": "$169",
+            "price": "$12",
             "original_price": "",
             "unit": "/ month",
             "is_featured": true,
@@ -203,27 +234,30 @@
             },
             "product_id": "standard-monthly",
             "product_name": "Pro Plan Monthly",
-            "credits": 200,
+            "credits": 1100,
             "valid_days": 30,
             "group": "monthly",
             "plan_name": "Pro"
           },
           {
             "title": "Max",
-            "description": "For teams and organizations with advanced features and support",
-            "features_title": "Everything in Basic, and:",
+            "description": "Designed for professionals seeking expert results.",
+            "features_title": "Includes:",
             "features": [
-              "300 Credits / Month",
+              "2,000 Credits / Month",
+              "Up to 500 Images / Month",
               "Unlimited Image Dimension",
+              "Advanced Image Model",
               "Fast Response",
               "Priority Support",
               "Batch Image Generation",
-              "No Captcha/Turnstile Verification"
+              "No Captcha",
+              "Credits Reset Each Month"
             ],
             "interval": "month",
-            "amount": 24900,
+            "amount": 2000,
             "currency": "USD",
-            "price": "$249",
+            "price": "$20",
             "original_price": "",
             "unit": "/ month",
             "is_featured": false,
@@ -233,28 +267,34 @@
             },
             "product_id": "premium-monthly",
             "product_name": "Max Plan Monthly",
-            "credits": 300,
+            "credits": 2000,
             "valid_days": 30,
             "group": "monthly",
             "plan_name": "Max"
           },
           {
             "title": "Basic",
-            "description": "For small businesses with all the features and support",
-            "features_title": "Everything in Free, and:",
+            "description": "Designed for hobbyists seeking creative skills.",
+            "features_title": "Includes:",
+            "crossed_features": [
+              "Priority Support"
+            ],
             "features": [
-              "100 Credits / Month",
+              "4,800 Credits / Year",
+              "Up to 1,200 Images / Year",
               "Unlimited Image Dimension",
+              "Advanced Image Model",
               "Fast Response",
               "Priority Support",
               "Batch Image Generation",
-              "No Captcha/Turnstile Verification"
+              "No Captcha",
+              "Credits Granted Annually"
             ],
             "interval": "year",
-            "amount": 82800,
+            "amount": 4800,
             "currency": "USD",
-            "price": "$69",
-            "original_price": "$89",
+            "price": "$4",
+            "original_price": "$5",
             "unit": "/ month",
             "is_featured": false,
             "button": {
@@ -263,29 +303,32 @@
             },
             "product_id": "starter-yearly",
             "product_name": "Basic Plan Yearly",
-            "credits": 1200,
+            "credits": 4800,
             "valid_days": 365,
             "group": "yearly",
             "plan_name": "Basic"
           },
           {
             "title": "Pro",
-            "description": "For teams and organizations with advanced features and support",
+            "description": "Designed for creators seeking advanced tools.",
             "label": "Popular",
-            "features_title": "Everything in Basic, and:",
+            "features_title": "Includes:",
             "features": [
-              "200 Credits / Month",
+              "13,200 Credits / Year",
+              "Up to 3,300 Images / Year",
               "Unlimited Image Dimension",
+              "Advanced Image Model",
               "Fast Response",
               "Priority Support",
               "Batch Image Generation",
-              "No Captcha/Turnstile Verification"
+              "No Captcha",
+              "Credits Granted Annually"
             ],
             "interval": "year",
-            "amount": 154800,
+            "amount": 11520,
             "currency": "USD",
-            "price": "$129",
-            "original_price": "$169",
+            "price": "$9.60",
+            "original_price": "$12",
             "unit": "/ month",
             "is_featured": true,
             "button": {
@@ -294,28 +337,31 @@
             },
             "product_id": "standard-yearly",
             "product_name": "Pro Plan Yearly",
-            "credits": 2400,
+            "credits": 13200,
             "valid_days": 365,
             "group": "yearly",
             "plan_name": "Pro"
           },
           {
             "title": "Max",
-            "description": "For teams and organizations with advanced features and support",
-            "features_title": "Everything in Basic, and:",
+            "description": "Designed for professionals seeking expert results.",
+            "features_title": "Includes:",
             "features": [
-              "300 Credits / Month",
+              "24,000 Credits / Year",
+              "Up to 6,000 Images / Year",
               "Unlimited Image Dimension",
+              "Advanced Image Model",
               "Fast Response",
               "Priority Support",
               "Batch Image Generation",
-              "No Captcha/Turnstile Verification"
+              "No Captcha",
+              "Credits Granted Annually"
             ],
             "interval": "year",
-            "amount": 226800,
+            "amount": 19200,
             "currency": "USD",
-            "price": "$189",
-            "original_price": "$249",
+            "price": "$16",
+            "original_price": "$20",
             "unit": "/ month",
             "is_featured": false,
             "button": {
@@ -324,7 +370,7 @@
             },
             "product_id": "premium-yearly",
             "product_name": "Max Plan Yearly",
-            "credits": 3600,
+            "credits": 24000,
             "valid_days": 365,
             "group": "yearly",
             "plan_name": "Max"

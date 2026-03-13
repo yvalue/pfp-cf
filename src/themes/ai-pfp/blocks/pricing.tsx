@@ -433,18 +433,18 @@ export function Pricing({
             </p>
           )}
 
-          <ul className="space-y-3 text-sm">
-            {displayedFreeCard.features?.map((feature, index) => (
-              <li key={index} className="flex items-start gap-3">
-                {index === 0 ? (
-                  <Check className="text-primary mt-1 size-4 shrink-0" />
-                ) : (
-                  <X className="mt-1 size-4 shrink-0 text-red-500" />
-                )}
-                <span className="text-muted-foreground leading-normal">
-                  {feature}
-                </span>
-              </li>
+                  <ul className="space-y-3 text-sm">
+                    {displayedFreeCard.features?.map((feature, index) => (
+                      <li key={index} className="flex items-start gap-3">
+                        {displayedFreeCard.crossed_features?.includes(feature) ? (
+                          <X className="mt-1 size-4 shrink-0 text-red-500" />
+                        ) : (
+                          <Check className="text-primary mt-1 size-4 shrink-0" />
+                        )}
+                        <span className="text-muted-foreground leading-normal">
+                          {feature}
+                        </span>
+                      </li>
             ))}
           </ul>
         </CardContent>
@@ -678,11 +678,15 @@ export function Pricing({
                   )}
 
                   <ul className="space-y-3 text-sm">
-                    {item.features?.map((item, index) => (
+                    {item.features?.map((feature, index) => (
                       <li key={index} className="flex items-start gap-3">
-                        <Check className="text-primary mt-1 size-4 shrink-0" />
+                        {item.crossed_features?.includes(feature) ? (
+                          <X className="mt-1 size-4 shrink-0 text-red-500" />
+                        ) : (
+                          <Check className="text-primary mt-1 size-4 shrink-0" />
+                        )}
                         <span className="text-muted-foreground leading-normal">
-                          {item}
+                          {feature}
                         </span>
                       </li>
                     ))}

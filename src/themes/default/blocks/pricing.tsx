@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Check, Loader2 } from 'lucide-react';
+import { Check, Loader2, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
@@ -504,10 +504,14 @@ export function Pricing({
                     <p className="text-sm font-medium">{item.features_title}</p>
                   )}
                   <ul className="list-outside space-y-3 text-sm">
-                    {item.features?.map((item, index) => (
+                    {item.features?.map((feature, index) => (
                       <li key={index} className="flex items-center gap-2">
-                        <Check className="size-3" />
-                        {item}
+                        {item.crossed_features?.includes(feature) ? (
+                          <X className="size-3 text-red-500" />
+                        ) : (
+                          <Check className="size-3" />
+                        )}
+                        {feature}
                       </li>
                     ))}
                   </ul>

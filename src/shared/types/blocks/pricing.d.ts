@@ -31,6 +31,7 @@ export interface PricingItem {
   unit?: string;
   features_title?: string;
   features?: string[];
+  crossed_features?: string[];
   button?: Button;
   tip?: string;
   is_featured?: boolean;
@@ -54,6 +55,7 @@ export interface PricingFreeCard {
   unit?: string;
   features_title?: string;
   features?: string[];
+  crossed_features?: string[];
   button?: Button;
 }
 
