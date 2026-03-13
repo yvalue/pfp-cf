@@ -38,6 +38,12 @@ import {
 import { Tabs, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 import { Textarea } from '@/shared/components/ui/textarea';
 import { useAppContext } from '@/shared/contexts/app';
+import {
+  extractImageUrls,
+  getNanoBananaModelFamily,
+  NANO_BANANA_MODEL_FAMILIES,
+  resolveNanoBananaModel,
+} from '@/shared/lib/ai-image';
 import { cn } from '@/shared/lib/utils';
 
 interface ImageGeneratorProps {
@@ -72,82 +78,6 @@ const POLL_INTERVAL = 5000;
 const GENERATION_TIMEOUT = 180000;
 const MAX_PROMPT_LENGTH = 2000;
 
-const MODEL_OPTIONS = [
-  {
-    value: 'google/nano-banana-pro',
-    label: 'Nano Banana Pro',
-    provider: 'replicate',
-    scenes: ['text-to-image', 'image-to-image'],
-  },
-  {
-    value: 'bytedance/seedream-4',
-    label: 'Seedream 4',
-    provider: 'replicate',
-    scenes: ['text-to-image', 'image-to-image'],
-  },
-  {
-    value: 'fal-ai/nano-banana-pro',
-    label: 'Nano Banana Pro',
-    provider: 'fal',
-    scenes: ['text-to-image'],
-  },
-  {
-    value: 'fal-ai/nano-banana-pro/edit',
-    label: 'Nano Banana Pro',
-    provider: 'fal',
-    scenes: ['image-to-image'],
-  },
-  {
-    value: 'fal-ai/bytedance/seedream/v4/edit',
-    label: 'Seedream 4',
-    provider: 'fal',
-    scenes: ['image-to-image'],
-  },
-  {
-    value: 'fal-ai/z-image/turbo',
-    label: 'Z-Image Turbo',
-    provider: 'fal',
-    scenes: ['text-to-image'],
-  },
-  {
-    value: 'fal-ai/flux-2-flex',
-    label: 'Flux 2 Flex',
-    provider: 'fal',
-    scenes: ['text-to-image'],
-  },
-  {
-    value: 'gemini-3-pro-image-preview',
-    label: 'Gemini 3 Pro Image Preview',
-    provider: 'gemini',
-    scenes: ['text-to-image', 'image-to-image'],
-  },
-  {
-    value: 'nano-banana-pro',
-    label: 'Nano Banana Pro',
-    provider: 'kie',
-    scenes: ['text-to-image', 'image-to-image'],
-  },
-];
-
-const PROVIDER_OPTIONS = [
-  {
-    value: 'replicate',
-    label: 'Replicate',
-  },
-  {
-    value: 'fal',
-    label: 'Fal',
-  },
-  {
-    value: 'gemini',
-    label: 'Gemini',
-  },
-  {
-    value: 'kie',
-    label: 'Kie',
-  },
-];
-
 function parseTaskResult(taskResult: string | null): any {
   if (!taskResult) {
     return null;
@@ -159,47 +89,6 @@ function parseTaskResult(taskResult: string | null): any {
     console.warn('Failed to parse taskResult:', error);
     return null;
   }
-}
-
-function extractImageUrls(result: any): string[] {
-  if (!result) {
-    return [];
-  }
-
-  const output = result.output ?? result.images ?? result.data;
-
-  if (!output) {
-    return [];
-  }
-
-  if (typeof output === 'string') {
-    return [output];
-  }
-
-  if (Array.isArray(output)) {
-    return output
-      .flatMap((item) => {
-        if (!item) return [];
-        if (typeof item === 'string') return [item];
-        if (typeof item === 'object') {
-          const candidate =
-            item.url ?? item.uri ?? item.image ?? item.src ?? item.imageUrl;
-          return typeof candidate === 'string' ? [candidate] : [];
-        }
-        return [];
-      })
-      .filter(Boolean);
-  }
-
-  if (typeof output === 'object') {
-    const candidate =
-      output.url ?? output.uri ?? output.image ?? output.src ?? output.imageUrl;
-    if (typeof candidate === 'string') {
-      return [candidate];
-    }
-  }
-
-  return [];
 }
 
 export function ImageGenerator({
@@ -215,8 +104,9 @@ export function ImageGenerator({
     useState<ImageGeneratorTab>('text-to-image');
 
   const [costCredits, setCostCredits] = useState<number>(2);
-  const [provider, setProvider] = useState(PROVIDER_OPTIONS[0]?.value ?? '');
-  const [model, setModel] = useState(MODEL_OPTIONS[0]?.value ?? '');
+  const [modelFamilyId, setModelFamilyId] = useState(
+    NANO_BANANA_MODEL_FAMILIES[0]?.id ?? ''
+  );
   const [prompt, setPrompt] = useState('');
   const [referenceImageItems, setReferenceImageItems] = useState<
     ImageUploaderValue[]
@@ -246,20 +136,29 @@ export function ImageGenerator({
   const remainingCredits = user?.credits?.remainingCredits ?? 0;
   const isPromptTooLong = promptLength > MAX_PROMPT_LENGTH;
   const isTextToImageMode = activeTab === 'text-to-image';
+  const selectedModelFamily = useMemo(
+    () =>
+      getNanoBananaModelFamily(modelFamilyId) ?? NANO_BANANA_MODEL_FAMILIES[0],
+    [modelFamilyId]
+  );
+  const aspectRatios = selectedModelFamily?.aspectRatios ?? ['1:1'];
+  const defaultAspectRatio =
+    selectedModelFamily?.defaultAspectRatio ?? aspectRatios[0] ?? '1:1';
+  const [aspectRatio, setAspectRatio] = useState(defaultAspectRatio);
+  const resolvedModel = useMemo(() => {
+    if (!selectedModelFamily) {
+      return null;
+    }
+
+    return resolveNanoBananaModel({
+      familyId: selectedModelFamily.id,
+      mode: activeTab,
+    });
+  }, [activeTab, selectedModelFamily]);
 
   const handleTabChange = (value: string) => {
     const tab = value as ImageGeneratorTab;
     setActiveTab(tab);
-
-    const availableModels = MODEL_OPTIONS.filter(
-      (option) => option.scenes.includes(tab) && option.provider === provider
-    );
-
-    if (availableModels.length > 0) {
-      setModel(availableModels[0].value);
-    } else {
-      setModel('');
-    }
 
     if (tab === 'text-to-image') {
       setCostCredits(2);
@@ -268,19 +167,11 @@ export function ImageGenerator({
     }
   };
 
-  const handleProviderChange = (value: string) => {
-    setProvider(value);
-
-    const availableModels = MODEL_OPTIONS.filter(
-      (option) => option.scenes.includes(activeTab) && option.provider === value
-    );
-
-    if (availableModels.length > 0) {
-      setModel(availableModels[0].value);
-    } else {
-      setModel('');
+  useEffect(() => {
+    if (!aspectRatios.includes(aspectRatio)) {
+      setAspectRatio(defaultAspectRatio);
     }
-  };
+  }, [aspectRatio, aspectRatios, defaultAspectRatio]);
 
   const taskStatusLabel = useMemo(() => {
     if (!taskStatus) {
@@ -489,7 +380,7 @@ export function ImageGenerator({
       return;
     }
 
-    if (!provider || !model) {
+    if (!selectedModelFamily || !resolvedModel) {
       toast.error('Provider or model is not configured correctly.');
       return;
     }
@@ -506,7 +397,9 @@ export function ImageGenerator({
     setGenerationStartTime(Date.now());
 
     try {
-      const options: any = {};
+      const options: Record<string, any> = {
+        aspect_ratio: aspectRatio,
+      };
 
       if (!isTextToImageMode) {
         options.image_input = referenceImageUrls;
@@ -520,8 +413,8 @@ export function ImageGenerator({
         body: JSON.stringify({
           mediaType: AIMediaType.IMAGE,
           scene: isTextToImageMode ? 'text-to-image' : 'image-to-image',
-          provider,
-          model,
+          provider: selectedModelFamily.provider,
+          model: resolvedModel,
           prompt: trimmedPrompt,
           options,
         }),
@@ -550,8 +443,8 @@ export function ImageGenerator({
             imageUrls.map((url, index) => ({
               id: `${newTaskId}-${index}`,
               url,
-              provider,
-              model,
+              provider: selectedModelFamily.provider,
+              model: resolvedModel,
               prompt: trimmedPrompt,
             }))
           );
@@ -633,17 +526,17 @@ export function ImageGenerator({
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>{t('form.provider')}</Label>
+                    <Label>{t('form.model')}</Label>
                     <Select
-                      value={provider}
-                      onValueChange={handleProviderChange}
+                      value={modelFamilyId}
+                      onValueChange={setModelFamilyId}
                     >
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder={t('form.select_provider')} />
+                        <SelectValue placeholder={t('form.select_model')} />
                       </SelectTrigger>
                       <SelectContent>
-                        {PROVIDER_OPTIONS.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
+                        {NANO_BANANA_MODEL_FAMILIES.map((option) => (
+                          <SelectItem key={option.id} value={option.id}>
                             {option.label}
                           </SelectItem>
                         ))}
@@ -652,19 +545,15 @@ export function ImageGenerator({
                   </div>
 
                   <div className="space-y-2">
-                    <Label>{t('form.model')}</Label>
-                    <Select value={model} onValueChange={setModel}>
+                    <Label>Aspect Ratio</Label>
+                    <Select value={aspectRatio} onValueChange={setAspectRatio}>
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder={t('form.select_model')} />
+                        <SelectValue placeholder="Select Aspect Ratio" />
                       </SelectTrigger>
                       <SelectContent>
-                        {MODEL_OPTIONS.filter(
-                          (option) =>
-                            option.scenes.includes(activeTab) &&
-                            option.provider === provider
-                        ).map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
+                        {aspectRatios.map((option) => (
+                          <SelectItem key={option} value={option}>
+                            {option}
                           </SelectItem>
                         ))}
                       </SelectContent>

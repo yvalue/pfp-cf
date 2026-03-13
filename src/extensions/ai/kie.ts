@@ -153,21 +153,11 @@ export class KieProvider implements AIProvider {
       },
     };
 
-    if (params.options) {
-      const options = params.options;
-      if (options.image_input && Array.isArray(options.image_input)) {
-        payload.input.image_input = options.image_input;
-      }
-      if (options.aspect_ratio) {
-        payload.input.aspect_ratio = options.aspect_ratio;
-      }
-      if (options.resolution) {
-        payload.input.resolution = options.resolution;
-      }
-      if (options.output_format) {
-        payload.input.output_format = options.output_format;
-      }
-    }
+    this.applyImageOptions({
+      payload,
+      model: params.model,
+      options: params.options,
+    });
 
     const resp = await fetch(apiUrl, {
       method: 'POST',
@@ -194,6 +184,66 @@ export class KieProvider implements AIProvider {
       taskInfo: {},
       taskResult: data,
     };
+  }
+
+  private applyImageOptions({
+    payload,
+    model,
+    options,
+  }: {
+    payload: any;
+    model: string;
+    options?: Record<string, any>;
+  }) {
+    if (!options) {
+      return;
+    }
+
+    const ratio = options.aspect_ratio ?? options.image_size;
+    const imageInput = Array.isArray(options.image_input)
+      ? options.image_input
+      : Array.isArray(options.image_urls)
+        ? options.image_urls
+        : undefined;
+
+    if (model === 'google/nano-banana') {
+      if (ratio) {
+        payload.input.image_size = ratio;
+      }
+      if (options.output_format) {
+        payload.input.output_format = options.output_format;
+      }
+      return;
+    }
+
+    if (model === 'google/nano-banana-edit') {
+      if (imageInput && imageInput.length > 0) {
+        payload.input.image_urls = imageInput;
+      }
+      if (ratio) {
+        payload.input.image_size = ratio;
+      }
+      if (options.output_format) {
+        payload.input.output_format = options.output_format;
+      }
+      return;
+    }
+
+    if (imageInput && imageInput.length > 0) {
+      payload.input.image_input = imageInput;
+    }
+    if (ratio) {
+      payload.input.aspect_ratio = ratio;
+    }
+    if (options.google_search !== undefined) {
+      payload.input.google_search = options.google_search;
+    }
+    if (options.resolution) {
+      payload.input.resolution = options.resolution;
+    }
+    if (options.output_format) {
+      payload.input.output_format = options.output_format;
+    }
   }
 
   async generateVideo({

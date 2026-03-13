@@ -36,17 +36,17 @@ import {
 import { Switch } from '@/shared/components/ui/switch';
 import { Textarea } from '@/shared/components/ui/textarea';
 import { useAppContext } from '@/shared/contexts/app';
+import {
+  extractImageUrls,
+  getNanoBananaModelFamily,
+  getNanoBananaModelFamilyFromValue,
+  NANO_BANANA_MODEL_FAMILIES,
+  resolveNanoBananaModel,
+} from '@/shared/lib/ai-image';
 import { cn } from '@/shared/lib/utils';
 import type { Section } from '@/shared/types/blocks/landing';
 
 type ImageMode = 'text-to-image' | 'image-to-image';
-
-interface ModelOption {
-  label: string;
-  model: string;
-  provider: string;
-  modes: ImageMode[];
-}
 
 interface BackendTask {
   id: string;
@@ -62,29 +62,7 @@ interface GeneratedImage {
   prompt?: string;
 }
 
-const MODEL_OPTIONS: ModelOption[] = [
-  {
-    label: 'Nano Banana Pro',
-    model: 'google/nano-banana-pro',
-    provider: 'replicate',
-    modes: ['text-to-image', 'image-to-image'],
-  },
-  {
-    label: 'Seedream 4',
-    model: 'bytedance/seedream-4',
-    provider: 'replicate',
-    modes: ['text-to-image', 'image-to-image'],
-  },
-  {
-    label: 'Flux 2 Flex',
-    model: 'fal-ai/flux-2-flex',
-    provider: 'fal',
-    modes: ['text-to-image'],
-  },
-];
-
 const DEFAULT_MODES: ImageMode[] = ['text-to-image', 'image-to-image'];
-const DEFAULT_ASPECT_RATIOS = ['1:1', '3:4', '4:3'];
 const MAX_PROMPT_LENGTH = 2000;
 const POLL_INTERVAL = 3500;
 const TASK_TIMEOUT = 180000;
@@ -100,55 +78,6 @@ function parseJson(raw: string | null): any {
   } catch {
     return null;
   }
-}
-
-function extractImageUrls(taskInfo: any): string[] {
-  if (!taskInfo) {
-    return [];
-  }
-
-  const output =
-    taskInfo.output ?? taskInfo.images ?? taskInfo.data ?? taskInfo.resultUrls;
-
-  if (!output) {
-    return [];
-  }
-
-  if (typeof output === 'string') {
-    return [output];
-  }
-
-  if (Array.isArray(output)) {
-    return output
-      .flatMap((item) => {
-        if (!item) {
-          return [];
-        }
-
-        if (typeof item === 'string') {
-          return [item];
-        }
-
-        if (typeof item === 'object') {
-          const candidate =
-            item.url ?? item.uri ?? item.image ?? item.src ?? item.imageUrl;
-          return typeof candidate === 'string' ? [candidate] : [];
-        }
-
-        return [];
-      })
-      .filter(Boolean);
-  }
-
-  if (typeof output === 'object') {
-    const candidate =
-      output.url ?? output.uri ?? output.image ?? output.src ?? output.imageUrl;
-    if (typeof candidate === 'string') {
-      return [candidate];
-    }
-  }
-
-  return [];
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -184,16 +113,6 @@ export function HeroGenerator({
 }) {
   const modes = useMemo(() => normalizeModes(section.modes), [section.modes]);
 
-  const aspectRatios = useMemo(() => {
-    if (
-      Array.isArray(section.aspect_ratios) &&
-      section.aspect_ratios.length > 0
-    ) {
-      return section.aspect_ratios;
-    }
-    return DEFAULT_ASPECT_RATIOS;
-  }, [section.aspect_ratios]);
-
   const maxCount = useMemo(
     () => clamp(Number(section.max_count) || 4, 1, 8),
     [section.max_count]
@@ -213,12 +132,31 @@ export function HeroGenerator({
   }, [section.default_mode, modes]);
 
   const [mode, setMode] = useState<ImageMode>(initialMode);
-  const [prompt, setPrompt] = useState('');
-  const [aspectRatio, setAspectRatio] = useState(
-    aspectRatios.includes(section.default_aspect_ratio as string)
-      ? (section.default_aspect_ratio as string)
-      : aspectRatios[0]
+  const [modelFamilyId, setModelFamilyId] = useState(() => {
+    return (
+      getNanoBananaModelFamilyFromValue(
+        section.default_model as string | undefined
+      )?.id ??
+      NANO_BANANA_MODEL_FAMILIES[0]?.id ??
+      ''
+    );
+  });
+  const selectedModelFamily = useMemo(
+    () =>
+      getNanoBananaModelFamily(modelFamilyId) ?? NANO_BANANA_MODEL_FAMILIES[0],
+    [modelFamilyId]
   );
+  const aspectRatios = selectedModelFamily?.aspectRatios ?? ['1:1'];
+  const defaultAspectRatio = useMemo(() => {
+    const configured = section.default_aspect_ratio as string | undefined;
+    if (configured && aspectRatios.includes(configured)) {
+      return configured;
+    }
+
+    return selectedModelFamily?.defaultAspectRatio ?? aspectRatios[0] ?? '1:1';
+  }, [aspectRatios, section.default_aspect_ratio, selectedModelFamily]);
+  const [prompt, setPrompt] = useState('');
+  const [aspectRatio, setAspectRatio] = useState(defaultAspectRatio);
   const [count, setCount] = useState<number>(initialCount);
   const [watermark, setWatermark] = useState(true);
   const [skipCaptcha, setSkipCaptcha] = useState(
@@ -239,32 +177,20 @@ export function HeroGenerator({
   const { user, isCheckSign, setIsShowSignModal, fetchUserCredits } =
     useAppContext();
 
-  const availableModels = useMemo(
-    () => MODEL_OPTIONS.filter((item) => item.modes.includes(mode)),
-    [mode]
-  );
-
-  const [model, setModel] = useState(() => {
-    const configured = section.default_model as string | undefined;
-    if (
-      configured &&
-      availableModels.some((item) => item.model === configured)
-    ) {
-      return configured;
+  useEffect(() => {
+    if (!selectedModelFamily) {
+      const fallbackFamilyId = NANO_BANANA_MODEL_FAMILIES[0]?.id ?? '';
+      if (fallbackFamilyId && fallbackFamilyId !== modelFamilyId) {
+        setModelFamilyId(fallbackFamilyId);
+      }
     }
-    return availableModels[0]?.model ?? '';
-  });
+  }, [modelFamilyId, selectedModelFamily]);
 
   useEffect(() => {
-    if (!availableModels.some((item) => item.model === model)) {
-      setModel(availableModels[0]?.model ?? '');
+    if (!aspectRatios.includes(aspectRatio)) {
+      setAspectRatio(defaultAspectRatio);
     }
-  }, [availableModels, model]);
-
-  const selectedModel = useMemo(
-    () => availableModels.find((item) => item.model === model),
-    [availableModels, model]
-  );
+  }, [aspectRatio, aspectRatios, defaultAspectRatio]);
 
   const promptLength = prompt.trim().length;
   const isPromptTooLong = promptLength > MAX_PROMPT_LENGTH;
@@ -410,8 +336,16 @@ export function HeroGenerator({
       index: number;
       total: number;
     }) => {
-      if (!selectedModel) {
+      if (!selectedModelFamily) {
         throw new Error('Provider or model is not configured correctly.');
+      }
+
+      const resolvedModel = resolveNanoBananaModel({
+        familyId: selectedModelFamily.id,
+        mode,
+      });
+      if (!resolvedModel) {
+        throw new Error('Selected model is not available for this mode.');
       }
 
       const options: Record<string, any> = {
@@ -432,8 +366,8 @@ export function HeroGenerator({
         body: JSON.stringify({
           mediaType: AIMediaType.IMAGE,
           scene: mode,
-          provider: selectedModel.provider,
-          model: selectedModel.model,
+          provider: selectedModelFamily.provider,
+          model: resolvedModel,
           prompt: promptText,
           options,
         }),
@@ -465,8 +399,8 @@ export function HeroGenerator({
         return urls.map((url: string, imageIndex: number) => ({
           id: `${data.id}-${imageIndex}`,
           url,
-          provider: selectedModel.provider,
-          model: selectedModel.model,
+          provider: selectedModelFamily.provider,
+          model: resolvedModel,
           prompt: promptText,
         }));
       }
@@ -476,8 +410,8 @@ export function HeroGenerator({
         index,
         total,
         promptText,
-        provider: selectedModel.provider,
-        modelName: selectedModel.model,
+        provider: selectedModelFamily.provider,
+        modelName: resolvedModel,
       });
     },
     [
@@ -485,7 +419,7 @@ export function HeroGenerator({
       mode,
       pollTask,
       referenceImageUrls,
-      selectedModel,
+      selectedModelFamily,
       skipCaptcha,
       watermark,
     ]
@@ -509,7 +443,7 @@ export function HeroGenerator({
       return;
     }
 
-    if (!selectedModel) {
+    if (!selectedModelFamily) {
       toast.error('Provider or model is not configured correctly.');
       return;
     }
@@ -583,7 +517,7 @@ export function HeroGenerator({
     prompt,
     referenceImageUrls.length,
     remainingCredits,
-    selectedModel,
+    selectedModelFamily,
     setIsShowSignModal,
     totalCost,
     user,
@@ -756,13 +690,13 @@ export function HeroGenerator({
           <div className="border-border border-t px-4 py-3">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-wrap items-center gap-2">
-                <Select value={model} onValueChange={setModel}>
+                <Select value={modelFamilyId} onValueChange={setModelFamilyId}>
                   <SelectTrigger className="h-10 min-w-32 rounded-xl">
                     <SelectValue placeholder="Model" />
                   </SelectTrigger>
                   <SelectContent>
-                    {availableModels.map((item) => (
-                      <SelectItem key={item.model} value={item.model}>
+                    {NANO_BANANA_MODEL_FAMILIES.map((item) => (
+                      <SelectItem key={item.id} value={item.id}>
                         {item.label}
                       </SelectItem>
                     ))}
