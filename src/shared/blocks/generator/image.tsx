@@ -42,8 +42,10 @@ import { useAppContext } from '@/shared/contexts/app';
 import {
   extractImageUrls,
   getNanoBananaModelFamily,
+  getNanoBananaResolution,
   NANO_BANANA_MODEL_FAMILIES,
-  resolveNanoBananaModel,
+  resolveNanoBananaGeneration,
+  type NanoBananaResolution,
 } from '@/shared/lib/ai-image';
 import { cn } from '@/shared/lib/utils';
 
@@ -104,9 +106,11 @@ export function ImageGenerator({
   const [activeTab, setActiveTab] =
     useState<ImageGeneratorTab>('text-to-image');
 
-  const [costCredits, setCostCredits] = useState<number>(2);
   const [modelFamilyId, setModelFamilyId] = useState(
     NANO_BANANA_MODEL_FAMILIES[0]?.id ?? ''
+  );
+  const [resolution, setResolution] = useState(
+    NANO_BANANA_MODEL_FAMILIES[0]?.defaultResolution ?? '1K'
   );
   const [prompt, setPrompt] = useState('');
   const [referenceImageItems, setReferenceImageItems] = useState<
@@ -142,38 +146,56 @@ export function ImageGenerator({
       getNanoBananaModelFamily(modelFamilyId) ?? NANO_BANANA_MODEL_FAMILIES[0],
     [modelFamilyId]
   );
+  const supportedResolutions = selectedModelFamily?.supportedResolutions ?? [
+    '1K',
+  ];
   const aspectRatios = selectedModelFamily?.aspectRatios ?? ['1:1'];
   const defaultAspectRatio = aspectRatios.includes('auto')
     ? 'auto'
     : (selectedModelFamily?.defaultAspectRatio ?? aspectRatios[0] ?? '1:1');
   const [aspectRatio, setAspectRatio] = useState(defaultAspectRatio);
-  const resolvedModel = useMemo(() => {
+  const resolvedGeneration = useMemo(() => {
     if (!selectedModelFamily) {
       return null;
     }
 
-    return resolveNanoBananaModel({
+    return resolveNanoBananaGeneration({
       familyId: selectedModelFamily.id,
       mode: activeTab,
+      resolution,
     });
-  }, [activeTab, selectedModelFamily]);
+  }, [activeTab, resolution, selectedModelFamily]);
+  const resolvedModel = resolvedGeneration?.model ?? null;
+  const costCredits = resolvedGeneration?.costCredits ?? 0;
 
   const handleTabChange = (value: string) => {
-    const tab = value as ImageGeneratorTab;
-    setActiveTab(tab);
-
-    if (tab === 'text-to-image') {
-      setCostCredits(2);
-    } else {
-      setCostCredits(4);
-    }
+    setActiveTab(value as ImageGeneratorTab);
   };
+
+  useEffect(() => {
+    if (!selectedModelFamily) {
+      const fallbackFamilyId = NANO_BANANA_MODEL_FAMILIES[0]?.id ?? '';
+      if (fallbackFamilyId && fallbackFamilyId !== modelFamilyId) {
+        setModelFamilyId(fallbackFamilyId);
+      }
+    }
+  }, [modelFamilyId, selectedModelFamily]);
 
   useEffect(() => {
     if (!aspectRatios.includes(aspectRatio)) {
       setAspectRatio(defaultAspectRatio);
     }
   }, [aspectRatio, aspectRatios, defaultAspectRatio]);
+
+  useEffect(() => {
+    const normalizedResolution = selectedModelFamily
+      ? getNanoBananaResolution(selectedModelFamily.id, resolution)
+      : '1K';
+
+    if (normalizedResolution !== resolution) {
+      setResolution(normalizedResolution);
+    }
+  }, [resolution, selectedModelFamily]);
 
   const taskStatusLabel = useMemo(() => {
     if (!taskStatus) {
@@ -403,6 +425,10 @@ export function ImageGenerator({
         aspect_ratio: aspectRatio,
       };
 
+      if (resolvedGeneration?.shouldSendResolution) {
+        options.resolution = resolvedGeneration.resolution;
+      }
+
       if (!isTextToImageMode) {
         options.image_input = referenceImageUrls;
       }
@@ -526,7 +552,7 @@ export function ImageGenerator({
                   </TabsList>
                 </Tabs>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <div className="space-y-2">
                     <Label>{t('form.model')}</Label>
                     <Select
@@ -547,7 +573,7 @@ export function ImageGenerator({
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Aspect Ratio</Label>
+                    <Label>{t('form.aspect_ratio')}</Label>
                     <Select value={aspectRatio} onValueChange={setAspectRatio}>
                       <SelectTrigger className="w-full">
                         <SelectValue aria-label={aspectRatio}>
@@ -561,6 +587,27 @@ export function ImageGenerator({
                               ratio={option}
                               selected={aspectRatio === option}
                             />
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>{t('form.quality')}</Label>
+                    <Select
+                      value={resolution}
+                      onValueChange={(value) =>
+                        setResolution(value as NanoBananaResolution)
+                      }
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder={t('form.select_quality')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {supportedResolutions.map((option) => (
+                          <SelectItem key={option} value={option}>
+                            {option}
                           </SelectItem>
                         ))}
                       </SelectContent>

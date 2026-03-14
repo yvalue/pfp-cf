@@ -1,13 +1,6 @@
 {
   "page": {
-    "show_sections": [
-      "hero",
-      "logos",
-      "introduce",
-      "benefits",
-      "usage",
-      "faq"
-    ],
+    "show_sections": ["hero", "logos", "introduce", "benefits", "usage", "faq"],
     "sections": {
       "hero": {
         "id": "hero",
@@ -374,6 +367,10 @@
           {
             "question": "AI-PFP 可以免费试用吗？",
             "answer": "可以。新用户登录后可获得免费积分进行体验；如果你需要更多生成次数、更高分辨率或更多风格版本，可按使用需求升级套餐。"
+          },
+          {
+            "question": "Nano Banana 系列模型分别消耗多少积分？",
+            "answer": "Nano Banana 每张图片固定消耗 4 积分。Nano Banana 2 的 1K 画质消耗 5 积分，2K 画质消耗 10 积分，4K 画质消耗 15 积分。Nano Banana Pro 的 1K 画质消耗 10 积分，2K 画质消耗 15 积分，4K 画质消耗 20 积分。"
           },
           {
             "question": "上传照片安全吗？隐私如何保障？",

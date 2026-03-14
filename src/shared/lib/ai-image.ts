@@ -1,4 +1,5 @@
 export type ImageGenerationMode = 'text-to-image' | 'image-to-image';
+export type NanoBananaResolution = '1K' | '2K' | '4K';
 
 export interface NanoBananaModelFamily {
   id: string;
@@ -8,6 +9,10 @@ export interface NanoBananaModelFamily {
   imageToImageModel: string;
   aspectRatios: string[];
   defaultAspectRatio: string;
+  supportedResolutions: NanoBananaResolution[];
+  defaultResolution: NanoBananaResolution;
+  creditCostByResolution: Record<NanoBananaResolution, number>;
+  supportsResolutionParam: boolean;
 }
 
 const NANO_BANANA_ASPECT_RATIOS = [
@@ -56,6 +61,9 @@ const NANO_BANANA_2_ASPECT_RATIOS = [
   'auto',
 ] as const;
 
+const NANO_BANANA_BASE_RESOLUTIONS = ['1K'] as const;
+const NANO_BANANA_ADVANCED_RESOLUTIONS = ['1K', '2K', '4K'] as const;
+
 export const NANO_BANANA_MODEL_FAMILIES: NanoBananaModelFamily[] = [
   {
     id: 'nano-banana',
@@ -65,6 +73,14 @@ export const NANO_BANANA_MODEL_FAMILIES: NanoBananaModelFamily[] = [
     imageToImageModel: 'google/nano-banana-edit',
     aspectRatios: [...NANO_BANANA_ASPECT_RATIOS],
     defaultAspectRatio: '1:1',
+    supportedResolutions: [...NANO_BANANA_BASE_RESOLUTIONS],
+    defaultResolution: '1K',
+    creditCostByResolution: {
+      '1K': 4,
+      '2K': 4,
+      '4K': 4,
+    },
+    supportsResolutionParam: false,
   },
   {
     id: 'nano-banana-pro',
@@ -74,6 +90,14 @@ export const NANO_BANANA_MODEL_FAMILIES: NanoBananaModelFamily[] = [
     imageToImageModel: 'nano-banana-pro',
     aspectRatios: [...NANO_BANANA_PRO_ASPECT_RATIOS],
     defaultAspectRatio: '1:1',
+    supportedResolutions: [...NANO_BANANA_ADVANCED_RESOLUTIONS],
+    defaultResolution: '1K',
+    creditCostByResolution: {
+      '1K': 10,
+      '2K': 15,
+      '4K': 20,
+    },
+    supportsResolutionParam: true,
   },
   {
     id: 'nano-banana-2',
@@ -83,6 +107,14 @@ export const NANO_BANANA_MODEL_FAMILIES: NanoBananaModelFamily[] = [
     imageToImageModel: 'nano-banana-2',
     aspectRatios: [...NANO_BANANA_2_ASPECT_RATIOS],
     defaultAspectRatio: 'auto',
+    supportedResolutions: [...NANO_BANANA_ADVANCED_RESOLUTIONS],
+    defaultResolution: '1K',
+    creditCostByResolution: {
+      '1K': 5,
+      '2K': 10,
+      '4K': 15,
+    },
+    supportsResolutionParam: true,
   },
 ];
 
@@ -107,6 +139,47 @@ export function getNanoBananaModelFamilyFromValue(value?: string) {
   return getNanoBananaModelFamily(familyId);
 }
 
+export function getNanoBananaResolution(
+  familyId: string,
+  resolution?: string
+): NanoBananaResolution {
+  const family = getNanoBananaModelFamily(familyId);
+
+  if (!family) {
+    return '1K';
+  }
+
+  if (
+    resolution &&
+    family.supportedResolutions.includes(resolution as NanoBananaResolution)
+  ) {
+    return resolution as NanoBananaResolution;
+  }
+
+  return family.defaultResolution;
+}
+
+export function getNanoBananaCreditCost({
+  familyId,
+  resolution,
+}: {
+  familyId: string;
+  resolution?: string;
+}) {
+  const family = getNanoBananaModelFamily(familyId);
+
+  if (!family) {
+    return 0;
+  }
+
+  const normalizedResolution = getNanoBananaResolution(familyId, resolution);
+  return family.creditCostByResolution[normalizedResolution];
+}
+
+export function shouldSendNanoBananaResolution(familyId: string) {
+  return Boolean(getNanoBananaModelFamily(familyId)?.supportsResolutionParam);
+}
+
 export function resolveNanoBananaModel({
   familyId,
   mode,
@@ -123,6 +196,32 @@ export function resolveNanoBananaModel({
   return mode === 'image-to-image'
     ? family.imageToImageModel
     : family.textToImageModel;
+}
+
+export function resolveNanoBananaGeneration({
+  familyId,
+  mode,
+  resolution,
+}: {
+  familyId: string;
+  mode: ImageGenerationMode;
+  resolution?: string;
+}) {
+  const family = getNanoBananaModelFamily(familyId);
+
+  if (!family) {
+    return null;
+  }
+
+  const normalizedResolution = getNanoBananaResolution(familyId, resolution);
+
+  return {
+    family,
+    model: resolveNanoBananaModel({ familyId, mode }),
+    resolution: normalizedResolution,
+    costCredits: family.creditCostByResolution[normalizedResolution],
+    shouldSendResolution: family.supportsResolutionParam,
+  };
 }
 
 export function extractImageUrls(data: any): string[] {

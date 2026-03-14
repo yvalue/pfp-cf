@@ -41,8 +41,10 @@ import {
   extractImageUrls,
   getNanoBananaModelFamily,
   getNanoBananaModelFamilyFromValue,
+  getNanoBananaResolution,
   NANO_BANANA_MODEL_FAMILIES,
-  resolveNanoBananaModel,
+  resolveNanoBananaGeneration,
+  type NanoBananaResolution,
 } from '@/shared/lib/ai-image';
 import { cn } from '@/shared/lib/utils';
 import type { Section } from '@/shared/types/blocks/landing';
@@ -162,6 +164,9 @@ export function HeroGenerator({
   }, [aspectRatios, section.default_aspect_ratio, selectedModelFamily]);
   const [prompt, setPrompt] = useState('');
   const [aspectRatio, setAspectRatio] = useState(defaultAspectRatio);
+  const [resolution, setResolution] = useState(
+    selectedModelFamily?.defaultResolution ?? '1K'
+  );
   const [count, setCount] = useState<number>(initialCount);
   const [watermark, setWatermark] = useState(true);
   const [skipCaptcha, setSkipCaptcha] = useState(
@@ -202,6 +207,16 @@ export function HeroGenerator({
     }
   }, [aspectRatio, aspectRatios, defaultAspectRatio]);
 
+  useEffect(() => {
+    const normalizedResolution = selectedModelFamily
+      ? getNanoBananaResolution(selectedModelFamily.id, resolution)
+      : '1K';
+
+    if (normalizedResolution !== resolution) {
+      setResolution(normalizedResolution);
+    }
+  }, [resolution, selectedModelFamily]);
+
   const promptLength = prompt.trim().length;
   const isPromptTooLong = promptLength > MAX_PROMPT_LENGTH;
 
@@ -224,7 +239,21 @@ export function HeroGenerator({
   );
 
   const remainingCredits = user?.credits?.remainingCredits ?? 0;
-  const costPerImage = mode === 'image-to-image' ? 4 : 2;
+  const supportedResolutions = selectedModelFamily?.supportedResolutions ?? [
+    '1K',
+  ];
+  const resolvedGeneration = useMemo(() => {
+    if (!selectedModelFamily) {
+      return null;
+    }
+
+    return resolveNanoBananaGeneration({
+      familyId: selectedModelFamily.id,
+      mode,
+      resolution,
+    });
+  }, [mode, resolution, selectedModelFamily]);
+  const costPerImage = resolvedGeneration?.costCredits ?? 0;
   const totalCost = costPerImage * count;
 
   const countOptions = useMemo(
@@ -350,19 +379,20 @@ export function HeroGenerator({
         throw new Error('Provider or model is not configured correctly.');
       }
 
-      const resolvedModel = resolveNanoBananaModel({
-        familyId: selectedModelFamily.id,
-        mode,
-      });
-      if (!resolvedModel) {
+      if (!resolvedGeneration?.model) {
         throw new Error('Selected model is not available for this mode.');
       }
+      const resolvedModel = resolvedGeneration.model;
 
       const options: Record<string, any> = {
         aspect_ratio: aspectRatio,
         watermark,
         skip_captcha: skipCaptcha,
       };
+
+      if (resolvedGeneration.shouldSendResolution) {
+        options.resolution = resolvedGeneration.resolution;
+      }
 
       if (mode === 'image-to-image') {
         options.image_input = referenceImageUrls;
@@ -429,6 +459,7 @@ export function HeroGenerator({
       mode,
       pollTask,
       referenceImageUrls,
+      resolvedGeneration,
       selectedModelFamily,
       skipCaptcha,
       watermark,
@@ -745,6 +776,24 @@ export function HeroGenerator({
                           ratio={ratio}
                           selected={aspectRatio === ratio}
                         />
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <Select
+                  value={resolution}
+                  onValueChange={(value) =>
+                    setResolution(value as NanoBananaResolution)
+                  }
+                >
+                  <SelectTrigger className="h-10 min-w-24 rounded-xl">
+                    <SelectValue placeholder="Quality" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {supportedResolutions.map((option) => (
+                      <SelectItem key={option} value={option}>
+                        {option}
                       </SelectItem>
                     ))}
                   </SelectContent>

@@ -1,13 +1,6 @@
 {
   "page": {
-    "show_sections": [
-      "hero",
-      "logos",
-      "introduce",
-      "benefits",
-      "usage",
-      "faq"
-    ],
+    "show_sections": ["hero", "logos", "introduce", "benefits", "usage", "faq"],
     "sections": {
       "hero": {
         "id": "hero",
@@ -375,6 +368,10 @@
           {
             "question": "Is AI-PFP free to try?",
             "answer": "Yes. New users can start with free credits after signing in. If you need more generations, higher resolution, or more style variations, you can upgrade to a paid plan based on your usage."
+          },
+          {
+            "question": "How many credits do Nano Banana models use?",
+            "answer": "Nano Banana uses 4 credits per image. Nano Banana2 uses 5 credits for 1K quality, 10 credits for 2K quality, and 15 credits for 4K quality. Nano Banana Pro uses 10 credits for 1K quality, 15 credits for 2K quality, and 20 credits for 4K quality."
           },
           {
             "question": "Is my uploaded photo private and secure?",

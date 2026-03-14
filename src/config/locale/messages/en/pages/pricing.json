@@ -67,9 +67,7 @@
             "title": "Starter",
             "description": "Ideal for occasional creative boosts.",
             "features_title": "Includes:",
-            "crossed_features": [
-              "Priority Support"
-            ],
+            "crossed_features": ["Priority Support"],
             "features": [
               "400 Credits",
               "Up to 100 Images",
@@ -156,9 +154,7 @@
             "title": "Basic",
             "description": "Designed for hobbyists seeking creative skills.",
             "features_title": "Includes:",
-            "crossed_features": [
-              "Priority Support"
-            ],
+            "crossed_features": ["Priority Support"],
             "features": [
               "400 Credits / Month",
               "Up to 100 Images / Month",
@@ -251,9 +247,7 @@
             "title": "Basic",
             "description": "Designed for hobbyists seeking creative skills.",
             "features_title": "Includes:",
-            "crossed_features": [
-              "Priority Support"
-            ],
+            "crossed_features": ["Priority Support"],
             "features": [
               "4,800 Credits / Year",
               "Up to 1,200 Images / Year",
@@ -364,6 +358,10 @@
           {
             "question": "Do I get higher-quality images if I subscribe?",
             "answer": "Paid plans can improve your results because they unlock the Advanced Image Model and other paid features. The exact output still depends on your prompt, settings, and source image, but subscriptions are designed for users who need more consistent, higher-end results."
+          },
+          {
+            "question": "How many credits do Nano Banana models use?",
+            "answer": "Nano Banana uses 4 credits per image. Nano Banana2 uses 5 credits for 1K quality, 10 credits for 2K quality, and 15 credits for 4K quality. Nano Banana Pro uses 10 credits for 1K quality, 15 credits for 2K quality, and 20 credits for 4K quality."
           },
           {
             "question": "Can I get a refund?",

@@ -238,7 +238,10 @@ export class KieProvider implements AIProvider {
     if (options.google_search !== undefined) {
       payload.input.google_search = options.google_search;
     }
-    if (options.resolution) {
+    if (
+      options.resolution &&
+      ['nano-banana-pro', 'nano-banana-2'].includes(model)
+    ) {
       payload.input.resolution = options.resolution;
     }
     if (options.output_format) {

@@ -17,8 +17,12 @@
     "form": {
       "provider": "服务商",
       "model": "模型",
+      "aspect_ratio": "宽高比",
+      "quality": "画质",
       "select_provider": "选择服务商",
       "select_model": "选择模型",
+      "select_aspect_ratio": "选择宽高比",
+      "select_quality": "选择画质",
       "prompt": "提示词",
       "prompt_placeholder": "描述图片的细节，如颜色、形状、纹理等",
       "reference_image": "参考图片",
