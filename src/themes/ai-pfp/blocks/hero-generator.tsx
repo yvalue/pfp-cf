@@ -149,6 +149,10 @@ export function HeroGenerator({
   );
   const aspectRatios = selectedModelFamily?.aspectRatios ?? ['1:1'];
   const defaultAspectRatio = useMemo(() => {
+    if (aspectRatios.includes('auto')) {
+      return 'auto';
+    }
+
     const configured = section.default_aspect_ratio as string | undefined;
     if (configured && aspectRatios.includes(configured)) {
       return configured;

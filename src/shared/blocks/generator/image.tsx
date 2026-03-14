@@ -143,8 +143,9 @@ export function ImageGenerator({
     [modelFamilyId]
   );
   const aspectRatios = selectedModelFamily?.aspectRatios ?? ['1:1'];
-  const defaultAspectRatio =
-    selectedModelFamily?.defaultAspectRatio ?? aspectRatios[0] ?? '1:1';
+  const defaultAspectRatio = aspectRatios.includes('auto')
+    ? 'auto'
+    : (selectedModelFamily?.defaultAspectRatio ?? aspectRatios[0] ?? '1:1');
   const [aspectRatio, setAspectRatio] = useState(defaultAspectRatio);
   const resolvedModel = useMemo(() => {
     if (!selectedModelFamily) {

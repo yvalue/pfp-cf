@@ -53,8 +53,8 @@ function AspectRatioIcon({
       <span
         aria-hidden
         className={cn(
-          'bg-muted/40 flex h-6 w-7 items-center justify-center rounded-md border transition-colors',
-          selected ? 'border-primary/40 text-primary' : 'border-border text-muted-foreground'
+          'flex h-6 w-7 items-center justify-center transition-colors',
+          selected ? 'text-primary' : 'text-muted-foreground'
         )}
       >
         <WandSparkles className="size-3.5" />
@@ -70,15 +70,12 @@ function AspectRatioIcon({
   return (
     <span
       aria-hidden
-      className={cn(
-        'bg-muted/40 flex h-6 w-7 items-center justify-center rounded-md border transition-colors',
-        selected ? 'border-primary/40' : 'border-border'
-      )}
+      className="flex h-6 w-7 items-center justify-center"
     >
       <span
         className={cn(
-          'rounded-[4px] border transition-colors',
-          selected ? 'border-primary bg-primary/10' : 'border-foreground/35 bg-background'
+          'border transition-colors',
+          selected ? 'border-primary' : 'border-foreground/35'
         )}
         style={style}
       />
