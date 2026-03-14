@@ -1,16 +1,16 @@
 import Link from 'next/link';
 import {
-  ArrowUpRight,
+  ArrowRight,
   Briefcase,
   Check,
   Download,
-  ImagePlus,
-  RefreshCw,
   ShieldCheck,
   Sparkles,
+  Upload,
   Wand2,
 } from 'lucide-react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { RiVipDiamondFill } from 'react-icons/ri';
 
 import {
   ToolDashboardFaq,
@@ -31,6 +31,14 @@ import {
   BreadcrumbSeparator,
 } from '@/shared/components/ui/breadcrumb';
 import { Button } from '@/shared/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/components/ui/select';
+import { NANO_BANANA_MODEL_FAMILIES } from '@/shared/lib/ai-image';
 
 export const revalidate = 3600;
 
@@ -41,12 +49,6 @@ export const generateMetadata = async () => ({
     canonical: '/professional-headshot-generator',
   },
 });
-
-const promptSuggestions = [
-  'Corporate office background',
-  'Soft studio lighting',
-  'Clean navy blazer',
-];
 
 const featureHighlights = [
   'Turn casual portraits into polished business-ready headshots.',
@@ -75,6 +77,40 @@ const faqItems = [
   },
 ];
 
+const aspectRatioOptions = [
+  {
+    label: 'Match Input',
+    shapeClassName: 'h-5 w-5 border-dashed border-primary',
+    active: true,
+  },
+  {
+    label: '9:16',
+    shapeClassName: 'h-6 w-3.5',
+  },
+  {
+    label: '16:9',
+    shapeClassName: 'h-3.5 w-6',
+  },
+  {
+    label: '1:1',
+    shapeClassName: 'h-5 w-5',
+  },
+];
+
+const resolutionOptions = [
+  { label: '1K' },
+  { label: '2K', active: true },
+  { label: '4K' },
+];
+
+const batchSizeOptions = [
+  { label: '1', active: true },
+  { label: '2' },
+  { label: '3', premium: true },
+  { label: '4', premium: true },
+  { label: '5', premium: true },
+];
+
 export default async function ProfessionalHeadshotGeneratorPage({
   params,
 }: {
@@ -85,10 +121,8 @@ export default async function ProfessionalHeadshotGeneratorPage({
 
   const t = await getTranslations('common');
   const homeHref = `/${locale}`;
-  const toolShellHref = `/${locale}/tool-shell`;
   const routeHref = `/${locale}/professional-headshot-generator`;
   const sidebarItems = [
-    { label: 'Tool Shell', href: toolShellHref },
     { label: 'Professional Headshot', href: routeHref, active: true },
   ];
 
@@ -102,10 +136,7 @@ export default async function ProfessionalHeadshotGeneratorPage({
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-lg font-semibold tracking-tight">
-                Img-FX
-              </span>
-              <span className="text-muted-foreground text-xs">
-                Professional Headshot
+                AI_PFP
               </span>
             </div>
           </Link>
@@ -135,12 +166,6 @@ export default async function ProfessionalHeadshotGeneratorPage({
         }
         footer={
           <div className="border-border/60 bg-background/80 grid gap-3 rounded-[24px] border p-4">
-            <div className="grid gap-1">
-              <div className="text-sm font-semibold">Professional Pack</div>
-              <p className="text-muted-foreground text-xs leading-5">
-                Keep credits, usage notes, or an upgrade CTA in this fixed slot.
-              </p>
-            </div>
             <Button className="w-full justify-center" size="sm">
               Upgrade
             </Button>
@@ -173,160 +198,183 @@ export default async function ProfessionalHeadshotGeneratorPage({
         />
 
         <ToolDashboardWorkbench
+          className="border-0 bg-transparent px-0 py-2"
+          gridClassName="gap-4 lg:grid-cols-12 xl:grid-cols-12"
+          leftPaneClassName="rounded-[20px] border-primary/10 bg-white/85 backdrop-blur-xl lg:col-span-4 lg:px-7 lg:py-6"
+          rightPaneClassName="rounded-[20px] border-primary/10 bg-white/85 backdrop-blur-xl lg:col-span-8 lg:px-7 lg:py-6"
           left={
-            <div className="grid gap-6">
-              <div className="grid gap-3">
-                <div className="grid gap-2">
-                  <h1 className="text-3xl font-semibold tracking-tight">
-                    Professional Headshot Generator
-                  </h1>
-                  <p className="text-muted-foreground max-w-sm text-sm leading-6">
-                    Transform casual portraits into studio-style professional
-                    headshots for resumes, LinkedIn, and company profiles.
-                  </p>
-                </div>
-              </div>
+            <div className="flex h-full flex-col gap-6">
 
-              <div className="grid gap-3">
-                <div className="text-sm font-medium">Upload portrait</div>
-                <div className="border-primary/35 bg-primary/5 grid min-h-64 place-items-center rounded-[28px] border border-dashed px-6 py-8 text-center">
-                  <div className="grid gap-4">
-                    <div className="bg-background text-primary mx-auto flex size-16 items-center justify-center rounded-2xl shadow-sm">
-                      <ImagePlus className="size-7" />
-                    </div>
-                    <div className="grid gap-1">
-                      <p className="font-medium">
-                        Drop image here or click to upload
-                      </p>
-                      <p className="text-muted-foreground text-sm">
-                        PNG, JPG, JPEG, WEBP up to 10MB
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid gap-3">
+              <div className="grid gap-2">
                 <div className="flex items-center justify-between gap-3">
-                  <div className="text-sm font-medium">
-                    Professional direction
-                  </div>
-                  <div className="text-muted-foreground text-xs">0 / 500</div>
+                  <div className="text-sm font-medium">Upload Image</div>
                 </div>
-                <div className="border-border/60 bg-background/60 grid gap-3 rounded-[24px] border p-4">
-                  <div className="text-muted-foreground text-sm leading-6">
-                    Describe wardrobe, expression, background, and lighting so
-                    the generated portrait matches your professional brand.
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {promptSuggestions.map((prompt) => (
-                      <button
-                        key={prompt}
-                        className="border-border/60 text-muted-foreground hover:bg-muted hover:text-foreground rounded-full border px-3 py-1.5 text-xs font-medium transition-colors"
-                        type="button"
-                      >
-                        {prompt}
-                      </button>
-                    ))}
+
+                <div className="border-primary/40 bg-primary/5 grid min-h-[168px] place-items-center rounded-2xl border-2 border-dashed px-6 py-5 text-center">
+                  <div className="grid gap-2">
+                    <div className="bg-primary/10 text-primary mx-auto flex size-14 items-center justify-center rounded-2xl">
+                      <Upload className="size-6" />
+                    </div>
+                    <div className="grid gap-1.5">
+                      <p className="text-base font-medium text-slate-700">
+                        Drop files or{' '}
+                        <span className="text-primary font-semibold">click to upload</span>
+                      </p>
+                      <p className="text-muted-foreground text-xs leading-5">
+                        PNG, JPG, JPEG or WEBP (max 10MB each)
+                        <br />
+                        <span className="text-primary font-medium">
+                          Supports multiple images
+                        </span>
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <Button className="h-12 rounded-2xl text-base font-semibold">
-                <Sparkles className="size-4" />
-                Generate Headshot
+              <div className="grid gap-2">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="text-sm font-medium">Description</div>
+                </div>
+
+                <div className="border-border bg-white relative min-h-[124px] rounded-2xl border px-4 py-4">
+                  <p className="text-muted-foreground text-sm leading-5">
+                    Describe how your image should look like...
+                  </p>
+                  <div className="text-muted-foreground absolute bottom-3 right-4 flex items-center gap-2 text-xs">
+                    <Sparkles className="size-3.5" />
+                    <span>0/1000</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-2">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="text-sm font-medium">Model</div>
+                </div>
+
+                <div className="min-w-0">
+                  <Select defaultValue={NANO_BANANA_MODEL_FAMILIES[0]?.id}>
+                    <SelectTrigger className="h-10 w-full rounded-xl">
+                      <SelectValue placeholder="Model" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {NANO_BANANA_MODEL_FAMILIES.map((item) => (
+                        <SelectItem key={item.id} value={item.id}>
+                          {item.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid gap-2">
+                <div className="text-sm font-medium">Parameter</div>
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="min-w-0">
+                    <Select defaultValue="Match Input">
+                      <SelectTrigger className="h-10 w-full rounded-xl">
+                        <SelectValue placeholder="Aspect Ratio" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {aspectRatioOptions.map((item) => (
+                          <SelectItem key={item.label} value={item.label}>
+                            {item.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="min-w-0">
+                    <Select defaultValue="2K">
+                      <SelectTrigger className="h-10 w-full rounded-xl">
+                        <SelectValue placeholder="Resolution" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {resolutionOptions.map((item) => (
+                          <SelectItem key={item.label} value={item.label}>
+                            {item.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="min-w-0">
+                    <Select defaultValue="1">
+                      <SelectTrigger className="h-10 w-full rounded-xl">
+                        <SelectValue placeholder="Batch Size" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {batchSizeOptions.map((item) => (
+                          <SelectItem key={item.label} value={item.label}>
+                            {item.premium ? `${item.label} Premium` : item.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+
+              <Button size="lg" className="mt-auto min-w-44 rounded-xl text-base">
+                Submit
+                <span className="ml-2 inline-flex items-center gap-1 rounded-md bg-black/10 px-1.5 text-base dark:bg-white/15">
+                  15
+                  <RiVipDiamondFill className="size-4 text-amber-400" />
+                </span>
               </Button>
             </div>
           }
           right={
-            <div className="grid gap-6">
-              <div className="flex items-center justify-between gap-3">
-                <div className="grid gap-1">
-                  <div className="text-muted-foreground text-sm font-medium">
-                    Result
-                  </div>
-                  <h2 className="text-2xl font-semibold tracking-tight">
-                    Professional preview
-                  </h2>
-                </div>
-                <div className="border-border/60 bg-background/70 text-muted-foreground flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs">
-                  <Briefcase className="size-3.5" />
-                  Profile-ready
-                </div>
+            <div className="grid gap-5">
+              <div className="grid gap-1.5">
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  Professional Headshot Result
+                </h2>
+                <p className="text-muted-foreground text-sm">
+                  Processing time 5-30 seconds
+                </p>
               </div>
 
-              <div className="grid gap-4">
-                <div className="border-border/60 relative aspect-[16/10] overflow-hidden rounded-[28px] border bg-[radial-gradient(circle_at_top_left,rgba(139,92,246,0.20),transparent_28%),linear-gradient(135deg,rgba(250,251,255,0.98),rgba(236,241,255,0.88)_44%,rgba(224,232,255,0.96))]">
-                  <div className="grid h-full grid-cols-[1fr_220px]">
-                    <div className="grid h-full place-items-center p-6">
-                      <div className="grid w-full max-w-[500px] gap-4 rounded-[30px] border border-black/5 bg-white/72 p-6 shadow-[0_20px_48px_rgba(17,24,39,0.10)] backdrop-blur">
-                        <div className="grid gap-3 md:grid-cols-[160px_minmax(0,1fr)]">
-                          <div className="aspect-[4/5] rounded-[24px] bg-[linear-gradient(180deg,rgba(226,232,240,0.82),rgba(203,213,225,0.68))]" />
-                          <div className="grid content-between gap-4">
-                            <div className="grid gap-2">
-                              <div className="h-3 w-24 rounded-full bg-slate-200" />
-                              <div className="h-10 rounded-2xl bg-slate-100" />
-                              <div className="h-10 rounded-2xl bg-slate-100" />
-                            </div>
-                            <div className="grid grid-cols-2 gap-3">
-                              <div className="h-16 rounded-2xl bg-slate-100" />
-                              <div className="h-16 rounded-2xl bg-slate-100" />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="h-12 rounded-2xl bg-slate-900" />
+              <div className="border-primary/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(245,247,255,0.96))] rounded-2xl border p-4 shadow-sm">
+                <div className="border-border/60 grid min-h-[420px] place-items-center overflow-hidden rounded-2xl border bg-[linear-gradient(180deg,rgba(250,251,255,0.98),rgba(240,244,255,0.92))] p-5">
+                  <div className="grid w-full max-w-[680px] items-center gap-5 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
+                    <div className="border-border/50 relative aspect-[4/5] overflow-hidden rounded-[28px] border bg-[linear-gradient(180deg,rgba(247,248,251,0.95),rgba(233,236,245,0.95))]">
+                      <div className="absolute inset-5 rounded-[24px] bg-white/88 shadow-[0_12px_30px_rgba(15,23,42,0.08)]" />
+                      <div className="absolute inset-x-14 top-14 h-20 rounded-full bg-rose-100/90" />
+                      <div className="absolute inset-x-12 bottom-10 top-32 rounded-[36px] border border-rose-200/70 bg-[repeating-linear-gradient(135deg,rgba(244,114,182,0.10)_0,rgba(244,114,182,0.10)_14px,rgba(255,255,255,0.92)_14px,rgba(255,255,255,0.92)_30px)]" />
+                      <div className="absolute left-8 top-8 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-slate-500 shadow-sm">
+                        Source
                       </div>
                     </div>
 
-                    <div className="border-l border-black/5 bg-white/32 p-4 backdrop-blur">
-                      <div className="grid h-full content-between gap-4">
-                        <div className="grid gap-3">
-                          <div className="text-xs font-semibold tracking-[0.24em] text-slate-500 uppercase">
-                            Output Notes
-                          </div>
-                          <div className="grid gap-2 rounded-[22px] bg-white/70 p-3">
-                            <div className="h-16 rounded-2xl bg-slate-100" />
-                            <div className="h-16 rounded-2xl bg-slate-100" />
-                          </div>
-                        </div>
-                        <div className="grid gap-2 rounded-[22px] bg-slate-900 px-4 py-5 text-white shadow-lg">
-                          <div className="text-xs tracking-[0.24em] text-white/60 uppercase">
-                            Delivery
-                          </div>
-                          <div className="text-sm leading-6 text-white/80">
-                            Use this area for variants, audit notes, quality
-                            checks, or face-safe export guidance.
-                          </div>
-                        </div>
+                    <div className="text-foreground/80 flex size-14 items-center justify-center rounded-full bg-white shadow-sm">
+                      <ArrowRight className="size-6" />
+                    </div>
+
+                    <div className="border-border/50 relative aspect-[4/5] overflow-hidden rounded-[28px] border bg-[radial-gradient(circle_at_top,rgba(255,245,228,0.95),transparent_30%),linear-gradient(180deg,rgba(253,248,240,0.98),rgba(241,232,216,0.98))]">
+                      <div className="absolute inset-5 rounded-[24px] bg-white/42 backdrop-blur-[2px]" />
+                      <div className="absolute inset-x-14 top-14 h-20 rounded-full bg-amber-100/95" />
+                      <div className="absolute inset-x-12 bottom-12 top-32 rounded-[36px] bg-[linear-gradient(180deg,rgba(203,213,225,0.92),rgba(226,232,240,0.55))]" />
+                      <div className="absolute inset-x-10 bottom-0 h-24 rounded-t-[44px] bg-white/55" />
+                      <div className="absolute left-8 top-8 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-slate-500 shadow-sm">
+                        Output
                       </div>
                     </div>
                   </div>
                 </div>
-
-                <div className="border-border/60 bg-background/60 grid gap-3 rounded-[24px] border p-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
-                  <div className="grid gap-1">
-                    <div className="font-medium">Result toolbar</div>
-                    <p className="text-muted-foreground text-sm leading-6">
-                      Reserve this area for compare, regenerate, download, or
-                      export actions.
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Button size="sm" variant="outline">
-                      <RefreshCw className="size-4" />
-                      Regenerate
-                    </Button>
-                    <Button size="sm" variant="outline">
-                      <Download className="size-4" />
-                      Download
-                    </Button>
-                    <Button size="sm">
-                      Open Asset
-                      <ArrowUpRight className="size-4" />
-                    </Button>
-                  </div>
-                </div>
               </div>
+
+              <Button
+                className="border-primary/15 bg-background text-foreground/80 hover:border-primary/35 hover:bg-primary/5 h-11 rounded-xl border"
+                variant="outline"
+              >
+                <Download className="text-primary size-4" />
+                Download
+              </Button>
             </div>
           }
         />
@@ -421,9 +469,6 @@ export default async function ProfessionalHeadshotGeneratorPage({
           <div className="flex flex-wrap items-center gap-3">
             <Button asChild>
               <Link href={routeHref}>Stay on this page</Link>
-            </Button>
-            <Button asChild size="sm" variant="outline">
-              <Link href={toolShellHref}>Open dashboard demo</Link>
             </Button>
           </div>
         </ToolDashboardSection>
