@@ -1,6 +1,11 @@
-import { ComponentType, lazy, Suspense } from 'react';
+"use client";
 
-const iconCache: { [key: string]: ComponentType<any> } = {};
+import { ComponentType, useEffect, useState } from 'react';
+
+type IconComponentType = ComponentType<any>;
+
+const iconCache: Record<string, IconComponentType> = {};
+const iconPromiseCache: Record<string, Promise<IconComponentType>> = {};
 
 // Function to automatically detect icon library
 function detectIconLibrary(name: string): 'ri' | 'lucide' {
@@ -24,58 +29,86 @@ export function SmartIcon({
 }) {
   const library = detectIconLibrary(name);
   const cacheKey = `${library}-${name}`;
+  const [Icon, setIcon] = useState<IconComponentType | null>(
+    iconCache[cacheKey] || null
+  );
 
-  if (!iconCache[cacheKey]) {
-    if (library === 'ri') {
-      // React Icons (Remix Icons)
-      iconCache[cacheKey] = lazy(async () => {
-        try {
-          const module = await import('react-icons/ri');
-          const IconComponent = module[name as keyof typeof module];
-          if (IconComponent) {
-            return { default: IconComponent as ComponentType<any> };
-          } else {
-            console.warn(
-              `Icon "${name}" not found in react-icons/ri, using fallback`
-            );
-            return { default: module.RiQuestionLine as ComponentType<any> };
-          }
-        } catch (error) {
-          console.error(`Failed to load react-icons/ri:`, error);
-          const fallbackModule = await import('react-icons/ri');
-          return {
-            default: fallbackModule.RiQuestionLine as ComponentType<any>,
-          };
-        }
-      });
-    } else {
-      // Lucide React (default)
-      iconCache[cacheKey] = lazy(async () => {
-        try {
-          const module = await import('lucide-react');
-          const IconComponent = module[name as keyof typeof module];
-          if (IconComponent) {
-            return { default: IconComponent as ComponentType<any> };
-          } else {
-            console.warn(
-              `Icon "${name}" not found in lucide-react, using fallback`
-            );
-            return { default: module.HelpCircle as ComponentType<any> };
-          }
-        } catch (error) {
-          console.error(`Failed to load lucide-react:`, error);
-          const fallbackModule = await import('lucide-react');
-          return { default: fallbackModule.HelpCircle as ComponentType<any> };
-        }
-      });
+  useEffect(() => {
+    let active = true;
+
+    if (iconCache[cacheKey]) {
+      setIcon(() => iconCache[cacheKey]);
+      return () => {
+        active = false;
+      };
     }
+
+    if (!iconPromiseCache[cacheKey]) {
+      iconPromiseCache[cacheKey] =
+        library === 'ri'
+          ? import('react-icons/ri')
+              .then((module) => {
+                const LoadedIcon = module[name as keyof typeof module];
+                if (LoadedIcon) {
+                  return LoadedIcon as IconComponentType;
+                }
+
+                console.warn(
+                  `Icon "${name}" not found in react-icons/ri, using fallback`
+                );
+                return module.RiQuestionLine as IconComponentType;
+              })
+              .catch(async (error) => {
+                console.error(`Failed to load react-icons/ri:`, error);
+                const fallbackModule = await import('react-icons/ri');
+                return fallbackModule.RiQuestionLine as IconComponentType;
+              })
+          : import('lucide-react')
+              .then((module) => {
+                const LoadedIcon = module[name as keyof typeof module];
+                if (LoadedIcon) {
+                  return LoadedIcon as IconComponentType;
+                }
+
+                console.warn(
+                  `Icon "${name}" not found in lucide-react, using fallback`
+                );
+                return module.HelpCircle as IconComponentType;
+              })
+              .catch(async (error) => {
+                console.error(`Failed to load lucide-react:`, error);
+                const fallbackModule = await import('lucide-react');
+                return fallbackModule.HelpCircle as IconComponentType;
+              });
+    }
+
+    iconPromiseCache[cacheKey].then((LoadedIcon) => {
+      iconCache[cacheKey] = LoadedIcon;
+
+      if (active) {
+        setIcon(() => LoadedIcon);
+      }
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [cacheKey, library, name]);
+
+  if (!Icon) {
+    return (
+      <span
+        aria-hidden="true"
+        className={className}
+        style={{
+          display: 'inline-block',
+          width: size,
+          height: size,
+          flexShrink: 0,
+        }}
+      />
+    );
   }
 
-  const IconComponent = iconCache[cacheKey];
-
-  return (
-    <Suspense fallback={<div style={{ width: size, height: size }} />}>
-      <IconComponent size={size} className={className} {...props} />
-    </Suspense>
-  );
+  return <Icon size={size} className={className} {...props} />;
 }

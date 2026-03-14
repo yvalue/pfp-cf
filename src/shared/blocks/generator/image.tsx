@@ -19,6 +19,7 @@ import {
   ImageUploaderValue,
   LazyImage,
 } from '@/shared/blocks/common';
+import { AspectRatioOption } from '@/shared/components/ui/aspect-ratio-option';
 import { Button } from '@/shared/components/ui/button';
 import {
   Card,
@@ -548,12 +549,17 @@ export function ImageGenerator({
                     <Label>Aspect Ratio</Label>
                     <Select value={aspectRatio} onValueChange={setAspectRatio}>
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select Aspect Ratio" />
+                        <SelectValue aria-label={aspectRatio}>
+                          <AspectRatioOption ratio={aspectRatio} selected />
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         {aspectRatios.map((option) => (
                           <SelectItem key={option} value={option}>
-                            {option}
+                            <AspectRatioOption
+                              ratio={option}
+                              selected={aspectRatio === option}
+                            />
                           </SelectItem>
                         ))}
                       </SelectContent>

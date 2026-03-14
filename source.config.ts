@@ -18,6 +18,11 @@ export const logs = defineDocs({
 
 export default defineConfig({
   mdxOptions: {
+    // Remote Markdown images should not trigger build-time network fetches.
+    // Keep local image imports enabled; only skip external size probing.
+    remarkImageOptions: {
+      external: false,
+    },
     rehypeCodeOptions: {
       themes: {
         light: 'github-light',

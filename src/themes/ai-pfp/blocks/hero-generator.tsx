@@ -24,6 +24,7 @@ import {
   LazyImage,
   type ImageUploaderValue,
 } from '@/shared/blocks/common';
+import { AspectRatioOption } from '@/shared/components/ui/aspect-ratio-option';
 import { Button } from '@/shared/components/ui/button';
 import { Progress } from '@/shared/components/ui/progress';
 import {
@@ -170,12 +171,17 @@ export function HeroGenerator({
   const [progress, setProgress] = useState(0);
   const [statusText, setStatusText] = useState('');
   const [taskStatus, setTaskStatus] = useState<AITaskStatus | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
   const [downloadingImageId, setDownloadingImageId] = useState<string | null>(
     null
   );
 
   const { user, isCheckSign, setIsShowSignModal, fetchUserCredits } =
     useAppContext();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!selectedModelFamily) {
@@ -724,12 +730,17 @@ export function HeroGenerator({
 
                 <Select value={aspectRatio} onValueChange={setAspectRatio}>
                   <SelectTrigger className="h-10 min-w-24 rounded-xl">
-                    <SelectValue placeholder="Ratio" />
+                    <SelectValue aria-label={aspectRatio}>
+                      <AspectRatioOption ratio={aspectRatio} selected />
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {aspectRatios.map((ratio) => (
                       <SelectItem key={ratio} value={ratio}>
-                        {ratio}
+                        <AspectRatioOption
+                          ratio={ratio}
+                          selected={aspectRatio === ratio}
+                        />
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -794,6 +805,7 @@ export function HeroGenerator({
             className="min-w-44 rounded-xl text-base"
             onClick={handleGenerate}
             disabled={
+              !isMounted ||
               isCheckSign ||
               isGenerating ||
               !prompt.trim() ||
@@ -802,7 +814,12 @@ export function HeroGenerator({
               hasReferenceUploadError
             }
           >
-            {isCheckSign ? (
+            {!isMounted ? (
+              <>
+                <Loader2 className="mr-2 size-4 animate-spin" />
+                Loading...
+              </>
+            ) : isCheckSign ? (
               <>
                 <Loader2 className="mr-2 size-4 animate-spin" />
                 Checking account...
@@ -845,7 +862,7 @@ export function HeroGenerator({
             )}
 
             {generatedImages.length > 0 && (
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {generatedImages.map((image) => (
                   <div
                     key={image.id}
