@@ -1,11 +1,19 @@
-"use client";
+'use client';
 
-import { ComponentType, useEffect, useState } from 'react';
+import {
+  cloneElement,
+  ComponentType,
+  isValidElement,
+  ReactElement,
+  useEffect,
+  useState,
+} from 'react';
 
 type IconComponentType = ComponentType<any>;
+type IconValue = IconComponentType | ReactElement;
 
-const iconCache: Record<string, IconComponentType> = {};
-const iconPromiseCache: Record<string, Promise<IconComponentType>> = {};
+const iconCache: Record<string, IconValue> = {};
+const iconPromiseCache: Record<string, Promise<IconValue>> = {};
 
 // Function to automatically detect icon library
 function detectIconLibrary(name: string): 'ri' | 'lucide' {
@@ -22,16 +30,32 @@ export function SmartIcon({
   className,
   ...props
 }: {
-  name: string;
+  name: string | ReactElement;
   size?: number;
   className?: string;
   [key: string]: any;
 }) {
+  if (isValidElement(name)) {
+    const element = name as ReactElement<any>;
+
+    return cloneElement(element, {
+      ...props,
+      size,
+      className: [element.props.className, className].filter(Boolean).join(' '),
+    });
+  }
+
+  if (!name || typeof name !== 'string') {
+    return null;
+  }
+
   const library = detectIconLibrary(name);
   const cacheKey = `${library}-${name}`;
-  const [Icon, setIcon] = useState<IconComponentType | null>(
-    iconCache[cacheKey] || null
-  );
+  const [Icon, setIcon] = useState<IconValue | null>(() => {
+    // Store the component itself; passing a function directly would be treated
+    // as a lazy initializer and React would execute it into an element.
+    return iconCache[cacheKey] || null;
+  });
 
   useEffect(() => {
     let active = true;
@@ -108,6 +132,16 @@ export function SmartIcon({
         }}
       />
     );
+  }
+
+  if (isValidElement(Icon)) {
+    const element = Icon as ReactElement<any>;
+
+    return cloneElement(element, {
+      ...props,
+      size,
+      className: [element.props.className, className].filter(Boolean).join(' '),
+    });
   }
 
   return <Icon size={size} className={className} {...props} />;
