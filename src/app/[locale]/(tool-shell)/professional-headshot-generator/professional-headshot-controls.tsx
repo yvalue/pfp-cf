@@ -37,8 +37,8 @@ function FieldBadge({
     <span
       className={
         variant === 'required'
-          ? 'bg-primary/10 text-primary inline-flex items-center rounded-full px-2 text-sm font-medium'
-          : 'bg-muted text-muted-foreground inline-flex items-center rounded-full px-2 text-sm font-medium'
+          ? 'bg-primary/10 text-primary inline-flex items-center rounded-full px-2 text-xs font-medium'
+          : 'bg-muted text-muted-foreground inline-flex items-center rounded-full px-2 text-xs font-medium'
       }
     >
       {children}

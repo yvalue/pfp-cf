@@ -2,7 +2,6 @@ import Link from 'next/link';
 import {
   Briefcase,
   Check,
-  Download,
   ShieldCheck,
   Sparkles,
   Wand2,
@@ -30,6 +29,7 @@ import {
 import { Button } from '@/shared/components/ui/button';
 
 import { ProfessionalHeadshotControls } from './professional-headshot-controls';
+import { ProfessionalHeadshotResultPanel } from './professional-headshot-result-panel';
 
 export const revalidate = 3600;
 
@@ -160,90 +160,7 @@ export default async function ProfessionalHeadshotGeneratorPage({
           leftPaneClassName="rounded-[20px] border-primary/10 bg-white/85 backdrop-blur-xl lg:col-span-4 lg:px-7 lg:py-6"
           rightPaneClassName="rounded-[20px] border-primary/10 bg-white/85 backdrop-blur-xl lg:col-span-8 lg:px-7 lg:py-6"
           left={<ProfessionalHeadshotControls />}
-          right={
-            <div className="grid gap-5">
-              <div className="grid gap-1.5">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  Professional Headshot Generator
-                </h2>
-                <p className="text-muted-foreground text-sm">
-                  make professional headshots in seconds, polished portraits for your career.
-                </p>
-              </div>
-
-              <div className="border-border/60 grid min-h-[340px] gap-4 overflow-hidden rounded-2xl border bg-[linear-gradient(180deg,rgba(250,251,255,0.98),rgba(240,244,255,0.92))] p-4">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="bg-primary/10 text-primary rounded-lg px-3 py-1.5 text-xs font-semibold">
-                    Headshot
-                  </span>
-                  <span className="text-muted-foreground rounded-lg px-3 py-1.5 text-xs font-medium">
-                    LinkedIn
-                  </span>
-                  <span className="text-muted-foreground rounded-lg px-3 py-1.5 text-xs font-medium">
-                    Studio
-                  </span>
-                  <span className="text-muted-foreground rounded-lg px-3 py-1.5 text-xs font-medium">
-                    Resume
-                  </span>
-                </div>
-
-                <div className="grid flex-1 gap-3 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
-                  <div className="relative min-h-[260px] overflow-hidden rounded-[22px] bg-[radial-gradient(circle_at_top,rgba(147,197,253,0.35),transparent_26%),linear-gradient(160deg,rgba(17,24,39,0.96),rgba(30,41,59,0.94)_52%,rgba(15,23,42,0.98))]">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(255,255,255,0.15),transparent_8%),radial-gradient(circle_at_72%_28%,rgba(255,255,255,0.11),transparent_6%),radial-gradient(circle_at_65%_82%,rgba(96,165,250,0.12),transparent_14%)]" />
-                    <div className="absolute inset-x-10 bottom-0 top-16 rounded-t-[40px] bg-[linear-gradient(180deg,rgba(37,99,235,0.00),rgba(59,130,246,0.18))]" />
-                    <div className="absolute left-6 top-6 max-w-[260px]">
-                      <div className="text-3xl font-semibold leading-tight tracking-tight text-white">
-                        Professional Headshot Template
-                      </div>
-                      <p className="mt-3 text-sm leading-6 text-white/70">
-                        Replace this container with your final hero image,
-                        preset gallery, or polished output preview.
-                      </p>
-                    </div>
-                    <div className="absolute bottom-6 left-6 flex items-center gap-2">
-                      <span className="h-2.5 w-2.5 rounded-full bg-sky-300" />
-                      <span className="text-xs font-medium tracking-[0.24em] text-white/70 uppercase">
-                        Template Area
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="grid gap-3">
-                    <div className="rounded-[22px] border border-white/70 bg-white/72 p-4 shadow-sm backdrop-blur">
-                      <div className="text-sm font-semibold">Layout Notes</div>
-                      <p className="text-muted-foreground mt-2 text-sm leading-6">
-                        Keep a modular block here for preset details, export
-                        notes, or variant descriptions.
-                      </p>
-                    </div>
-
-                    <div className="grid flex-1 content-between rounded-[22px] border border-primary/10 bg-white/72 p-4 shadow-sm">
-                      <div className="grid gap-2">
-                        <div className="text-sm font-semibold">
-                          Delivery Frame
-                        </div>
-                        <p className="text-muted-foreground text-sm leading-6">
-                          A second template slot can hold thumbnails, output
-                          specs, or generated asset metadata.
-                        </p>
-                      </div>
-                      <div className="mt-4 grid gap-2">
-                        <div className="h-10 rounded-2xl bg-slate-100" />
-                        <div className="h-10 rounded-2xl bg-slate-100" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <Button
-                className="h-11 w-fit justify-self-center rounded-xl border-0 bg-blue-300 px-5 text-white transition-opacity hover:bg-blue-500"
-              >
-                <Download className="size-4" />
-                Download
-              </Button>
-            </div>
-          }
+          right={<ProfessionalHeadshotResultPanel />}
         />
 
         <ToolDashboardIntro
