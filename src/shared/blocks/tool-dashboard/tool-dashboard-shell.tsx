@@ -46,11 +46,11 @@ export function ToolDashboardSidebar({
     >
       <div className="flex h-screen flex-col">
         {brand ? (
-          <div className="border-border/60 border-b px-6 py-5">{brand}</div>
+          <div className="border-border/60 border-b px-6 py-3">{brand}</div>
         ) : null}
 
         {navigation ? (
-          <nav className="min-h-0 flex-1 overflow-y-auto px-4 py-5">
+          <nav className="min-h-0 flex-1 overflow-y-auto px-3 py-3">
             {navigation}
           </nav>
         ) : null}
@@ -58,7 +58,7 @@ export function ToolDashboardSidebar({
         {children}
 
         {footer ? (
-          <div className="border-border/60 border-t px-4 py-4">{footer}</div>
+          <div className="border-border/60 border-t px-3 py-2">{footer}</div>
         ) : null}
       </div>
     </aside>

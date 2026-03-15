@@ -113,15 +113,15 @@ function EffectThumbnail({
 }) {
   return (
     <div
-      className={`relative h-12 w-12 shrink-0 overflow-hidden rounded-xl ${cardClassName}`}
+      className={`relative h-12 w-12 shrink-0 overflow-hidden rounded-xl lg:max-xl:h-10 lg:max-xl:w-10 ${cardClassName}`}
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_16%,rgba(255,255,255,0.22),transparent_18%)]" />
       <div className="absolute inset-x-2.5 top-1.5 h-2.5 rounded-full bg-white/70" />
       <div
-        className={`absolute inset-x-2.5 bottom-1.5 top-5 rounded-xl ${silhouetteClassName}`}
+        className={`absolute inset-x-2.5 top-5 bottom-1.5 rounded-xl ${silhouetteClassName}`}
       />
       <div
-        className={`absolute left-1.5 top-1.5 h-2 w-2 rounded-full ${accentClassName}`}
+        className={`absolute top-1.5 left-1.5 h-2 w-2 rounded-full ${accentClassName}`}
       />
     </div>
   );
@@ -136,13 +136,13 @@ export function ProfessionalHeadshotControls() {
     effectOptions[0];
 
   return (
-    <div className="flex h-full flex-col gap-6">
+    <div className="flex h-full flex-col gap-6 lg:max-xl:gap-5">
       <Tabs
         value={activeTab}
         onValueChange={setActiveTab}
-        className="flex min-h-0 flex-1 flex-col gap-6"
+        className="flex min-h-0 flex-1 flex-col gap-6 lg:max-xl:gap-5"
       >
-        <TabsList className="border-zinc-300/80 bg-background/90 relative inline-grid h-auto w-full grid-cols-2 rounded-full border p-1 shadow-none backdrop-blur-sm">
+        <TabsList className="bg-background/90 relative inline-grid h-auto w-full grid-cols-2 rounded-full border border-zinc-300/80 p-1 shadow-none backdrop-blur-sm">
           <div
             aria-hidden
             className="bg-primary absolute inset-y-1 left-1 rounded-full transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
@@ -153,43 +153,41 @@ export function ProfessionalHeadshotControls() {
           />
           <TabsTrigger
             value="upload"
-            className="text-foreground relative z-10 h-9 min-w-0 rounded-full bg-transparent px-4 text-[0.9rem] font-[450] tracking-tight transition-[transform,color] duration-300 ease-out will-change-transform data-[state=active]:bg-transparent data-[state=active]:text-primary-foreground data-[state=active]:shadow-none active:scale-[0.98]"
+            className="text-foreground data-[state=active]:text-primary-foreground relative z-10 h-9 min-w-0 rounded-full bg-transparent px-4 text-[0.9rem] font-[450] tracking-tight transition-[transform,color] duration-300 ease-out will-change-transform active:scale-[0.98] data-[state=active]:bg-transparent data-[state=active]:shadow-none"
           >
             Upload Image
           </TabsTrigger>
           <TabsTrigger
             value="parameter"
-            className="text-foreground relative z-10 h-9 min-w-0 rounded-full bg-transparent px-4 text-[0.9rem] font-[450] tracking-tight transition-[transform,color] duration-300 ease-out will-change-transform data-[state=active]:bg-transparent data-[state=active]:text-primary-foreground data-[state=active]:shadow-none active:scale-[0.98]"
+            className="text-foreground data-[state=active]:text-primary-foreground relative z-10 h-9 min-w-0 rounded-full bg-transparent px-4 text-[0.9rem] font-[450] tracking-tight transition-[transform,color] duration-300 ease-out will-change-transform active:scale-[0.98] data-[state=active]:bg-transparent data-[state=active]:shadow-none"
           >
             Parameter
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="upload" className="mt-0 flex-1">
-          <div className="grid gap-6">
+          <div className="grid gap-6 lg:max-xl:gap-5">
             <div className="grid gap-2">
-              <div className="flex items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <div className="text-sm font-medium">Upload Image</div>
-                  <FieldBadge variant="required">
-                    Required
-                  </FieldBadge>
+                  <FieldBadge variant="required">Required</FieldBadge>
                 </div>
               </div>
 
-              <div className="border-primary/40 bg-primary/5 grid min-h-[168px] place-items-center rounded-2xl border-2 border-dashed px-6 py-5 text-center">
-                <div className="grid gap-2">
-                  <div className="bg-primary/10 text-primary mx-auto flex size-14 items-center justify-center rounded-2xl">
-                    <Upload className="size-6" />
+              <div className="border-primary/40 bg-primary/5 grid min-h-[128px] place-items-center rounded-2xl border-2 border-dashed px-6 py-5 text-center lg:max-xl:min-h-[120px] lg:max-xl:px-4 lg:max-xl:py-4">
+                <div className="grid gap-2 lg:max-xl:gap-1.5">
+              <div className="border-primary/40 bg-primary/5 grid min-h-[168px] place-items-center rounded-2xl border-2 border-dashed px-6 py-5 text-center lg:max-xl:min-h-[148px] lg:max-xl:px-4 lg:max-xl:py-4">
+                    <Upload className="size-6 lg:max-xl:size-5" />
                   </div>
-                  <div className="grid gap-1.5">
-                    <p className="text-base font-medium text-slate-700">
+                  <div className="grid gap-1.5 lg:max-xl:gap-1">
+                    <p className="text-base font-medium break-words text-slate-700 lg:max-xl:text-sm">
                       Drop files or{' '}
                       <span className="text-primary font-semibold">
                         click to upload
                       </span>
                     </p>
-                    <p className="text-muted-foreground text-xs leading-5">
+                    <p className="text-muted-foreground text-xs leading-5 lg:max-xl:leading-[1.125rem]">
                       PNG, JPG, JPEG or WEBP (max 10MB each)
                       <br />
                       <span className="text-primary font-medium">
@@ -202,26 +200,26 @@ export function ProfessionalHeadshotControls() {
             </div>
 
             <div className="grid gap-2">
-              <div className="flex items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <div className="text-sm font-medium">Description</div>
                   <FieldBadge>Optional</FieldBadge>
                 </div>
               </div>
 
-              <div className="border-border bg-white relative min-h-[124px] rounded-2xl border px-4 py-4">
+              <div className="border-border relative min-h-[124px] rounded-2xl border bg-white px-4 py-4 lg:max-xl:min-h-[112px] lg:max-xl:px-3.5 lg:max-xl:py-3.5">
                 <p className="text-muted-foreground text-sm leading-5">
                   Describe how your image should look like...
                 </p>
-                <div className="text-muted-foreground absolute bottom-3 right-4 flex items-center gap-2 text-xs">
+                <div className="text-muted-foreground absolute right-4 bottom-3 flex items-center gap-2 text-xs lg:max-xl:right-3.5 lg:max-xl:bottom-2.5 lg:max-xl:gap-1.5">
                   <Sparkles className="size-3.5" />
                   <span>0/1000</span>
                 </div>
               </div>
             </div>
 
-            <div className="grid gap-3">
-              <div className="flex items-center gap-2">
+            <div className="grid gap-3 lg:max-xl:gap-2.5">
+              <div className="flex flex-wrap items-center gap-2">
                 <div className="text-sm font-medium">Effect Style</div>
                 <FieldBadge variant="required">Required</FieldBadge>
               </div>
@@ -230,7 +228,7 @@ export function ProfessionalHeadshotControls() {
                 <DropdownMenuTrigger asChild>
                   <button
                     type="button"
-                    className="border-border/70 bg-background hover:border-primary/25 flex w-full items-center gap-3 rounded-2xl border px-3 py-2.5 text-left shadow-[0_6px_18px_rgba(15,23,42,0.04)] transition-colors outline-none"
+                    className="border-border/70 bg-background hover:border-primary/25 flex w-full min-w-0 items-center gap-3 rounded-2xl border px-3 py-2.5 text-left shadow-[0_6px_18px_rgba(15,23,42,0.04)] transition-colors outline-none lg:max-xl:gap-2.5 lg:max-xl:px-2.5 lg:max-xl:py-2"
                   >
                     <EffectThumbnail
                       accentClassName={selectedEffect.accentClassName}
@@ -238,7 +236,7 @@ export function ProfessionalHeadshotControls() {
                       silhouetteClassName={selectedEffect.silhouetteClassName}
                     />
                     <div className="min-w-0 flex-1">
-                      <div className="text-foreground truncate text-[15px] font-semibold">
+                      <div className="text-foreground truncate text-[15px] font-semibold lg:max-xl:text-sm">
                         {selectedEffect.label}
                       </div>
                     </div>
@@ -248,7 +246,7 @@ export function ProfessionalHeadshotControls() {
 
                 <DropdownMenuContent
                   align="start"
-                  className="w-[var(--radix-dropdown-menu-trigger-width)] rounded-2xl border border-border/70 p-2 shadow-xl"
+                  className="border-border/70 w-[var(--radix-dropdown-menu-trigger-width)] rounded-2xl border p-2 shadow-xl"
                   sideOffset={8}
                 >
                   {effectOptions.map((effect) => {
@@ -257,7 +255,7 @@ export function ProfessionalHeadshotControls() {
                     return (
                       <DropdownMenuItem
                         key={effect.id}
-                        className="focus:bg-primary/5 flex items-center gap-3 rounded-xl px-3 py-3"
+                        className="focus:bg-primary/5 flex items-center gap-3 rounded-xl px-3 py-3 lg:max-xl:gap-2.5 lg:max-xl:px-2.5 lg:max-xl:py-2.5"
                         onClick={() => setSelectedEffectId(effect.id)}
                       >
                         <EffectThumbnail
@@ -283,9 +281,9 @@ export function ProfessionalHeadshotControls() {
         </TabsContent>
 
         <TabsContent value="parameter" className="mt-0 flex-1">
-          <div className="grid gap-6">
+          <div className="grid gap-6 lg:max-xl:gap-5">
             <div className="grid gap-2">
-              <div className="flex items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <div className="text-sm font-medium">Model</div>
                   <FieldBadge>Default</FieldBadge>
@@ -309,8 +307,8 @@ export function ProfessionalHeadshotControls() {
             </div>
 
             <div className="grid gap-2">
-              <div className="grid gap-4">
-                <div className="grid gap-2 min-w-0">
+              <div className="grid gap-4 lg:max-xl:gap-3.5">
+                <div className="grid min-w-0 gap-2">
                   <div className="flex items-center gap-2">
                     <div className="text-sm font-medium">Aspect Ratio</div>
                     <FieldBadge>Default</FieldBadge>
@@ -329,7 +327,7 @@ export function ProfessionalHeadshotControls() {
                   </Select>
                 </div>
 
-                <div className="grid gap-2 min-w-0">
+                <div className="grid min-w-0 gap-2">
                   <div className="flex items-center gap-2">
                     <div className="text-sm font-medium">Quality</div>
                     <FieldBadge>Default</FieldBadge>
@@ -348,7 +346,7 @@ export function ProfessionalHeadshotControls() {
                   </Select>
                 </div>
 
-                <div className="grid gap-2 min-w-0">
+                <div className="grid min-w-0 gap-2">
                   <div className="flex items-center gap-2">
                     <div className="text-sm font-medium">Count</div>
                     <FieldBadge>Default</FieldBadge>
@@ -360,9 +358,7 @@ export function ProfessionalHeadshotControls() {
                     <SelectContent>
                       {batchSizeOptions.map((item) => (
                         <SelectItem key={item.label} value={item.label}>
-                          {item.premium
-                            ? `${item.label} Premium`
-                            : item.label}
+                          {item.premium ? `${item.label} Premium` : item.label}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -374,9 +370,12 @@ export function ProfessionalHeadshotControls() {
         </TabsContent>
       </Tabs>
 
-      <Button size="lg" className="mt-auto min-w-44 rounded-xl text-base">
+      <Button
+        size="lg"
+        className="mt-auto min-w-44 rounded-xl text-base lg:max-xl:min-w-0 lg:max-xl:text-sm"
+      >
         Submit
-        <span className="ml-2 inline-flex items-center gap-1 rounded-md bg-black/10 px-1.5 text-base dark:bg-white/15">
+        <span className="ml-2 inline-flex items-center gap-1 rounded-md bg-black/10 px-1.5 text-base lg:max-xl:text-sm dark:bg-white/15">
           15
           <RiVipDiamondFill className="size-4 text-amber-400" />
         </span>

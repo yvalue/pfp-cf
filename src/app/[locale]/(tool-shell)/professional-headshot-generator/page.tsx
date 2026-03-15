@@ -1,6 +1,9 @@
+import Image from 'next/image';
 import Link from 'next/link';
-import { Sparkles } from 'lucide-react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { User } from 'lucide-react';
+
+import { envConfigs } from '@/config';
 
 import {
   ToolDashboardMain,
@@ -18,10 +21,11 @@ import {
   BreadcrumbSeparator,
 } from '@/shared/components/ui/breadcrumb';
 import { Button } from '@/shared/components/ui/button';
-import { FeaturesAccordion } from '@/themes/ai-pfp/blocks/features-accordion';
+import { FeaturesGuide } from '@/themes/ai-pfp/blocks/features-guide';
 import { Faq } from '@/themes/ai-pfp/blocks/faq';
 
 import { ProfessionalHeadshotControls } from './professional-headshot-controls';
+import { ProfessionalHeadshotMobileNav } from './professional-headshot-mobile-nav';
 import { ProfessionalHeadshotResultPanel } from './professional-headshot-result-panel';
 
 export const revalidate = 3600;
@@ -79,7 +83,7 @@ const baseImageGuideSection = {
   title: 'How to Create an Upload-Ready Professional Headshot Base Image',
   description:
     'To generate a high-quality result, the base photo matters. Follow the steps below to prepare a clear portrait image for better AI output.',
-  className: 'border-border/60 border-t',
+  className: 'border-border/60 border-t mt-8',
   image: {
     src: '/imgs/tool-dashboard/professional-headshot-generator/how-to-create-professional%20headshot.jpg',
     alt: 'Professional headshot preparation guide illustration',
@@ -153,23 +157,31 @@ export default async function ProfessionalHeadshotGeneratorPage({
   const t = await getTranslations('common');
   const homeHref = `/${locale}`;
   const routeHref = `/${locale}/professional-headshot-generator`;
+  const signInHref = `/${locale}/sign-in`;
   const sidebarItems = [
-    { label: 'Professional Headshot', href: routeHref, active: true },
+    {
+      label: 'Professional Headshot',
+      href: routeHref,
+      active: true,
+      icon: 'user' as const,
+    },
   ];
 
   return (
     <ToolDashboardShell>
       <ToolDashboardSidebar
         brand={
-          <Link className="flex items-center gap-3" href={routeHref}>
-            <div className="bg-primary/12 text-primary flex size-10 items-center justify-center rounded-2xl">
-              <Sparkles className="size-5" />
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-lg font-semibold tracking-tight">
-                AI_PFP
-              </span>
-            </div>
+          <Link className="flex items-center gap-3" href={homeHref}>
+            <Image
+              src={envConfigs.app_logo}
+              alt={envConfigs.app_name}
+              width={36}
+              height={36}
+              className=""
+            />
+            <span className="text-lg font-semibold tracking-tight">
+              {envConfigs.app_name}
+            </span>
           </Link>
         }
         navigation={
@@ -178,30 +190,37 @@ export default async function ProfessionalHeadshotGeneratorPage({
               <Link
                 key={item.label}
                 className={[
-                  'flex items-center justify-between rounded-2xl px-3 py-3 text-sm font-medium transition-colors',
+                  'flex items-center rounded-2xl px-3 py-2 text-sm font-medium transition-colors',
                   item.active
                     ? 'bg-primary/10 text-foreground'
                     : 'text-muted-foreground hover:bg-muted/70 hover:text-foreground',
                 ].join(' ')}
                 href={item.href}
               >
-                <span>{item.label}</span>
-                {item.active ? (
-                  <span className="bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-[11px] font-semibold">
-                    Live
-                  </span>
+                {item.icon === 'user' ? (
+                  <User className="mr-2.5 size-4 shrink-0" />
                 ) : null}
+                <span className="tracking-tight">{item.label}</span>
               </Link>
             ))}
           </div>
         }
         footer={
-          <div className="border-border/60 bg-background/80 grid gap-3 rounded-[24px] border p-4">
+          <div className="bg-background/70 grid gap-1.5 rounded-2xl px-2 py-2">
             <Button className="w-full justify-center" size="sm">
               Upgrade
             </Button>
           </div>
         }
+      />
+
+      <ProfessionalHeadshotMobileNav
+        appLogo={envConfigs.app_logo}
+        appName={envConfigs.app_name}
+        homeHref={homeHref}
+        items={sidebarItems}
+        signInHref={signInHref}
+        signInLabel={t('sign.sign_in_title')}
       />
 
       <ToolDashboardMain>
@@ -222,22 +241,24 @@ export default async function ProfessionalHeadshotGeneratorPage({
             </Breadcrumb>
           }
           userInfo={
-            <Button asChild size="sm">
-              <Link href={`/${locale}/sign-in`}>{t('sign.sign_in_title')}</Link>
-            </Button>
+            <div className="hidden lg:flex">
+              <Button asChild size="sm">
+                <Link href={signInHref}>{t('sign.sign_in_title')}</Link>
+              </Button>
+            </div>
           }
         />
 
         <ToolDashboardWorkbench
           className="border-0 bg-transparent px-0 py-2"
           gridClassName="gap-4 lg:grid-cols-12 xl:grid-cols-12"
-          leftPaneClassName="rounded-[20px] border-primary/10 bg-white/85 backdrop-blur-xl lg:col-span-4 lg:px-7 lg:py-6"
+          leftPaneClassName="rounded-[20px] border-primary/10 bg-white/85 backdrop-blur-xl lg:col-span-4 lg:px-5 lg:py-5 xl:px-7 xl:py-6"
           rightPaneClassName="rounded-[20px] border-primary/10 bg-white/85 backdrop-blur-xl lg:col-span-8 lg:px-7 lg:py-6"
           left={<ProfessionalHeadshotControls />}
           right={<ProfessionalHeadshotResultPanel />}
         />
 
-        <FeaturesAccordion section={baseImageGuideSection} />
+        <FeaturesGuide section={baseImageGuideSection} />
 
         <Faq className="border-border/60 border-t" section={faqSection} />
       </ToolDashboardMain>
