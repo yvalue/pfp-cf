@@ -8,6 +8,7 @@ import {
 } from '@/shared/components/ui/accordion';
 import { ScrollAnimation } from '@/shared/components/ui/scroll-animation';
 import { TextHighlight } from '@/shared/components/text-highlight';
+import { cn } from '@/shared/lib/utils';
 import { Section } from '@/shared/types/blocks/landing';
 
 export function Faq({
@@ -18,52 +19,43 @@ export function Faq({
   className?: string;
 }) {
   return (
-    <section id={section.id} className={`py-16 md:py-24 ${className}`}>
-      <div className={`mx-auto max-w-full px-4 md:max-w-3xl md:px-8`}>
+    <section id={section.id} className={cn('py-8 md:py-16', className)}>
+      <div className="container !max-w-4xl px-2 sm:px-6">
         <ScrollAnimation>
-          <div className="mx-auto max-w-2xl text-center text-balance">
-            <h2 className="text-foreground mb-4 text-3xl font-semibold tracking-tight md:text-4xl">
-              {section.title}
-            </h2>
-            <p className="text-muted-foreground mb-6 md:mb-12 lg:mb-16">
-              {section.description}
-            </p>
+          <div className="px-5 py-7 text-center sm:px-7 md:px-9 md:py-9">
+            <div className="mx-auto max-w-3xl">
+              <h2 className="text-foreground mb-3 text-2xl font-semibold tracking-tight md:text-3xl">
+                {section.title}
+              </h2>
+              <p className="text-muted-foreground text-lg leading-8">
+                {section.description}
+              </p>
+            </div>
           </div>
-        </ScrollAnimation>
 
-        <ScrollAnimation delay={0.2}>
-          <div className="mx-auto mt-12 max-w-full">
-            <Accordion
-              type="single"
-              collapsible
-              className="bg-muted dark:bg-muted/50 w-full rounded-2xl p-1"
-            >
-              {section.items?.map((item, idx) => (
-                <div className="group" key={idx}>
+          <div className="border-primary/25 bg-background/70 overflow-hidden rounded-3xl border">
+            <div className="px-5 py-2 sm:px-7 md:px-9 md:py-3">
+              <Accordion type="single" collapsible className="w-full">
+                {section.items?.map((item, idx) => (
                   <AccordionItem
+                    key={idx}
                     value={item.question || item.title || ''}
-                    className="data-[state=open]:bg-card dark:data-[state=open]:bg-muted peer rounded-xl border-none px-7 py-1 data-[state=open]:border-none data-[state=open]:shadow-sm"
+                    className="border-primary/25 border-b last:border-b-0"
                   >
-                    <AccordionTrigger className="cursor-pointer text-base hover:no-underline">
+                    <AccordionTrigger className="cursor-pointer items-center py-5 text-base font-semibold hover:no-underline md:text-lg">
                       {item.question || item.title || ''}
                     </AccordionTrigger>
-                    <AccordionContent>
-                      <p className="text-base">
+                    <AccordionContent className="pb-5">
+                      <p className="text-muted-foreground max-w-3xl text-base leading-8">
                         <TextHighlight
                           text={item.answer || item.description || ''}
                         />
                       </p>
                     </AccordionContent>
                   </AccordionItem>
-                  <hr className="mx-7 border-dashed group-last:hidden peer-data-[state=open]:opacity-0" />
-                </div>
-              ))}
-            </Accordion>
-
-            <p
-              className="text-muted-foreground mt-6 px-8"
-              dangerouslySetInnerHTML={{ __html: section.tip || '' }}
-            />
+                ))}
+              </Accordion>
+            </div>
           </div>
         </ScrollAnimation>
       </div>

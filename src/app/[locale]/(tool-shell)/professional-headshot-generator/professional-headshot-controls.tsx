@@ -177,7 +177,7 @@ export function ProfessionalHeadshotControls() {
 
               <div className="border-primary/40 bg-primary/5 grid min-h-[128px] place-items-center rounded-2xl border-2 border-dashed px-6 py-5 text-center lg:max-xl:min-h-[120px] lg:max-xl:px-4 lg:max-xl:py-4">
                 <div className="grid gap-2 lg:max-xl:gap-1.5">
-              <div className="border-primary/40 bg-primary/5 grid min-h-[168px] place-items-center rounded-2xl border-2 border-dashed px-6 py-5 text-center lg:max-xl:min-h-[148px] lg:max-xl:px-4 lg:max-xl:py-4">
+                  <div className="bg-primary/10 text-primary mx-auto flex size-14 items-center justify-center rounded-2xl lg:max-xl:size-12">
                     <Upload className="size-6 lg:max-xl:size-5" />
                   </div>
                   <div className="grid gap-1.5 lg:max-xl:gap-1">
