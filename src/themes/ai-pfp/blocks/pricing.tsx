@@ -35,6 +35,8 @@ import {
   Pricing as PricingType,
 } from '@/shared/types/blocks/pricing';
 
+type SelectedCurrencies = Record<string, string>;
+
 // Helper function to get all available currencies from a pricing item
 function getCurrenciesFromItem(item: PricingItem | null): PricingCurrency[] {
   if (!item) return [];
@@ -75,6 +77,32 @@ function getInitialCurrency(
 
   // Otherwise return default currency
   return defaultCurrency;
+}
+
+function getDisplayedPricingItem(
+  item: PricingItem,
+  selectedCurrency: string
+): PricingItem {
+  const currencies = getCurrenciesFromItem(item);
+  const currencyData = currencies.find(
+    (currency) =>
+      currency.currency.toLowerCase() === selectedCurrency.toLowerCase()
+  );
+
+  if (!currencyData) {
+    return item;
+  }
+
+  return {
+    ...item,
+    currency: currencyData.currency,
+    amount: currencyData.amount,
+    price: currencyData.price,
+    original_price: currencyData.original_price,
+    payment_product_id:
+      currencyData.payment_product_id || item.payment_product_id,
+    payment_providers: currencyData.payment_providers || item.payment_providers,
+  };
 }
 
 function getPricingGridClassName(itemCount: number): string {
@@ -143,57 +171,27 @@ export function Pricing({
   const [pricingItem, setPricingItem] = useState<PricingItem | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [productId, setProductId] = useState<string | null>(null);
+  const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
 
-  // Currency state management for each item
-  // Store selected currency and displayed item for each product_id
-  const [itemCurrencies, setItemCurrencies] = useState<
-    Record<string, { selectedCurrency: string; displayedItem: PricingItem }>
-  >({});
+  // Store the selected currency for each product_id.
+  const [selectedCurrencies, setSelectedCurrencies] =
+    useState<SelectedCurrencies>({});
 
-  // Initialize currency states for all items
+  // Initialize selected currency for all items.
   useEffect(() => {
     if (section.items && section.items.length > 0) {
-      const initialCurrencyStates: Record<
-        string,
-        { selectedCurrency: string; displayedItem: PricingItem }
-      > = {};
+      const initialSelectedCurrencies: SelectedCurrencies = {};
 
       section.items.forEach((item) => {
         const currencies = getCurrenciesFromItem(item);
-        const selectedCurrency = getInitialCurrency(
+        initialSelectedCurrencies[item.product_id] = getInitialCurrency(
           currencies,
           locale,
           item.currency
         );
-
-        // Create displayed item with selected currency
-        const currencyData = currencies.find(
-          (c) => c.currency.toLowerCase() === selectedCurrency.toLowerCase()
-        );
-
-        const displayedItem = currencyData
-          ? {
-              ...item,
-              currency: currencyData.currency,
-              amount: currencyData.amount,
-              price: currencyData.price,
-              original_price: currencyData.original_price,
-              // Override with currency-specific payment settings if available
-              payment_product_id:
-                currencyData.payment_product_id || item.payment_product_id,
-              payment_providers:
-                currencyData.payment_providers || item.payment_providers,
-            }
-          : item;
-
-        initialCurrencyStates[item.product_id] = {
-          selectedCurrency,
-          displayedItem,
-        };
       });
 
-      setItemCurrencies(initialCurrencyStates);
+      setSelectedCurrencies(initialSelectedCurrencies);
     }
   }, [section.items, locale]);
 
@@ -208,25 +206,9 @@ export function Pricing({
     );
 
     if (currencyData) {
-      const displayedItem = {
-        ...item,
-        currency: currencyData.currency,
-        amount: currencyData.amount,
-        price: currencyData.price,
-        original_price: currencyData.original_price,
-        // Override with currency-specific payment settings if available
-        payment_product_id:
-          currencyData.payment_product_id || item.payment_product_id,
-        payment_providers:
-          currencyData.payment_providers || item.payment_providers,
-      };
-
-      setItemCurrencies((prev) => ({
+      setSelectedCurrencies((prev) => ({
         ...prev,
-        [productId]: {
-          selectedCurrency: currency,
-          displayedItem,
-        },
+        [productId]: currency,
       }));
     }
   };
@@ -238,8 +220,9 @@ export function Pricing({
     }
 
     // Use displayed item with selected currency
-    const displayedItem =
-      itemCurrencies[item.product_id]?.displayedItem || item;
+    const selectedCurrency =
+      selectedCurrencies[item.product_id] || item.currency;
+    const displayedItem = getDisplayedPricingItem(item, selectedCurrency);
 
     if (configs.select_payment_enabled === 'true') {
       setPricingItem(displayedItem);
@@ -303,7 +286,7 @@ export function Pricing({
       };
 
       setIsLoading(true);
-      setProductId(item.product_id);
+      setLoadingProductId(item.product_id);
 
       const response = await fetch('/api/payment/checkout', {
         method: 'POST',
@@ -315,7 +298,7 @@ export function Pricing({
 
       if (response.status === 401) {
         setIsLoading(false);
-        setProductId(null);
+        setLoadingProductId(null);
         setPricingItem(null);
         setIsShowSignModal(true);
         return;
@@ -336,22 +319,16 @@ export function Pricing({
       }
 
       window.location.href = checkoutUrl;
-    } catch (e: any) {
-      console.log('checkout failed: ', e);
-      toast.error('checkout failed: ' + e.message);
+    } catch (error) {
+      console.error('checkout failed:', error);
+      const message =
+        error instanceof Error ? error.message : 'unknown checkout error';
+      toast.error(`checkout failed: ${message}`);
 
       setIsLoading(false);
-      setProductId(null);
+      setLoadingProductId(null);
     }
   };
-
-  useEffect(() => {
-    if (section.items) {
-      const featuredItem = section.items.find((i) => i.is_featured);
-      setProductId(featuredItem?.product_id || section.items[0]?.product_id);
-      setIsLoading(false);
-    }
-  }, [section.items]);
 
   const visibleItems =
     section.items?.filter((item) => !item.group || item.group === group) ?? [];
@@ -379,7 +356,7 @@ export function Pricing({
     return (
       <Card
         className={cn(
-          'border-border/60 bg-background relative flex h-full flex-col rounded-3xl border px-6 py-6 shadow-sm shadow-zinc-950/5 transition-colors duration-200 hover:border-primary lg:px-7 lg:py-7',
+          'border-border/60 bg-background hover:border-primary relative flex h-full flex-col rounded-3xl border px-6 py-6 shadow-sm shadow-zinc-950/5 transition-colors duration-200 lg:px-7 lg:py-7',
           cardClassName
         )}
       >
@@ -434,18 +411,18 @@ export function Pricing({
             </p>
           )}
 
-                  <ul className="space-y-3 text-sm">
-                    {displayedFreeCard.features?.map((feature, index) => (
-                      <li key={index} className="flex items-start gap-3">
-                        {displayedFreeCard.crossed_features?.includes(feature) ? (
-                          <X className="mt-1 size-4 shrink-0 text-red-500" />
-                        ) : (
-                          <Check className="text-primary mt-1 size-4 shrink-0" />
-                        )}
-                        <span className="text-muted-foreground leading-normal">
-                          <TextHighlight text={feature} />
-                        </span>
-                      </li>
+          <ul className="space-y-3 text-sm">
+            {displayedFreeCard.features?.map((feature, index) => (
+              <li key={index} className="flex items-start gap-3">
+                {displayedFreeCard.crossed_features?.includes(feature) ? (
+                  <X className="mt-1 size-4 shrink-0 text-red-500" />
+                ) : (
+                  <Check className="text-primary mt-1 size-4 shrink-0" />
+                )}
+                <span className="text-muted-foreground leading-normal">
+                  <TextHighlight text={feature} />
+                </span>
+              </li>
             ))}
           </ul>
         </CardContent>
@@ -486,7 +463,7 @@ export function Pricing({
           <div className="mx-auto mb-4 flex w-full justify-center overflow-x-auto px-4 md:mb-6">
             <Tabs value={group} onValueChange={setGroup} className="max-w-full">
               <TabsList
-                className="border-zinc-300/80 bg-background/90 relative inline-grid h-auto w-max min-w-max rounded-full border p-1 shadow-none backdrop-blur-sm"
+                className="bg-background/90 relative inline-grid h-auto w-max min-w-max rounded-full border border-zinc-300/80 p-1 shadow-none backdrop-blur-sm"
                 style={{
                   gridTemplateColumns: `repeat(${groupCount}, minmax(0, 1fr))`,
                 }}
@@ -505,9 +482,9 @@ export function Pricing({
                 {section.groups.map((item, i) => {
                   return (
                     <TabsTrigger
-                      key={i}
+                      key={item.name ?? `group-${i}`}
                       value={item.name || ''}
-                      className="text-foreground relative z-10 h-8 min-w-[112px] shrink-0 rounded-full bg-transparent px-3.5 text-[0.84rem] font-[450] tracking-tight transition-[transform,color] duration-300 ease-out will-change-transform data-[state=active]:bg-transparent data-[state=active]:text-primary-foreground data-[state=active]:shadow-none active:scale-[0.98] md:h-9 md:min-w-[132px] md:px-4 md:text-[0.9rem]"
+                      className="text-foreground data-[state=active]:text-primary-foreground relative z-10 h-8 min-w-[112px] shrink-0 rounded-full bg-transparent px-3.5 text-[0.84rem] font-[450] tracking-tight transition-[transform,color] duration-300 ease-out will-change-transform active:scale-[0.98] data-[state=active]:bg-transparent data-[state=active]:shadow-none md:h-9 md:min-w-[132px] md:px-4 md:text-[0.9rem]"
                     >
                       <span className="flex items-center justify-center gap-1">
                         <span>{item.title}</span>
@@ -531,7 +508,7 @@ export function Pricing({
             pricingGridClassName
           )}
         >
-          {visibleItems.map((item: PricingItem, idx) => {
+          {visibleItems.map((item: PricingItem) => {
             let isCurrentPlan = false;
             if (
               currentSubscription &&
@@ -541,21 +518,22 @@ export function Pricing({
             }
 
             // Get currency state for this item
-            const currencyState = itemCurrencies[item.product_id];
-            const displayedItem = currencyState?.displayedItem || item;
             const selectedCurrency =
-              currencyState?.selectedCurrency || item.currency;
+              selectedCurrencies[item.product_id] || item.currency;
             const currencies = getCurrenciesFromItem(item);
+            const displayedItem = getDisplayedPricingItem(
+              item,
+              selectedCurrency
+            );
             const isFeatured = Boolean(item.is_featured);
 
             return (
               <Card
-                key={idx}
+                key={item.product_id}
                 className={cn(
-                  'relative flex h-full flex-col rounded-3xl border px-6 py-6 shadow-sm shadow-zinc-950/5 transition-colors duration-200 hover:border-primary lg:px-7 lg:py-7',
+                  'hover:border-primary relative flex h-full flex-col rounded-3xl border px-6 py-6 shadow-sm shadow-zinc-950/5 transition-colors duration-200 lg:px-7 lg:py-7',
                   'border-border/60 bg-background',
-                  isFeatured &&
-                    'bg-primary/5 shadow-primary/10'
+                  isFeatured && 'bg-primary/5 shadow-primary/10'
                 )}
               >
                 <CardHeader className="p-0">
@@ -651,7 +629,7 @@ export function Pricing({
                           : 'border-border/80 bg-background text-foreground hover:bg-muted/90 border shadow-sm shadow-black/5'
                       )}
                     >
-                      {isLoading && item.product_id === productId ? (
+                      {isLoading && item.product_id === loadingProductId ? (
                         <>
                           <Loader2 className="size-4 animate-spin" />
                           <span className="block">{t('processing')}</span>
