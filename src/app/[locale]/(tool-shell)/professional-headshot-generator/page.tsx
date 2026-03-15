@@ -1,18 +1,9 @@
 import Link from 'next/link';
-import {
-  Briefcase,
-  Check,
-  ShieldCheck,
-  Sparkles,
-  Wand2,
-} from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import {
-  ToolDashboardFaq,
-  ToolDashboardIntro,
   ToolDashboardMain,
-  ToolDashboardSection,
   ToolDashboardShell,
   ToolDashboardSidebar,
   ToolDashboardTopbar,
@@ -27,6 +18,8 @@ import {
   BreadcrumbSeparator,
 } from '@/shared/components/ui/breadcrumb';
 import { Button } from '@/shared/components/ui/button';
+import { FeaturesAccordion } from '@/themes/ai-pfp/blocks/features-accordion';
+import { Faq } from '@/themes/ai-pfp/blocks/faq';
 
 import { ProfessionalHeadshotControls } from './professional-headshot-controls';
 import { ProfessionalHeadshotResultPanel } from './professional-headshot-result-panel';
@@ -41,32 +34,113 @@ export const generateMetadata = async () => ({
   },
 });
 
-const featureHighlights = [
-  'Turn casual portraits into polished business-ready headshots.',
-  'Keep the interaction surface focused while long-form content stays below.',
-  'Reuse the same dashboard shell for future portrait or profile tools.',
-];
-
 const faqItems = [
   {
-    value: 'faq-photo',
-    question: 'What kind of source photo works best?',
+    value: 'faq-upload-photo',
+    question: 'What kind of photo should I upload?',
     answer:
-      'Use a clear front-facing portrait with even lighting and minimal blur. The better the source image, the more natural the generated headshot looks.',
+      'Upload a clear front-facing portrait with even lighting and visible shoulders. A simple background and sharp facial details will usually produce a better professional headshot.',
   },
   {
-    value: 'faq-style',
-    question: 'Can I request a specific professional style?',
+    value: 'faq-description',
+    question: 'Do I need to write a description?',
     answer:
-      'Yes. Use the instruction field to describe wardrobe, expression, background, and lighting direction so the final portrait matches your use case.',
+      'No. You can generate a result with the default style settings. If you want more control, add a short description for outfit, background, lighting, or expression.',
+  },
+  {
+    value: 'faq-generation-time',
+    question: 'How long does it take to generate a headshot?',
+    answer:
+      'Generation usually takes a few seconds to a short wait, depending on image size, selected settings, and current traffic.',
   },
   {
     value: 'faq-usage',
-    question: 'Where can I use the generated result?',
+    question: 'Where can I use the generated headshot?',
     answer:
-      'This type of image is suitable for LinkedIn, personal websites, resumes, team pages, and internal company directories.',
+      'You can use it for LinkedIn, resumes, personal websites, team profile pages, business cards, and other professional profile placements.',
+  },
+  {
+    value: 'faq-better-results',
+    question: 'What should I do if the result does not look right?',
+    answer:
+      'Try uploading a clearer photo, choosing a different style, or refining the description. Small changes to lighting, background, and expression instructions can improve the final result.',
   },
 ];
+
+const faqSection = {
+  title: 'Professional headshot questions',
+  description:
+    'Common questions about uploading, generating, and using your professional headshot.',
+  tip: 'Start with a clear portrait, then adjust style or description only if you need a more specific result.',
+  items: faqItems,
+};
+
+const baseImageGuideSection = {
+  title: 'How to Create an Upload-Ready Professional Headshot Base Image',
+  description:
+    'To generate a high-quality result, the base photo matters. Follow the steps below to prepare a clear portrait image for better AI output.',
+  className: 'border-border/60 border-t',
+  image: {
+    src: '/imgs/tool-dashboard/professional-headshot-generator/how-to-create-professional%20headshot.jpg',
+    alt: 'Professional headshot preparation guide illustration',
+  },
+  items: [
+    {
+      title: '1. Outfit and Appearance',
+      description:
+        'Choose clean, business-style clothing such as a light shirt with a dark jacket. Keep your hair neat, makeup and accessories simple, reduce facial shine, and avoid strong glare on glasses. The goal is a clean, natural look.',
+      image: {
+        src: '/imgs/tool-dashboard/professional-headshot-generator/before.jpg',
+        alt: 'Professional headshot base image example',
+      },
+    },
+    {
+      title: '2. Choose the Right Light',
+      description:
+        'Stand in front of a window and face soft natural light. Overcast daylight or filtered window light works best. Avoid direct sun, harsh shadows, and mixed indoor lighting that can make skin tones look uneven.',
+      image: {
+        src: '/imgs/tool-dashboard/professional-headshot-generator/before.jpg',
+        alt: 'Professional headshot base image example',
+      },
+    },
+    {
+      title: '3. Keep the Background Simple',
+      description:
+        'Use a plain wall or a simple indoor background with some contrast from your clothing. Avoid cluttered spaces or backgrounds that blend into your hair and outfit. A simple background helps the AI read your outline more accurately.',
+      image: {
+        src: '/imgs/tool-dashboard/professional-headshot-generator/before.jpg',
+        alt: 'Professional headshot base image example',
+      },
+    },
+    {
+      title: '4. Use the Right Shooting Angle',
+      description:
+        'Use the main camera on your phone or camera and keep it at eye level. Relax your shoulders, lean slightly forward, and keep a natural expression. Frame your head, shoulders, and upper body with a little space above the head and no cropped shoulders.',
+      image: {
+        src: '/imgs/tool-dashboard/professional-headshot-generator/before.jpg',
+        alt: 'Professional headshot base image example',
+      },
+    },
+    {
+      title: '5. Take Multiple Options',
+      description:
+        'Take at least ten photos before choosing one to upload. Try a soft smile, a neutral expression, small angle changes, and slightly different light positions. More options give you a better chance of finding the ideal base image.',
+      image: {
+        src: '/imgs/tool-dashboard/professional-headshot-generator/before.jpg',
+        alt: 'Professional headshot base image example',
+      },
+    },
+    {
+      title: '6. Check Before Upload',
+      description:
+        'Make sure the image is sharp, evenly lit, centered, and clean in the background. Confirm the shoulders are visible and the face is clearly in focus. A photo that meets these conditions is a strong base image for generation.',
+      image: {
+        src: '/imgs/tool-dashboard/professional-headshot-generator/before.jpg',
+        alt: 'Professional headshot base image example',
+      },
+    },
+  ],
+};
 
 export default async function ProfessionalHeadshotGeneratorPage({
   params,
@@ -163,99 +237,9 @@ export default async function ProfessionalHeadshotGeneratorPage({
           right={<ProfessionalHeadshotResultPanel />}
         />
 
-        <ToolDashboardIntro
-          description="Keep descriptive product content below the workbench so the upper area stays focused on upload, generation, and review."
-          eyebrow="Overview"
-          highlights={
-            <div className="border-border/60 bg-background/70 grid gap-3 rounded-[26px] border p-5">
-              <div className="text-sm font-semibold">
-                Why it fits this shell
-              </div>
-              <div className="grid gap-3">
-                {featureHighlights.map((item) => (
-                  <div
-                    key={item}
-                    className="border-border/50 bg-card grid grid-cols-[auto_1fr] items-start gap-3 rounded-2xl border px-4 py-3"
-                  >
-                    <div className="bg-primary/12 text-primary mt-0.5 flex size-5 items-center justify-center rounded-full">
-                      <Check className="size-3.5" />
-                    </div>
-                    <p className="text-muted-foreground text-sm leading-6">
-                      {item}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          }
-          title="Professional Headshot Generator"
-        >
-          <div className="text-muted-foreground grid gap-4 text-sm leading-7 md:text-base">
-            <p>
-              This page uses the same dashboard shell as the demo route, but the
-              content now reflects a real portrait tool. The top area handles
-              image input and result review, while secondary content lives below
-              in full-width sections.
-            </p>
-            <p>
-              That split keeps the workflow efficient. Users can upload, refine,
-              and evaluate the portrait without losing context, then scroll into
-              product explanation and support only when they need it.
-            </p>
-            <div className="grid gap-3 pt-2 sm:grid-cols-3">
-              <div className="border-border/60 bg-background/70 rounded-[22px] border p-4">
-                <div className="text-foreground mb-2 flex items-center gap-2 font-medium">
-                  <Wand2 className="text-primary size-4" />
-                  Guided Form
-                </div>
-                <p className="text-sm leading-6">
-                  Input area stays compact and task-specific.
-                </p>
-              </div>
-              <div className="border-border/60 bg-background/70 rounded-[22px] border p-4">
-                <div className="text-foreground mb-2 flex items-center gap-2 font-medium">
-                  <Briefcase className="text-primary size-4" />
-                  Business Output
-                </div>
-                <p className="text-sm leading-6">
-                  The preview pane reads like a final professional asset.
-                </p>
-              </div>
-              <div className="border-border/60 bg-background/70 rounded-[22px] border p-4">
-                <div className="text-foreground mb-2 flex items-center gap-2 font-medium">
-                  <ShieldCheck className="text-primary size-4" />
-                  Support Content
-                </div>
-                <p className="text-sm leading-6">
-                  FAQ and guidance remain separate from the workbench.
-                </p>
-              </div>
-            </div>
-          </div>
-        </ToolDashboardIntro>
+        <FeaturesAccordion section={baseImageGuideSection} />
 
-        <ToolDashboardFaq
-          description="These questions sit below the workbench so the top interaction area stays uncluttered."
-          eyebrow="FAQ"
-          items={faqItems.map((item) => ({
-            ...item,
-            answer: <p>{item.answer}</p>,
-          }))}
-          tip="When you wire real generation, this FAQ can move to route-level JSON while the left and right panes stay component-based."
-          title="Professional headshot questions"
-        />
-
-        <ToolDashboardSection
-          className="bg-background/70 border-dashed"
-          description="The next implementation step is to connect the upload and generate controls to the actual image pipeline."
-          title="Next Step"
-        >
-          <div className="flex flex-wrap items-center gap-3">
-            <Button asChild>
-              <Link href={routeHref}>Stay on this page</Link>
-            </Button>
-          </div>
-        </ToolDashboardSection>
+        <Faq className="border-border/60 border-t" section={faqSection} />
       </ToolDashboardMain>
     </ToolDashboardShell>
   );
