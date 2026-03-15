@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 import { Check, Loader2, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { toast } from 'sonner';
@@ -34,6 +34,8 @@ import {
   PricingItem,
   Pricing as PricingType,
 } from '@/shared/types/blocks/pricing';
+
+import styles from './pricing-tabs.module.css';
 
 type SelectedCurrencies = Record<string, string>;
 
@@ -338,6 +340,10 @@ export function Pricing({
     0,
     section.groups?.findIndex((item) => item.name === group) ?? 0
   );
+  const tabsListStyle = {
+    '--pricing-tab-count': groupCount,
+    '--pricing-tab-index': activeGroupIndex,
+  } as CSSProperties;
   const baseFreeCard = getDefaultFreeCard(section.free_cards);
   const activeFreeCard = group ? section.free_cards?.[group] : undefined;
   const displayedFreeCard = baseFreeCard
@@ -463,33 +469,30 @@ export function Pricing({
           <div className="mx-auto mb-4 flex w-full justify-center overflow-x-auto px-4 md:mb-6">
             <Tabs value={group} onValueChange={setGroup} className="max-w-full">
               <TabsList
-                className="bg-background/90 relative inline-grid h-auto w-max min-w-max rounded-full border border-zinc-300/80 p-1 shadow-none backdrop-blur-sm"
-                style={{
-                  gridTemplateColumns: `repeat(${groupCount}, minmax(0, 1fr))`,
-                }}
+                className={cn(
+                  'bg-background/90 relative inline-grid h-auto w-max min-w-max rounded-full border border-zinc-300/80 p-1 shadow-none backdrop-blur-sm',
+                  styles.tabsList
+                )}
+                style={tabsListStyle}
               >
                 <div
                   aria-hidden
-                  className="bg-primary absolute inset-y-1 left-1 rounded-full transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
-                  style={{
-                    width:
-                      groupCount > 0
-                        ? `calc((100% - 0.5rem) / ${groupCount})`
-                        : undefined,
-                    transform: `translateX(${activeGroupIndex * 100}%)`,
-                  }}
+                  className={cn(
+                    'bg-primary absolute inset-y-1 left-1 rounded-full',
+                    styles.tabIndicator
+                  )}
                 />
                 {section.groups.map((item, i) => {
                   return (
                     <TabsTrigger
                       key={item.name ?? `group-${i}`}
                       value={item.name || ''}
-                      className="text-foreground data-[state=active]:text-primary-foreground relative z-10 h-8 min-w-[112px] shrink-0 rounded-full bg-transparent px-3.5 text-[0.84rem] font-[450] tracking-tight transition-[transform,color] duration-300 ease-out will-change-transform active:scale-[0.98] data-[state=active]:bg-transparent data-[state=active]:shadow-none md:h-9 md:min-w-[132px] md:px-4 md:text-[0.9rem]"
+                      className="text-foreground data-[state=active]:text-primary-foreground relative z-10 h-8 min-w-28 shrink-0 rounded-full bg-transparent px-3 text-sm font-medium tracking-tight transition duration-300 ease-out will-change-transform active:scale-[0.98] data-[state=active]:bg-transparent data-[state=active]:shadow-none md:h-9 md:min-w-32 md:px-4"
                     >
                       <span className="flex items-center justify-center gap-1">
                         <span>{item.title}</span>
                         {item.label && (
-                          <span className="text-[0.74em] font-semibold opacity-80">
+                          <span className="text-xs font-semibold opacity-80">
                             {item.label}
                           </span>
                         )}
