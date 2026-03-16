@@ -1,10 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { User } from 'lucide-react';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { envConfigs } from '@/config';
-
 import {
   ToolDashboardMain,
   ToolDashboardShell,
@@ -21,19 +20,22 @@ import {
   BreadcrumbSeparator,
 } from '@/shared/components/ui/breadcrumb';
 import { Button } from '@/shared/components/ui/button';
-import { FeaturesAccordion } from '@/themes/ai-pfp/blocks/features-accordion';
 import { Faq } from '@/themes/ai-pfp/blocks/faq';
+import { FeaturesAccordion } from '@/themes/ai-pfp/blocks/features-accordion';
 import { FeaturesGuide } from '@/themes/ai-pfp/blocks/features-guide';
 
 import { ProfessionalHeadshotControls } from './professional-headshot-controls';
-import { ProfessionalHeadshotMobileNav } from './professional-headshot-mobile-nav';
 import { ProfessionalHeadshotResultPanel } from './professional-headshot-result-panel';
 
 export const revalidate = 3600;
 
+const PAGE_TITLE = 'Professional Headshot Generator';
+const PAGE_DESCRIPTION = 'Professional headshot generator dashboard preview.';
+const NAVIGATION_LABEL = 'Professional Headshot';
+
 export const generateMetadata = async () => ({
-  title: 'Professional Headshot Generator',
-  description: 'Professional headshot generator dashboard preview.',
+  title: PAGE_TITLE,
+  description: PAGE_DESCRIPTION,
   alternates: {
     canonical: '/professional-headshot-generator',
   },
@@ -83,7 +85,7 @@ const baseImageGuideSection = {
   title: 'How to Create an Upload-Ready Professional Headshot Base Image',
   description:
     'To generate a high-quality result, the base photo matters. Follow the steps below to prepare a clear portrait image for better AI output.',
-  className: 'border-border/60 border-t mt-8',
+  className: 'border-border/60 mt-8 border-t',
   image: {
     src: '/imgs/tool-dashboard/professional-headshot-generator/how-to-create-professional%20headshot.jpg',
     alt: 'Professional headshot preparation guide illustration',
@@ -162,14 +164,16 @@ export default async function ProfessionalHeadshotGeneratorPage({
   const homeHref = `/${locale}`;
   const routeHref = `/${locale}/professional-headshot-generator`;
   const signInHref = `/${locale}/sign-in`;
-  const sidebarItems = [
+  const navigationItems = [
     {
-      label: 'Professional Headshot',
+      label: NAVIGATION_LABEL,
       href: routeHref,
-      active: true,
-      icon: 'user' as const,
     },
   ];
+  const navigationLinkClassName =
+    'flex items-center rounded-2xl px-3 py-2 text-sm font-medium text-foreground transition-colors';
+  const workbenchPaneClassName =
+    'rounded-3xl border border-border/60 bg-white backdrop-blur-xl';
 
   return (
     <ToolDashboardShell>
@@ -181,7 +185,6 @@ export default async function ProfessionalHeadshotGeneratorPage({
               alt={envConfigs.app_name}
               width={36}
               height={36}
-              className=""
             />
             <span className="text-lg font-semibold tracking-tight">
               {envConfigs.app_name}
@@ -190,41 +193,30 @@ export default async function ProfessionalHeadshotGeneratorPage({
         }
         navigation={
           <div className="grid gap-2">
-            {sidebarItems.map((item) => (
+            {navigationItems.map((item) => (
               <Link
                 key={item.label}
-                className={[
-                  'flex items-center rounded-2xl px-3 py-2 text-sm font-medium transition-colors',
-                  item.active
-                    ? 'bg-primary/10 text-foreground'
-                    : 'text-muted-foreground hover:bg-muted/70 hover:text-foreground',
-                ].join(' ')}
+                className={navigationLinkClassName}
                 href={item.href}
               >
-                {item.icon === 'user' ? (
-                  <User className="mr-2.5 size-4 shrink-0" />
-                ) : null}
+                <User className="mr-2.5 size-4 shrink-0" />
                 <span className="tracking-tight">{item.label}</span>
               </Link>
             ))}
           </div>
         }
         footer={
-          <div className="bg-background/70 grid gap-1.5 rounded-2xl px-2 py-2">
+          <div className="border-border/60 bg-background/95 grid gap-1.5 rounded-2xl border px-2 py-2">
             <Button className="w-full justify-center" size="sm">
               Upgrade
             </Button>
           </div>
         }
-      />
-
-      <ProfessionalHeadshotMobileNav
-        appLogo={envConfigs.app_logo}
-        appName={envConfigs.app_name}
-        homeHref={homeHref}
-        items={sidebarItems}
-        signInHref={signInHref}
-        signInLabel={t('sign.sign_in_title')}
+        mobileActions={
+          <Button asChild className="w-full justify-center" size="sm">
+            <Link href={signInHref}>{t('sign.sign_in_title')}</Link>
+          </Button>
+        }
       />
 
       <ToolDashboardMain>
@@ -239,7 +231,7 @@ export default async function ProfessionalHeadshotGeneratorPage({
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Professional Headshot</BreadcrumbPage>
+                  <BreadcrumbPage>{NAVIGATION_LABEL}</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
@@ -256,8 +248,8 @@ export default async function ProfessionalHeadshotGeneratorPage({
         <ToolDashboardWorkbench
           className="border-0 bg-transparent px-0 py-2"
           gridClassName="gap-4 lg:grid-cols-12 xl:grid-cols-12"
-          leftPaneClassName="rounded-[20px] border-primary/10 bg-white/85 backdrop-blur-xl lg:col-span-4 lg:px-5 lg:py-5 xl:px-7 xl:py-6"
-          rightPaneClassName="rounded-[20px] border-primary/10 bg-white/85 backdrop-blur-xl lg:col-span-8 lg:px-7 lg:py-6"
+          leftPaneClassName={`${workbenchPaneClassName} lg:col-span-4 lg:px-5 lg:py-5 xl:px-7 xl:py-6`}
+          rightPaneClassName={`${workbenchPaneClassName} lg:col-span-8 lg:px-7 lg:py-6`}
           left={<ProfessionalHeadshotControls />}
           right={<ProfessionalHeadshotResultPanel />}
         />

@@ -12,14 +12,20 @@ const usageSteps = [
   'Upload your photo',
   'Choose a style',
   'Adjust parameters or description (optional)',
-  'Wait and download'
+  'Wait and download',
 ];
+
+const panelClassName = 'rounded-3xl border border-border/60 backdrop-blur';
+const comparisonLabelClassName =
+  'absolute rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest backdrop-blur';
+const usageStepClassName =
+  'border-border/70 bg-background/95 grid grid-cols-[auto_1fr] items-center gap-3 rounded-2xl border px-4 py-3';
 
 function ComparisonHandle() {
   return (
     <div className="pointer-events-none relative flex h-full items-center justify-center text-white">
       <div className="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-white" />
-      <div className="relative z-10 inline-flex items-center gap-5 bg-transparent px-0 text-[11px] font-semibold tracking-[0.18em]">
+      <div className="relative z-10 inline-flex items-center gap-5 bg-transparent px-0 text-xs font-semibold tracking-widest">
         <span aria-hidden className="text-sm text-white">
           &#x25C0;
         </span>
@@ -35,7 +41,7 @@ export function ProfessionalHeadshotResultPanel() {
   return (
     <div className="grid gap-5">
       <div className="grid gap-1.5">
-        <h2 className="text-2xl font-semibold tracking-tight">
+        <h2 className="text-foreground text-2xl font-semibold tracking-tight">
           Professional Headshot Generator
         </h2>
         <p className="text-muted-foreground text-sm">
@@ -45,12 +51,12 @@ export function ProfessionalHeadshotResultPanel() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.18fr)_minmax(280px,0.82fr)]">
-        <div className="rounded-[24px] border border-primary/10 bg-white/72 p-4 backdrop-blur">
-          <div className="mb-3 text-center">
-            <div className="text-foreground text-lg font-semibold">Example</div>
-          </div>
+        <section className={`${panelClassName} bg-white p-4`}>
+          <header className="mb-3 text-center">
+            <h3 className="text-foreground text-lg font-semibold">Example</h3>
+          </header>
 
-          <div className="relative overflow-hidden rounded-[22px] bg-slate-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+          <div className="relative overflow-hidden rounded-3xl bg-slate-950 shadow-inner">
             <ReactCompareSlider
               position={50}
               handle={<ComparisonHandle />}
@@ -61,7 +67,9 @@ export function ProfessionalHeadshotResultPanel() {
                     src="/imgs/tool-dashboard/professional-headshot-generator/before.jpg"
                     style={{ objectFit: 'cover' }}
                   />
-                  <div className="absolute left-4 top-4 rounded-full bg-black/55 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-white uppercase backdrop-blur">
+                  <div
+                    className={`${comparisonLabelClassName} top-4 left-4 bg-black/55 text-white`}
+                  >
                     Before
                   </div>
                 </div>
@@ -73,7 +81,9 @@ export function ProfessionalHeadshotResultPanel() {
                     src="/imgs/tool-dashboard/professional-headshot-generator/after.jpg"
                     style={{ objectFit: 'cover' }}
                   />
-                  <div className="absolute right-4 top-4 rounded-full bg-white/88 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-slate-900 uppercase backdrop-blur">
+                  <div
+                    className={`${comparisonLabelClassName} text-foreground top-4 right-4 bg-white/88`}
+                  >
                     After
                   </div>
                 </div>
@@ -84,34 +94,32 @@ export function ProfessionalHeadshotResultPanel() {
               }}
             />
           </div>
-        </div>
+        </section>
 
-        <div className="rounded-[24px] border border-primary/10 bg-white/78 p-5 backdrop-blur">
-          <div className="text-foreground text-center text-lg font-semibold">
-            How to Use
-          </div>
+        <section className={`${panelClassName} bg-white p-5`}>
+          <header>
+            <h3 className="text-foreground text-center text-lg font-semibold">
+              How to Use
+            </h3>
+          </header>
           <div className="mt-4 grid gap-3">
             {usageSteps.map((step, index) => (
-              <div
-                key={step}
-                className="border-border/70 bg-background/80 grid grid-cols-[auto_1fr] items-center gap-3 rounded-2xl border px-4 py-3"
-              >
+              <div key={step} className={usageStepClassName}>
                 <div className="bg-primary text-primary-foreground flex size-7 items-center justify-center rounded-full text-sm font-semibold shadow-sm">
                   {index + 1}
                 </div>
-                <p className="text-foreground text-sm leading-6">
-                  {step}
-                </p>
+                <p className="text-foreground text-sm leading-6">{step}</p>
               </div>
             ))}
           </div>
-          <p className="text-primary/80 mt-4 text-xs leading-5">
-            Tip: Not happy with the presets? Upload a reference image and update the description.
+          <p className="text-muted-foreground mt-4 text-xs leading-5">
+            <span className="text-primary">Tip:</span> Not happy with the
+            presets? Upload a reference image and update the description.
           </p>
-        </div>
+        </section>
       </div>
 
-      <Button className="h-11 w-fit justify-self-center rounded-xl border-0 bg-blue-300 px-5 text-white transition-opacity hover:bg-blue-500">
+      <Button className="h-11 w-fit justify-self-center rounded-xl border-0 bg-blue-300 px-5 text-white transition-colors hover:bg-blue-500">
         <Download className="size-4" />
         Download
       </Button>

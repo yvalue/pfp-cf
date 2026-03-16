@@ -10,10 +10,14 @@
     @apply border-border outline-ring/50;
   }
   html {
-    scrollbar-gutter: stable;
+    scrollbar-gutter: stable both-edges;
   }
   body {
     @apply bg-background text-foreground font-sans;
+  }
+  body[data-scroll-locked] {
+    margin-right: 0 !important;
+    padding-right: 0 !important;
   }
 }
 
