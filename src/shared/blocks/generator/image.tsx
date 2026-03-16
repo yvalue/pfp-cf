@@ -42,7 +42,11 @@ import { useAppContext } from '@/shared/contexts/app';
 import {
   extractImageUrls,
   getNanoBananaModelFamily,
+  getNanoBananaMaxBatchCount,
+  getNanoBananaMaxReferenceImages,
+  getNanoBananaMaxReferenceImageSizeMB,
   getNanoBananaResolution,
+  getNanoBananaReferenceImageFormatsLabel,
   NANO_BANANA_MODEL_FAMILIES,
   resolveNanoBananaGeneration,
   type NanoBananaResolution,
@@ -97,7 +101,7 @@ function parseTaskResult(taskResult: string | null): any {
 export function ImageGenerator({
   allowMultipleImages = true,
   maxImages = 9,
-  maxSizeMB = 5,
+  maxSizeMB,
   srOnlyTitle,
   className,
 }: ImageGeneratorProps) {
@@ -112,6 +116,7 @@ export function ImageGenerator({
   const [resolution, setResolution] = useState(
     NANO_BANANA_MODEL_FAMILIES[0]?.defaultResolution ?? '1K'
   );
+  const [count, setCount] = useState(1);
   const [prompt, setPrompt] = useState('');
   const [referenceImageItems, setReferenceImageItems] = useState<
     ImageUploaderValue[]
@@ -120,11 +125,8 @@ export function ImageGenerator({
   const [generatedImages, setGeneratedImages] = useState<GeneratedImage[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [taskId, setTaskId] = useState<string | null>(null);
-  const [generationStartTime, setGenerationStartTime] = useState<number | null>(
-    null
-  );
   const [taskStatus, setTaskStatus] = useState<AITaskStatus | null>(null);
+  const [currentTaskNumber, setCurrentTaskNumber] = useState(0);
   const [downloadingImageId, setDownloadingImageId] = useState<string | null>(
     null
   );
@@ -146,9 +148,44 @@ export function ImageGenerator({
       getNanoBananaModelFamily(modelFamilyId) ?? NANO_BANANA_MODEL_FAMILIES[0],
     [modelFamilyId]
   );
+  const maxReferenceImages = useMemo(
+    () =>
+      allowMultipleImages
+        ? Math.min(
+            maxImages,
+            getNanoBananaMaxReferenceImages(selectedModelFamily?.id ?? '')
+          )
+        : 1,
+    [allowMultipleImages, maxImages, selectedModelFamily]
+  );
+  const maxReferenceImageSizeMB = useMemo(
+    () =>
+      getNanoBananaMaxReferenceImageSizeMB(selectedModelFamily?.id ?? ''),
+    [selectedModelFamily]
+  );
+  const effectiveMaxReferenceImageSizeMB = useMemo(
+    () =>
+      typeof maxSizeMB === 'number'
+        ? Math.min(maxSizeMB, maxReferenceImageSizeMB)
+        : maxReferenceImageSizeMB,
+    [maxReferenceImageSizeMB, maxSizeMB]
+  );
   const supportedResolutions = selectedModelFamily?.supportedResolutions ?? [
     '1K',
   ];
+  const maxBatchCount = getNanoBananaMaxBatchCount(
+    selectedModelFamily?.id ?? ''
+  );
+  const countOptions = useMemo(
+    () =>
+      Array.from({ length: maxBatchCount }, (_, index) => index + 1).map(
+        (value) => ({
+          value: String(value),
+          label: String(value),
+        })
+      ),
+    [maxBatchCount]
+  );
   const aspectRatios = selectedModelFamily?.aspectRatios ?? ['1:1'];
   const defaultAspectRatio = aspectRatios.includes('auto')
     ? 'auto'
@@ -166,7 +203,7 @@ export function ImageGenerator({
     });
   }, [activeTab, resolution, selectedModelFamily]);
   const resolvedModel = resolvedGeneration?.model ?? null;
-  const costCredits = resolvedGeneration?.costCredits ?? 0;
+  const costCredits = (resolvedGeneration?.costCredits ?? 0) * count;
 
   const handleTabChange = (value: string) => {
     setActiveTab(value as ImageGeneratorTab);
@@ -196,6 +233,12 @@ export function ImageGenerator({
       setResolution(normalizedResolution);
     }
   }, [resolution, selectedModelFamily]);
+
+  useEffect(() => {
+    if (count > maxBatchCount) {
+      setCount(maxBatchCount);
+    }
+  }, [count, maxBatchCount]);
 
   const taskStatusLabel = useMemo(() => {
     if (!taskStatus) {
@@ -240,152 +283,109 @@ export function ImageGenerator({
   const resetTaskState = useCallback(() => {
     setIsGenerating(false);
     setProgress(0);
-    setTaskId(null);
-    setGenerationStartTime(null);
     setTaskStatus(null);
+    setCurrentTaskNumber(0);
   }, []);
 
   const pollTaskStatus = useCallback(
-    async (id: string) => {
+    async ({
+      id,
+      index,
+      total,
+      promptText,
+      provider,
+      model,
+    }: {
+      id: string;
+      index: number;
+      total: number;
+      promptText: string;
+      provider: string;
+      model: string;
+    }) => {
+      const generationStartTime = Date.now();
       try {
-        if (
-          generationStartTime &&
-          Date.now() - generationStartTime > GENERATION_TIMEOUT
-        ) {
-          resetTaskState();
-          toast.error('Image generation timed out. Please try again.');
-          return true;
-        }
+        while (Date.now() - generationStartTime <= GENERATION_TIMEOUT) {
+          const resp = await fetch('/api/ai/query', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ taskId: id }),
+          });
 
-        const resp = await fetch('/api/ai/query', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ taskId: id }),
-        });
-
-        if (!resp.ok) {
-          throw new Error(`request failed with status: ${resp.status}`);
-        }
-
-        const { code, message, data } = await resp.json();
-        if (code !== 0) {
-          throw new Error(message || 'Query task failed');
-        }
-
-        const task = data as BackendTask;
-        const currentStatus = task.status as AITaskStatus;
-        setTaskStatus(currentStatus);
-
-        const parsedResult = parseTaskResult(task.taskInfo);
-        const imageUrls = extractImageUrls(parsedResult);
-
-        if (currentStatus === AITaskStatus.PENDING) {
-          setProgress((prev) => Math.max(prev, 20));
-          return false;
-        }
-
-        if (currentStatus === AITaskStatus.PROCESSING) {
-          if (imageUrls.length > 0) {
-            setGeneratedImages(
-              imageUrls.map((url, index) => ({
-                id: `${task.id}-${index}`,
-                url,
-                provider: task.provider,
-                model: task.model,
-                prompt: task.prompt ?? undefined,
-              }))
-            );
-            setProgress((prev) => Math.max(prev, 85));
-          } else {
-            setProgress((prev) => Math.min(prev + 10, 80));
-          }
-          return false;
-        }
-
-        if (currentStatus === AITaskStatus.SUCCESS) {
-          if (imageUrls.length === 0) {
-            toast.error('The provider returned no images. Please retry.');
-          } else {
-            setGeneratedImages(
-              imageUrls.map((url, index) => ({
-                id: `${task.id}-${index}`,
-                url,
-                provider: task.provider,
-                model: task.model,
-                prompt: task.prompt ?? undefined,
-              }))
-            );
-            toast.success('Image generated successfully');
+          if (!resp.ok) {
+            throw new Error(`request failed with status: ${resp.status}`);
           }
 
-          setProgress(100);
-          resetTaskState();
-          return true;
+          const { code, message, data } = await resp.json();
+          if (code !== 0) {
+            throw new Error(message || 'Query task failed');
+          }
+
+          const task = data as BackendTask;
+          const currentStatus = task.status as AITaskStatus;
+          setTaskStatus(currentStatus);
+          setCurrentTaskNumber(index);
+
+          const parsedInfo = parseTaskResult(task.taskInfo);
+          const parsedResult = parseTaskResult(task.taskResult);
+          const imageUrls = Array.from(
+            new Set([
+              ...extractImageUrls(parsedInfo),
+              ...extractImageUrls(parsedResult),
+            ])
+          );
+          const completedProgress = Math.round(((index - 1) / total) * 100);
+
+          if (currentStatus === AITaskStatus.PENDING) {
+            setProgress((prev) => Math.max(prev, completedProgress + 10));
+            await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL));
+            continue;
+          }
+
+          if (currentStatus === AITaskStatus.PROCESSING) {
+            setProgress((prev) => Math.max(prev, completedProgress + 70));
+            await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL));
+            continue;
+          }
+
+          if (currentStatus === AITaskStatus.SUCCESS) {
+            if (imageUrls.length === 0) {
+              throw new Error('The provider returned no images. Please retry.');
+            }
+
+            setProgress(Math.round((index / total) * 100));
+
+            return imageUrls.map((url, imageIndex) => ({
+              id: `${task.id}-${imageIndex}`,
+              url,
+              provider,
+              model,
+              prompt: promptText,
+            }));
+          }
+
+          if (currentStatus === AITaskStatus.FAILED) {
+            const errorMessage =
+              parsedInfo?.errorMessage ||
+              parsedResult?.errorMessage ||
+              'Generate image failed';
+            throw new Error(errorMessage);
+          }
+
+          setProgress((prev) => Math.min(prev + 5, 95));
+          await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL));
         }
 
-        if (currentStatus === AITaskStatus.FAILED) {
-          const errorMessage =
-            parsedResult?.errorMessage || 'Generate image failed';
-          toast.error(errorMessage);
-          resetTaskState();
-
-          fetchUserCredits();
-
-          return true;
-        }
-
-        setProgress((prev) => Math.min(prev + 5, 95));
-        return false;
+        throw new Error('Image generation timed out. Please try again.');
       } catch (error: any) {
         console.error('Error polling image task:', error);
-        toast.error(`Query task failed: ${error.message}`);
-        resetTaskState();
-
-        fetchUserCredits();
-
-        return true;
+        throw error;
       }
     },
-    [generationStartTime, resetTaskState]
+    []
   );
-
-  useEffect(() => {
-    if (!taskId || !isGenerating) {
-      return;
-    }
-
-    let cancelled = false;
-
-    const tick = async () => {
-      if (!taskId) {
-        return;
-      }
-      const completed = await pollTaskStatus(taskId);
-      if (completed) {
-        cancelled = true;
-      }
-    };
-
-    tick();
-
-    const interval = setInterval(async () => {
-      if (cancelled || !taskId) {
-        clearInterval(interval);
-        return;
-      }
-      const completed = await pollTaskStatus(taskId);
-      if (completed) {
-        clearInterval(interval);
-      }
-    }, POLL_INTERVAL);
-
-    return () => {
-      cancelled = true;
-      clearInterval(interval);
-    };
-  }, [taskId, isGenerating, pollTaskStatus]);
 
   const handleGenerate = async () => {
     if (!user) {
@@ -415,84 +415,109 @@ export function ImageGenerator({
     }
 
     setIsGenerating(true);
-    setProgress(15);
+    setProgress(0);
     setTaskStatus(AITaskStatus.PENDING);
     setGeneratedImages([]);
-    setGenerationStartTime(Date.now());
 
     try {
-      const options: Record<string, any> = {
-        aspect_ratio: aspectRatio,
-      };
+      const images: GeneratedImage[] = [];
 
-      if (resolvedGeneration?.shouldSendResolution) {
-        options.resolution = resolvedGeneration.resolution;
-      }
+      for (let index = 1; index <= count; index += 1) {
+        setCurrentTaskNumber(index);
+        setProgress(Math.round(((index - 1) / count) * 100));
 
-      if (!isTextToImageMode) {
-        options.image_input = referenceImageUrls;
-      }
+        const options: Record<string, any> = {
+          aspect_ratio: aspectRatio,
+        };
 
-      const resp = await fetch('/api/ai/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          mediaType: AIMediaType.IMAGE,
-          scene: isTextToImageMode ? 'text-to-image' : 'image-to-image',
-          provider: selectedModelFamily.provider,
-          model: resolvedModel,
-          prompt: trimmedPrompt,
-          options,
-        }),
-      });
-
-      if (!resp.ok) {
-        throw new Error(`request failed with status: ${resp.status}`);
-      }
-
-      const { code, message, data } = await resp.json();
-      if (code !== 0) {
-        throw new Error(message || 'Failed to create an image task');
-      }
-
-      const newTaskId = data?.id;
-      if (!newTaskId) {
-        throw new Error('Task id missing in response');
-      }
-
-      if (data.status === AITaskStatus.SUCCESS && data.taskInfo) {
-        const parsedResult = parseTaskResult(data.taskInfo);
-        const imageUrls = extractImageUrls(parsedResult);
-
-        if (imageUrls.length > 0) {
-          setGeneratedImages(
-            imageUrls.map((url, index) => ({
-              id: `${newTaskId}-${index}`,
-              url,
-              provider: selectedModelFamily.provider,
-              model: resolvedModel,
-              prompt: trimmedPrompt,
-            }))
-          );
-          toast.success('Image generated successfully');
-          setProgress(100);
-          resetTaskState();
-          await fetchUserCredits();
-          return;
+        if (resolvedGeneration?.shouldSendResolution) {
+          options.resolution = resolvedGeneration.resolution;
         }
+
+        if (!isTextToImageMode) {
+          options.image_input = referenceImageUrls;
+        }
+
+        const resp = await fetch('/api/ai/generate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            mediaType: AIMediaType.IMAGE,
+            scene: isTextToImageMode ? 'text-to-image' : 'image-to-image',
+            provider: selectedModelFamily.provider,
+            model: resolvedModel,
+            prompt: trimmedPrompt,
+            options,
+          }),
+        });
+
+        if (!resp.ok) {
+          throw new Error(`request failed with status: ${resp.status}`);
+        }
+
+        const { code, message, data } = await resp.json();
+        if (code !== 0) {
+          throw new Error(message || 'Failed to create an image task');
+        }
+
+        const newTaskId = data?.id;
+        if (!newTaskId) {
+          throw new Error('Task id missing in response');
+        }
+
+        let batchImages: GeneratedImage[] = [];
+
+        if (data.status === AITaskStatus.SUCCESS && data.taskInfo) {
+          const parsedTaskInfo = parseTaskResult(data.taskInfo);
+          const parsedTaskResult = parseTaskResult(data.taskResult);
+          const imageUrls = Array.from(
+            new Set([
+              ...extractImageUrls(parsedTaskInfo),
+              ...extractImageUrls(parsedTaskResult),
+            ])
+          );
+
+          if (imageUrls.length === 0) {
+            throw new Error('The provider returned no images. Please retry.');
+          }
+
+          batchImages = imageUrls.map((url, imageIndex) => ({
+            id: `${newTaskId}-${imageIndex}`,
+            url,
+            provider: selectedModelFamily.provider,
+            model: resolvedModel,
+            prompt: trimmedPrompt,
+          }));
+          setProgress(Math.round((index / count) * 100));
+        } else {
+          batchImages = await pollTaskStatus({
+            id: newTaskId,
+            index,
+            total: count,
+            promptText: trimmedPrompt,
+            provider: selectedModelFamily.provider,
+            model: resolvedModel,
+          });
+        }
+
+        images.push(...batchImages);
+        setGeneratedImages([...images]);
       }
 
-      setTaskId(newTaskId);
-      setProgress(25);
-
+      toast.success('Image generated successfully');
       await fetchUserCredits();
     } catch (error: any) {
       console.error('Failed to generate image:', error);
       toast.error(`Failed to generate image: ${error.message}`);
       resetTaskState();
+      await fetchUserCredits();
+      return;
     }
+
+    setProgress(100);
+    resetTaskState();
   };
 
   const handleDownloadImage = async (image: GeneratedImage) => {
@@ -552,7 +577,7 @@ export function ImageGenerator({
                   </TabsList>
                 </Tabs>
 
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
                   <div className="space-y-2">
                     <Label>{t('form.model')}</Label>
                     <Select
@@ -613,17 +638,36 @@ export function ImageGenerator({
                       </SelectContent>
                     </Select>
                   </div>
+
+                  <div className="space-y-2">
+                    <Label>{t('form.count')}</Label>
+                    <Select
+                      value={String(count)}
+                      onValueChange={(value) => setCount(Number(value))}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder={t('form.select_count')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {countOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
                 {!isTextToImageMode && (
                   <div className="space-y-4">
                     <ImageUploader
                       title={t('form.reference_image')}
-                      allowMultiple={allowMultipleImages}
-                      maxImages={allowMultipleImages ? maxImages : 1}
-                      maxSizeMB={maxSizeMB}
+                      allowMultiple={maxReferenceImages > 1}
+                      maxImages={maxReferenceImages}
+                      maxSizeMB={effectiveMaxReferenceImageSizeMB}
                       onChange={handleReferenceImagesChange}
-                      emptyHint={t('form.reference_image_placeholder')}
+                      emptyHint={`${getNanoBananaReferenceImageFormatsLabel()}, up to ${effectiveMaxReferenceImageSizeMB}MB each, ${maxReferenceImages} image${maxReferenceImages > 1 ? 's' : ''} max`}
                     />
 
                     {hasReferenceUploadError && (

@@ -1,0 +1,272 @@
+{
+  "metadata": {
+    "title": "专业证件照生成器",
+    "description": "使用带引导的工具工作台快速生成专业 AI 证件照，并查看使用说明与拍摄准备建议。"
+  },
+  "page": {
+    "navigation": {
+      "label": "专业证件照"
+    },
+    "sidebar": {
+      "upgrade_title": "升级"
+    },
+    "topbar": {
+      "breadcrumb_home": "首页",
+      "show_theme": true,
+      "show_locale": true,
+      "show_sign": true,
+      "user_nav": {
+        "show_name": true,
+        "show_credits": true,
+        "show_sign_out": true,
+        "items": [
+          {
+            "title": "账单",
+            "url": "/settings/billing",
+            "icon": "CreditCard"
+          },
+          {
+            "title": "活动",
+            "url": "/activity",
+            "icon": "Activity"
+          }
+        ]
+      }
+    },
+    "sections": {
+      "generator": {
+        "title": "专业证件照生成器",
+        "description": "通过可复用的对比与引导布局，在几秒内生成专业证件照。",
+        "tabs": {
+          "upload": "上传图片",
+          "parameter": "参数"
+        },
+        "fields": {
+          "required_badge": "必填",
+          "optional_badge": "可选",
+          "default_badge": "默认",
+          "upload_label": "上传图片",
+          "description_label": "描述",
+          "effect_style_label": "风格效果",
+          "model_label": "模型",
+          "aspect_ratio_label": "比例",
+          "quality_label": "质量",
+          "count_label": "数量"
+        },
+        "upload": {
+          "title": "拖拽文件或点击上传",
+          "formats": "支持 PNG、JPG、JPEG 或 WEBP（单张最大 10MB）",
+          "supports": "支持上传多张图片"
+        },
+        "description_placeholder": "描述你想要的证件照效果...",
+        "description_counter": "0/1000",
+        "effects": [
+          {
+            "id": "linkedin-headshot",
+            "label": "LinkedIn 证件照",
+            "accentClassName": "bg-sky-300",
+            "cardClassName": "bg-slate-700",
+            "silhouetteClassName": "bg-slate-200/90"
+          },
+          {
+            "id": "studio-clean",
+            "label": "摄影棚人像",
+            "accentClassName": "bg-amber-300",
+            "cardClassName": "bg-[radial-gradient(circle_at_25%_20%,rgba(255,255,255,0.88),transparent_24%),linear-gradient(160deg,#f5e7cf,#ead5b7_48%,#d6b98f)]",
+            "silhouetteClassName": "bg-[linear-gradient(180deg,rgba(120,53,15,0.34),rgba(217,119,6,0.18))]"
+          },
+          {
+            "id": "executive-office",
+            "label": "办公场景人像",
+            "accentClassName": "bg-emerald-300",
+            "cardClassName": "bg-[radial-gradient(circle_at_22%_18%,rgba(255,255,255,0.82),transparent_24%),linear-gradient(160deg,#164e63,#155e75_42%,#0f766e)]",
+            "silhouetteClassName": "bg-[linear-gradient(180deg,rgba(255,255,255,0.74),rgba(204,251,241,0.28))]"
+          },
+          {
+            "id": "soft-window-light",
+            "label": "柔光人像",
+            "accentClassName": "bg-rose-300",
+            "cardClassName": "bg-[radial-gradient(circle_at_24%_18%,rgba(255,255,255,0.94),transparent_24%),linear-gradient(160deg,#f3d8dd,#f8e5ea_46%,#e9c2c9)]",
+            "silhouetteClassName": "bg-[linear-gradient(180deg,rgba(148,163,184,0.55),rgba(255,255,255,0.72))]"
+          }
+        ],
+        "selects": {
+          "aspect_ratio": [
+            {
+              "label": "匹配原图",
+              "value": "Match Input"
+            },
+            {
+              "label": "9:16",
+              "value": "9:16"
+            },
+            {
+              "label": "16:9",
+              "value": "16:9"
+            },
+            {
+              "label": "1:1",
+              "value": "1:1"
+            }
+          ],
+          "resolution": [
+            {
+              "label": "1K",
+              "value": "1K"
+            },
+            {
+              "label": "2K",
+              "value": "2K"
+            },
+            {
+              "label": "4K",
+              "value": "4K"
+            }
+          ],
+          "batch_size": [
+            {
+              "label": "1",
+              "value": "1"
+            },
+            {
+              "label": "2",
+              "value": "2"
+            },
+            {
+              "label": "3 高级",
+              "value": "3"
+            },
+            {
+              "label": "4 高级",
+              "value": "4"
+            },
+            {
+              "label": "5 高级",
+              "value": "5"
+            }
+          ]
+        },
+        "result": {
+          "example_title": "示例",
+          "before_label": "处理前",
+          "after_label": "处理后",
+          "how_to_use_title": "使用方法",
+          "usage_steps": [
+            "上传你的照片",
+            "选择风格",
+            "调整参数或补充描述（可选）",
+            "等待生成并下载"
+          ],
+          "tip_prefix": "提示：",
+          "tip_text": "如果预设效果不理想，可以上传参考图并补充描述。"
+        },
+        "buttons": {
+          "submit": "提交",
+          "download": "下载"
+        },
+        "credits": {
+          "submit_cost": 15
+        },
+        "images": {
+          "before": {
+            "src": "/imgs/tool-dashboard/professional-headshot-generator/before.jpg",
+            "alt": "原始人像示例"
+          },
+          "after": {
+            "src": "/imgs/tool-dashboard/professional-headshot-generator/after.jpg",
+            "alt": "增强后的专业证件照示例"
+          }
+        }
+      },
+      "guide": {
+        "title": "专业证件照完整指南",
+        "description": "一张优秀的专业证件照，离不开表情、光线、构图、场景适配与导出规格的共同配合。",
+        "className": "border-border/60 border-t",
+        "image": {
+          "src": "/imgs/tool-dashboard/professional-headshot-generator/how-to-create-professional%20headshot.jpg",
+          "alt": "专业证件照完整指南插图"
+        },
+        "items": [
+          {
+            "title": "1. 核心原则：让三大元素协同工作",
+            "description": "成功的专业证件照建立在表情、光线与构图三者协同之上。微笑要自然，露齿微笑通常更亲和，闭口微笑则更稳重。避免头顶直射硬光形成眼窝阴影。可使用环形灯或柔和侧光增强面部层次。构图上，眼睛建议落在画面上三分之一附近，头顶不要留太多空白，也不要裁掉发际线。"
+          },
+          {
+            "title": "2. 场景适配比想象中更重要",
+            "description": "不同平台需要不同的视觉语境。LinkedIn 和简历更适合整洁发型、衬衫或西装，以及灰色、浅蓝色或轻微虚化的办公背景。Slack 等内部协作工具适合更自然的造型与明亮室内背景。创作者个人品牌可以尝试更具风格感的发色、穿搭和极简渐变背景。学术或医疗场景则更适合稳重发型、正式服装与白色或浅米色背景。"
+          },
+          {
+            "title": "3. 导出规格决定它是否真正可用",
+            "description": "合理的导出规格能让图片真正用于生产环境。建议最低规格：LinkedIn 为 400 x 400 像素，Gmail 或 Slack 为 250 x 250 像素，高分屏建议使用 1024 x 1024 像素或更高。需要更高清晰度或透明背景时用 PNG；用于个人网站、需要兼顾体积时可用 WebP。导出为 sRGB 可以提升不同设备上的色彩一致性。"
+          }
+        ]
+      },
+      "base_image_guide": {
+        "title": "如何拍出适合上传的专业证件照底图",
+        "description": "高质量生成结果离不开高质量底图。按照以下步骤准备清晰人像，有助于获得更好的 AI 输出。",
+        "className": "border-border/60 mt-8 border-t",
+        "image": {
+          "src": "/imgs/tool-dashboard/professional-headshot-generator/how-to-create-professional%20headshot.jpg",
+          "alt": "专业证件照拍摄准备指南插图"
+        },
+        "items": [
+          {
+            "title": "1. 着装与仪容",
+            "description": "选择干净、偏商务风格的服装，例如浅色衬衫搭配深色外套。保持发型整洁，妆容和配饰尽量简洁，减少面部反光，也避免眼镜强烈反射。整体目标是自然、利落。"
+          },
+          {
+            "title": "2. 选择合适光线",
+            "description": "站在窗前，正面迎接柔和自然光。阴天日光或经过窗帘过滤的光线通常最佳。避免阳光直射、明显阴影，以及会让肤色不均匀的混合室内光源。"
+          },
+          {
+            "title": "3. 背景尽量简洁",
+            "description": "选择纯色墙面或简单室内背景，并与衣服形成一定反差。避免杂乱空间，也不要让背景颜色与头发或服装过于接近。干净背景能帮助 AI 更准确识别人物轮廓。"
+          },
+          {
+            "title": "4. 使用正确拍摄角度",
+            "description": "使用手机主摄或相机，并保持镜头与眼睛平齐。肩膀自然放松，身体略微前倾，表情保持自然。画面中保留头部、肩部和上半身，头顶稍留空间，但不要裁掉肩膀。"
+          },
+          {
+            "title": "5. 多拍几张做选择",
+            "description": "至少拍十张后再挑选上传。可以尝试轻微微笑、自然严肃表情、小幅角度变化，以及不同光线方向。更多备选意味着更高概率找到最合适的底图。"
+          },
+          {
+            "title": "6. 上传前自查",
+            "description": "确认照片清晰、光线均匀、人物居中，背景干净，肩膀完整可见，面部对焦准确。满足这些条件的照片通常能成为理想的生成底图。"
+          }
+        ]
+      },
+      "faq": {
+        "title": "专业证件照常见问题",
+        "description": "关于上传、生成与使用专业证件照的一些常见问题。",
+        "items": [
+          {
+            "value": "faq-upload-photo",
+            "question": "我应该上传什么样的照片？",
+            "answer": "建议上传清晰、正面、光线均匀且肩膀可见的人像照片。背景简单、面部细节清楚，通常更容易生成优质的专业证件照。"
+          },
+          {
+            "value": "faq-description",
+            "question": "一定要填写描述吗？",
+            "answer": "不一定。使用默认风格也可以直接生成。如果你希望进一步控制服装、背景、光线或表情，可以额外写一段简短描述。"
+          },
+          {
+            "value": "faq-generation-time",
+            "question": "生成一张证件照大概需要多久？",
+            "answer": "通常只需几秒到短暂等待，具体时间取决于图片尺寸、所选设置以及当前系统负载。"
+          },
+          {
+            "value": "faq-usage",
+            "question": "生成后的证件照可以用在哪里？",
+            "answer": "可用于 LinkedIn、简历、个人网站、团队资料页、名片，以及其他职业形象展示场景。"
+          },
+          {
+            "value": "faq-better-results",
+            "question": "如果生成效果不理想该怎么办？",
+            "answer": "可以尝试上传更清晰的照片、切换不同风格，或补充更具体的描述。对光线、背景和表情指令做小幅调整，通常就能改善结果。"
+          }
+        ]
+      }
+    }
+  }
+}

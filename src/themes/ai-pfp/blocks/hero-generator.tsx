@@ -41,7 +41,11 @@ import {
   extractImageUrls,
   getNanoBananaModelFamily,
   getNanoBananaModelFamilyFromValue,
+  getNanoBananaMaxBatchCount,
+  getNanoBananaMaxReferenceImages,
+  getNanoBananaMaxReferenceImageSizeMB,
   getNanoBananaResolution,
+  getNanoBananaReferenceImageFormatsLabel,
   NANO_BANANA_MODEL_FAMILIES,
   resolveNanoBananaGeneration,
   type NanoBananaResolution,
@@ -149,6 +153,15 @@ export function HeroGenerator({
       getNanoBananaModelFamily(modelFamilyId) ?? NANO_BANANA_MODEL_FAMILIES[0],
     [modelFamilyId]
   );
+  const maxReferenceImages = useMemo(
+    () => getNanoBananaMaxReferenceImages(selectedModelFamily?.id ?? ''),
+    [selectedModelFamily]
+  );
+  const maxReferenceImageSizeMB = useMemo(
+    () =>
+      getNanoBananaMaxReferenceImageSizeMB(selectedModelFamily?.id ?? ''),
+    [selectedModelFamily]
+  );
   const aspectRatios = selectedModelFamily?.aspectRatios ?? ['1:1'];
   const defaultAspectRatio = useMemo(() => {
     if (aspectRatios.includes('auto')) {
@@ -242,6 +255,14 @@ export function HeroGenerator({
   const supportedResolutions = selectedModelFamily?.supportedResolutions ?? [
     '1K',
   ];
+  const effectiveMaxCount = useMemo(
+    () =>
+      Math.min(
+        maxCount,
+        getNanoBananaMaxBatchCount(selectedModelFamily?.id ?? '')
+      ),
+    [maxCount, selectedModelFamily]
+  );
   const resolvedGeneration = useMemo(() => {
     if (!selectedModelFamily) {
       return null;
@@ -258,14 +279,20 @@ export function HeroGenerator({
 
   const countOptions = useMemo(
     () =>
-      Array.from({ length: maxCount }, (_, index) => index + 1).map(
+      Array.from({ length: effectiveMaxCount }, (_, index) => index + 1).map(
         (value) => ({
           value,
           label: `${value} Image${value > 1 ? 's' : ''}`,
         })
       ),
-    [maxCount]
+    [effectiveMaxCount]
   );
+
+  useEffect(() => {
+    if (count > effectiveMaxCount) {
+      setCount(clamp(count, 1, effectiveMaxCount));
+    }
+  }, [count, effectiveMaxCount]);
 
   const handleReferenceImagesChange = useCallback(
     (items: ImageUploaderValue[]) => {
@@ -719,10 +746,15 @@ export function HeroGenerator({
             <div className="border-border border-t px-4 py-4">
               <ImageUploader
                 title="Reference image"
-                emptyHint="Upload one image to guide the generation."
-                allowMultiple={false}
-                maxImages={1}
-                maxSizeMB={8}
+                titleHint={`${getNanoBananaReferenceImageFormatsLabel()}, up to ${maxReferenceImageSizeMB}MB each`}
+                itemTileClassName="border-primary/20 bg-primary/[0.06] hover:border-primary/25 hover:bg-primary/[0.08] border border-dashed"
+                emptyTileClassName="border-primary/20 bg-primary/[0.06] hover:border-primary/25 hover:bg-primary/[0.08] border border-dashed"
+                emptyIconShellClassName="border-primary/25 bg-background/80 text-primary border-dashed"
+                emptyLabelClassName="text-primary"
+                emptyMetaClassName="text-primary/70"
+                allowMultiple={maxReferenceImages > 1}
+                maxImages={maxReferenceImages}
+                maxSizeMB={maxReferenceImageSizeMB}
                 onChange={handleReferenceImagesChange}
               />
             </div>
@@ -802,7 +834,7 @@ export function HeroGenerator({
                 <Select
                   value={String(count)}
                   onValueChange={(value) =>
-                    setCount(clamp(Number(value), 1, maxCount))
+                    setCount(clamp(Number(value), 1, effectiveMaxCount))
                   }
                 >
                   <SelectTrigger className="h-10 min-w-28 rounded-xl">

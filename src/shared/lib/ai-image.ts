@@ -11,6 +11,9 @@ export interface NanoBananaModelFamily {
   defaultAspectRatio: string;
   supportedResolutions: NanoBananaResolution[];
   defaultResolution: NanoBananaResolution;
+  maxBatchCount: number;
+  maxReferenceImages: number;
+  maxReferenceImageSizeMB: number;
   creditCostByResolution: Record<NanoBananaResolution, number>;
   supportsResolutionParam: boolean;
 }
@@ -75,6 +78,9 @@ export const NANO_BANANA_MODEL_FAMILIES: NanoBananaModelFamily[] = [
     defaultAspectRatio: '1:1',
     supportedResolutions: [...NANO_BANANA_BASE_RESOLUTIONS],
     defaultResolution: '1K',
+    maxBatchCount: 4,
+    maxReferenceImages: 10,
+    maxReferenceImageSizeMB: 10,
     creditCostByResolution: {
       '1K': 4,
       '2K': 4,
@@ -92,6 +98,9 @@ export const NANO_BANANA_MODEL_FAMILIES: NanoBananaModelFamily[] = [
     defaultAspectRatio: '1:1',
     supportedResolutions: [...NANO_BANANA_ADVANCED_RESOLUTIONS],
     defaultResolution: '1K',
+    maxBatchCount: 4,
+    maxReferenceImages: 8,
+    maxReferenceImageSizeMB: 30,
     creditCostByResolution: {
       '1K': 10,
       '2K': 15,
@@ -109,6 +118,9 @@ export const NANO_BANANA_MODEL_FAMILIES: NanoBananaModelFamily[] = [
     defaultAspectRatio: 'auto',
     supportedResolutions: [...NANO_BANANA_ADVANCED_RESOLUTIONS],
     defaultResolution: '1K',
+    maxBatchCount: 4,
+    maxReferenceImages: 14,
+    maxReferenceImageSizeMB: 30,
     creditCostByResolution: {
       '1K': 5,
       '2K': 10,
@@ -174,6 +186,22 @@ export function getNanoBananaCreditCost({
 
   const normalizedResolution = getNanoBananaResolution(familyId, resolution);
   return family.creditCostByResolution[normalizedResolution];
+}
+
+export function getNanoBananaMaxBatchCount(familyId: string) {
+  return getNanoBananaModelFamily(familyId)?.maxBatchCount ?? 1;
+}
+
+export function getNanoBananaMaxReferenceImages(familyId: string) {
+  return getNanoBananaModelFamily(familyId)?.maxReferenceImages ?? 1;
+}
+
+export function getNanoBananaMaxReferenceImageSizeMB(familyId: string) {
+  return getNanoBananaModelFamily(familyId)?.maxReferenceImageSizeMB ?? 10;
+}
+
+export function getNanoBananaReferenceImageFormatsLabel() {
+  return 'PNG, JPG, JPEG or WEBP';
 }
 
 export function shouldSendNanoBananaResolution(familyId: string) {
