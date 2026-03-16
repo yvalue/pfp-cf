@@ -9,7 +9,6 @@ import {
   ToolDashboardShell,
   ToolDashboardSidebar,
   ToolDashboardTopbar,
-  ToolDashboardWorkbench,
 } from '@/shared/blocks/tool-dashboard';
 import {
   Breadcrumb,
@@ -23,9 +22,7 @@ import { Button } from '@/shared/components/ui/button';
 import { Faq } from '@/themes/ai-pfp/blocks/faq';
 import { FeaturesAccordion } from '@/themes/ai-pfp/blocks/features-accordion';
 import { FeaturesGuide } from '@/themes/ai-pfp/blocks/features-guide';
-
-import { ProfessionalHeadshotControls } from './professional-headshot-controls';
-import { ProfessionalHeadshotResultPanel } from './professional-headshot-result-panel';
+import { ProfessionalHeadshotGenerator } from '@/themes/ai-pfp/blocks/tool-dashboard-generator';
 
 export const revalidate = 3600;
 
@@ -172,9 +169,6 @@ export default async function ProfessionalHeadshotGeneratorPage({
   ];
   const navigationLinkClassName =
     'flex items-center rounded-2xl px-3 py-2 text-sm font-medium text-foreground transition-colors';
-  const workbenchPaneClassName =
-    'rounded-3xl border border-border/60 bg-white backdrop-blur-xl';
-
   return (
     <ToolDashboardShell>
       <ToolDashboardSidebar
@@ -245,14 +239,7 @@ export default async function ProfessionalHeadshotGeneratorPage({
           }
         />
 
-        <ToolDashboardWorkbench
-          className="border-0 bg-transparent px-0 py-2"
-          gridClassName="gap-4 lg:grid-cols-12 xl:grid-cols-12"
-          leftPaneClassName={`${workbenchPaneClassName} lg:col-span-4 lg:px-5 lg:py-5 xl:px-7 xl:py-6`}
-          rightPaneClassName={`${workbenchPaneClassName} lg:col-span-8 lg:px-7 lg:py-6`}
-          left={<ProfessionalHeadshotControls />}
-          right={<ProfessionalHeadshotResultPanel />}
-        />
+        <ProfessionalHeadshotGenerator />
 
         <FeaturesGuide section={professionalHeadshotFullGuideSection} />
 
