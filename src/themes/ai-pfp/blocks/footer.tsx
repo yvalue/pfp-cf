@@ -20,7 +20,7 @@ export function Footer({ footer }: { footer: FooterType }) {
 
             {footer.brand?.description ? (
               <p
-                className="text-muted-foreground text-sm text-balance break-words"
+                className="text-muted-foreground text-base text-balance break-words"
                 dangerouslySetInnerHTML={{ __html: footer.brand.description }}
               />
             ) : null}
@@ -29,9 +29,9 @@ export function Footer({ footer }: { footer: FooterType }) {
 
           <div className="col-span-3 grid min-w-0 gap-6 sm:grid-cols-3">
             {footer.nav?.items.map((item, idx) => (
-              <div key={idx} className="min-w-0 text-sm break-words">
+              <div key={idx} className="min-w-0 text-base break-words">
                 <div className="grid gap-4">
-                  <span className="block font-medium break-words">
+                  <span className="block text-base font-medium break-words">
                     {item.title}
                   </span>
 
@@ -60,7 +60,7 @@ export function Footer({ footer }: { footer: FooterType }) {
         <div className="flex min-w-0 flex-wrap justify-between gap-8">
           {footer.copyright ? (
             <p
-              className="text-muted-foreground text-sm text-balance break-words"
+              className="text-muted-foreground text-base text-balance break-words"
               dangerouslySetInnerHTML={{ __html: footer.copyright }}
             />
           ) : footer.brand ? (
@@ -76,7 +76,7 @@ export function Footer({ footer }: { footer: FooterType }) {
                   key={index}
                   href={item.url || ''}
                   target={item.target || ''}
-                  className="text-muted-foreground hover:text-primary block text-xs break-words underline duration-150"
+                  className="text-muted-foreground hover:text-primary block text-sm break-words underline duration-150"
                 >
                   {item.title || ''}
                 </Link>

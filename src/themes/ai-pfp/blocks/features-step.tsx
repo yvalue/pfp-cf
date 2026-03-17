@@ -38,7 +38,7 @@ export function FeaturesStep({
               {section.items?.map((item, idx) => (
                 <div className="grid gap-6" key={idx}>
                   <div className="text-center">
-                    <span className="bg-muted mx-auto flex size-6 items-center justify-center rounded-xl text-sm font-medium">
+                    <span className="bg-primary text-primary-foreground mx-auto flex size-10 items-center justify-center rounded-full text-sm font-semibold">
                       {idx + 1}
                     </span>
                     <div className="relative">

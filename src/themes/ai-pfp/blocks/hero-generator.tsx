@@ -680,7 +680,7 @@ export function HeroGenerator({
         className
       )}
     >
-      <div className="mx-auto max-w-5xl px-4">
+      <div className="mx-auto max-w-6xl px-4">
         {announcementTitle && (
           <Link
             href={announcementUrl}
@@ -693,7 +693,7 @@ export function HeroGenerator({
         )}
 
         <div className="mx-auto mt-6 max-w-5xl text-center">
-          <h1 className="text-foreground text-4xl leading-tight font-semibold tracking-tight md:text-6xl">
+          <div className="text-foreground text-4xl leading-tight font-semibold tracking-tight md:text-6xl">
             <span className="inline-flex items-center gap-3 md:gap-4">
               {logoSrc ? (
                 <span className="relative inline-block size-10 overflow-hidden rounded-xl md:size-14">
@@ -708,8 +708,8 @@ export function HeroGenerator({
               ) : null}
               <span>{logoName}</span>
             </span>
-          </h1>
-          <h2 className="text-primary mt-1 text-xl leading-tight font-semibold md:text-2xl">
+          </div>
+          <h1 className="text-primary mt-1 text-xl leading-tight font-semibold md:text-2xl">
             {typedHighlightTitle}
             <span
               className={cn(
@@ -720,7 +720,7 @@ export function HeroGenerator({
             >
               |
             </span>
-          </h2>
+          </h1>
           {description && (
             <p className="text-muted-foreground mx-auto mt-4 max-w-3xl text-sm leading-6 md:text-base md:leading-7">
               {description}
