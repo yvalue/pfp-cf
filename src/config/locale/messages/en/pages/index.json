@@ -15,7 +15,7 @@
         "fast_mode_label": "Fast Mode",
         "modes": ["text-to-image", "image-to-image"],
         "default_mode": "text-to-image",
-        "description": "Generate realistic AI profile photos from just one selfie—from business headshots to lifestyle portraits. Change your look, swap backgrounds, and create standout PFPs for LinkedIn, Instagram, TikTok, WhatsApp, and your virtual social identity",
+        "description": "Generate realistic AI profile photos from just one selfie—from business headshots to lifestyle portraits. Change your look, swap backgrounds, and create standout PFPs for LinkedIn, Instagram, TikTok, WhatsApp, and your virtual social identity！",
         "announcement": {
           "title": "Sign in to get 10 free credits",
           "url": "/sign-in"

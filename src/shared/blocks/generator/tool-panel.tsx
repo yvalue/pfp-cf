@@ -1387,7 +1387,7 @@ export function ProfessionalHeadshotGenerator({
                   {section.buttons.submit}
                 </>
               )}
-              <span className="bg-secondary ml-2 inline-flex items-center gap-1 rounded-xl px-2 py-1 text-sm leading-6">
+              <span className="ml-2 inline-flex items-center gap-1 text-sm leading-6">
                 {totalCost}
                 <RiVipDiamondFill className="size-4 text-amber-400" />
               </span>

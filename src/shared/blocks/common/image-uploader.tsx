@@ -508,6 +508,7 @@ export function ImageUploader({
       <div
         className={cn(
           'flex flex-wrap gap-4',
+          title && 'mt-3',
           allowMultiple ? 'flex-wrap' : 'flex-nowrap'
         )}
       >
@@ -523,7 +524,7 @@ export function ImageUploader({
               <img
                 src={item.preview}
                 alt="Reference"
-                className="h-32 w-32 rounded-lg object-cover"
+                className="h-28 w-28 rounded-lg object-cover"
               />
               {item.size && (
                 <span className="bg-background text-muted-foreground absolute bottom-2 left-2 rounded-md px-2 py-1 text-xs font-medium">
@@ -577,16 +578,16 @@ export function ImageUploader({
             <div className="relative overflow-hidden rounded-lg">
               <button
                 type="button"
-                className="flex h-32 w-32 flex-col items-center justify-center gap-2"
+                className="flex h-28 w-28 flex-col items-center justify-center gap-2"
                 onClick={openFilePicker}
               >
                 <div
                   className={cn(
-                    'border-border flex h-10 w-10 items-center justify-center rounded-full border border-dashed',
+                    'border-border flex h-9 w-9 items-center justify-center rounded-full border border-dashed',
                     emptyIconShellClassName
                   )}
                 >
-                  <IconUpload className="h-5 w-5" />
+                  <IconUpload className="h-4 w-4" />
                 </div>
                 <span className={cn('text-xs font-medium', emptyLabelClassName)}>
                   Upload

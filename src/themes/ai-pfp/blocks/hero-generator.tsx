@@ -675,24 +675,24 @@ export function HeroGenerator({
     <section
       id={section.id}
       className={cn(
-        'pt-20 pb-12 md:pt-28 md:pb-16',
+        'pt-16 pb-10 md:pt-24 md:pb-12',
         section.className,
         className
       )}
     >
-      <div className="mx-auto max-w-6xl px-4">
+      <div className="mx-auto max-w-5xl px-4">
         {announcementTitle && (
           <Link
             href={announcementUrl}
             target={section.announcement?.target || '_self'}
-            className="text-muted-foreground hover:text-foreground border-border bg-background mx-auto flex w-fit items-center gap-2 rounded-xl border px-4 py-2 text-sm leading-6 shadow-sm transition-colors"
+            className="text-muted-foreground hover:text-foreground border-border bg-background mx-auto flex w-fit items-center gap-2 rounded-xl border px-4 py-1 text-xs leading-5 shadow-sm transition-colors"
           >
             <RiInformationLine className="size-4" />
             <span>{announcementTitle}</span>
           </Link>
         )}
 
-        <div className="mx-auto mt-8 max-w-5xl text-center">
+        <div className="mx-auto mt-6 max-w-5xl text-center">
           <h1 className="text-foreground text-4xl leading-tight font-semibold tracking-tight md:text-6xl">
             <span className="inline-flex items-center gap-3 md:gap-4">
               {logoSrc ? (
@@ -709,11 +709,11 @@ export function HeroGenerator({
               <span>{logoName}</span>
             </span>
           </h1>
-          <h2 className="mt-2 bg-gradient-to-r from-violet-500 to-indigo-500 bg-clip-text text-xl leading-tight font-semibold text-transparent md:text-2xl">
+          <h2 className="text-primary mt-1 text-xl leading-tight font-semibold md:text-2xl">
             {typedHighlightTitle}
             <span
               className={cn(
-                'ml-1 inline-block animate-pulse text-violet-500',
+                'text-primary ml-1 inline-block animate-pulse',
                 !isTypingTitle && 'opacity-0'
               )}
               aria-hidden
@@ -722,13 +722,13 @@ export function HeroGenerator({
             </span>
           </h2>
           {description && (
-            <p className="text-muted-foreground mx-auto mt-6 max-w-3xl text-base leading-7 md:text-lg md:leading-8">
+            <p className="text-muted-foreground mx-auto mt-4 max-w-3xl text-sm leading-6 md:text-base md:leading-7">
               {description}
             </p>
           )}
         </div>
 
-        <div className="border-border bg-background mt-12 overflow-hidden rounded-3xl border shadow-sm">
+        <div className="border-border bg-background mt-10 overflow-hidden rounded-3xl border shadow-sm">
           <div className="relative">
             <Textarea
               value={prompt}
@@ -739,11 +739,11 @@ export function HeroGenerator({
               }
               className="min-h-40 resize-none border-0 p-6 text-base leading-7 shadow-none focus-visible:ring-0"
             />
-            <Sparkles className="text-primary absolute top-5 right-5 size-5" />
+            <Sparkles className="text-primary absolute right-5 bottom-5 size-5" />
           </div>
 
           {mode === 'image-to-image' && (
-            <div className="border-border border-t p-4">
+            <div className="border-border border-t p-3">
               <ImageUploader
                 title="Reference image"
                 titleHint={`${getNanoBananaReferenceImageFormatsLabel()}, up to ${maxReferenceImageSizeMB}MB each`}
@@ -760,7 +760,7 @@ export function HeroGenerator({
             </div>
           )}
 
-          <div className="border-border border-t p-4">
+          <div className="border-border border-t p-3">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-wrap items-center gap-2">
                 <Select value={modelFamilyId} onValueChange={setModelFamilyId}>
@@ -917,7 +917,7 @@ export function HeroGenerator({
             ) : (
               <>
                 Submit
-                <span className="bg-muted ml-2 inline-flex items-center gap-1 rounded-xl px-2 py-1 text-sm leading-6">
+                <span className="ml-2 inline-flex items-center gap-1 text-sm leading-6">
                   {totalCost}
                   <RiVipDiamondFill className="size-4 text-amber-400" />
                 </span>
