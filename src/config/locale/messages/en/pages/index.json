@@ -42,6 +42,7 @@
       },
       "logos": {
         "id": "logos",
+        "className": "bg-[#162033]",
         "title": "Level up your digital presence",
         "items": [
           {
@@ -118,6 +119,30 @@
               "src": "/imgs/logos/reddit.svg",
               "alt": "Reddit"
             }
+          },
+          {
+            "title": "WhatsApp",
+            "icon": "whatsapp"
+          },
+          {
+            "title": "Discord",
+            "icon": "discord"
+          },
+          {
+            "title": "Telegram",
+            "icon": "telegram"
+          },
+          {
+            "title": "Twitch",
+            "icon": "twitch"
+          },
+          {
+            "title": "GitHub",
+            "icon": "github"
+          },
+          {
+            "title": "Dribbble",
+            "icon": "dribbble"
           }
         ]
       },

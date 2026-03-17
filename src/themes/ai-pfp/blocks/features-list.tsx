@@ -37,7 +37,7 @@ export function FeaturesList({
               <LazyImage
                 src={section.image?.src ?? ''}
                 alt={section.image?.alt ?? ''}
-                className="h-auto w-full rounded-3xl border border-border object-cover shadow-sm"
+                className="h-auto w-full rounded-3xl object-cover"
               />
             </div>
           </ScrollAnimation>

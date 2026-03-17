@@ -41,6 +41,7 @@
         }
       },
       "logos": {
+        "className": "bg-[#162033]",
         "title": "在这里升级你的社交形象",
         "items": [
           {
@@ -117,6 +118,30 @@
               "src": "/imgs/logos/reddit.svg",
               "alt": "Reddit"
             }
+          },
+          {
+            "title": "WhatsApp",
+            "icon": "whatsapp"
+          },
+          {
+            "title": "Discord",
+            "icon": "discord"
+          },
+          {
+            "title": "Telegram",
+            "icon": "telegram"
+          },
+          {
+            "title": "Twitch",
+            "icon": "twitch"
+          },
+          {
+            "title": "GitHub",
+            "icon": "github"
+          },
+          {
+            "title": "Dribbble",
+            "icon": "dribbble"
           }
         ]
       },
