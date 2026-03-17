@@ -22,7 +22,7 @@ export function LocaleSelector({
   type?: 'icon' | 'button';
 }) {
   const iconTriggerClassName =
-    'size-10 rounded-full text-foreground transition-colors hover:bg-primary hover:text-primary-foreground';
+    'flex size-10 items-center justify-center rounded-full text-foreground transition-colors hover:bg-primary hover:text-primary-foreground data-[state=open]:bg-primary data-[state=open]:text-primary-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] outline-none disabled:pointer-events-none disabled:opacity-50';
 
   const currentLocale = useLocale();
   const router = useRouter();
@@ -49,21 +49,21 @@ export function LocaleSelector({
   // Return a placeholder during SSR to avoid hydration mismatch
   if (!mounted) {
     return (
-      <Button
-        variant={type === 'icon' ? 'ghost' : 'outline'}
-        size={type === 'icon' ? 'icon' : 'sm'}
-        className={type === 'icon' ? iconTriggerClassName : 'hover:bg-muted'}
-        disabled
-      >
-        {type === 'icon' ? (
+      type === 'icon' ? (
+        <button className={iconTriggerClassName} disabled>
           <Languages size={18} />
-        ) : (
-          <>
-            <Globe size={16} />
-            {localeNames[currentLocale]}
-          </>
-        )}
-      </Button>
+        </button>
+      ) : (
+        <Button
+          variant="outline"
+          size="sm"
+          className="hover:bg-muted focus:bg-muted"
+          disabled
+        >
+          <Globe size={16} />
+          {localeNames[currentLocale]}
+        </Button>
+      )
     );
   }
 
@@ -71,15 +71,15 @@ export function LocaleSelector({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         {type === 'icon' ? (
-          <Button
-            variant="ghost"
-            size="icon"
-            className={iconTriggerClassName}
-          >
+          <button className={iconTriggerClassName}>
             <Languages size={18} />
-          </Button>
+          </button>
         ) : (
-          <Button variant="outline" size="sm" className="hover:bg-muted">
+          <Button
+            variant="outline"
+            size="sm"
+            className="hover:bg-muted focus:bg-muted"
+          >
             <Globe size={16} />
             {localeNames[currentLocale]}
           </Button>
@@ -90,6 +90,7 @@ export function LocaleSelector({
           <DropdownMenuItem
             key={locale}
             onClick={() => handleSwitchLanguage(locale)}
+            className="focus:bg-muted focus:text-foreground"
           >
             <span>{localeNames[locale]}</span>
             {locale === currentLocale && (
