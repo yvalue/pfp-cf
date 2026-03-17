@@ -10,6 +10,7 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from '@/shared/components/ui/toggle-group';
+import { cn } from '@/shared/lib/utils';
 
 export function ThemeToggler({
   type = 'icon',
@@ -18,6 +19,9 @@ export function ThemeToggler({
   type?: 'icon' | 'button' | 'toggle';
   className?: string;
 }) {
+  const iconTriggerClassName =
+    'flex size-10 items-center justify-center rounded-full text-foreground transition-colors hover:bg-primary hover:text-primary-foreground';
+
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -34,7 +38,7 @@ export function ThemeToggler({
 
   if (type === 'button') {
     return (
-      <Button variant="outline" size="sm" className="hover:bg-primary/10">
+      <Button variant="outline" size="sm" className="hover:bg-muted">
         <SunDim />
       </Button>
     );
@@ -72,5 +76,9 @@ export function ThemeToggler({
     );
   }
 
-  return <AnimatedThemeToggler className={className} />;
+  return (
+    <AnimatedThemeToggler
+      className={cn(iconTriggerClassName, className)}
+    />
+  );
 }

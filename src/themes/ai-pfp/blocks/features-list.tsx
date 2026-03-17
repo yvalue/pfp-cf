@@ -33,22 +33,22 @@ export function FeaturesList({
       <div className="container overflow-hidden">
         <div className="flex flex-col gap-8 pb-12 md:flex-row md:items-center md:gap-24">
           <ScrollAnimation direction="left">
-            <div className="mx-auto w-full max-w-[500px] flex-shrink-0 md:mx-0">
+            <div className="mx-auto w-full max-w-lg flex-shrink-0 md:mx-0">
               <LazyImage
                 src={section.image?.src ?? ''}
                 alt={section.image?.alt ?? ''}
-                className="h-auto w-full rounded-lg object-cover"
+                className="h-auto w-full rounded-3xl border border-border object-cover shadow-sm"
               />
             </div>
           </ScrollAnimation>
           <div className="w-full min-w-0 flex-1">
             <ScrollAnimation delay={0.1}>
-              <h2 className="text-foreground text-4xl font-semibold text-balance text-center break-words md:text-left">
+              <h2 className="text-foreground text-center text-3xl font-semibold tracking-tight text-balance break-words md:text-left md:text-4xl">
                 {section.title}
               </h2>
             </ScrollAnimation>
             <ScrollAnimation delay={0.2}>
-              <p className="text-md text-muted-foreground my-6 text-balance break-words">
+              <p className="text-muted-foreground my-6 text-base leading-7 text-balance break-words md:text-lg md:leading-8">
                 {section.description}
               </p>
             </ScrollAnimation>
@@ -69,7 +69,7 @@ export function FeaturesList({
                         className={cn(
                           'focus-visible:ring-ring inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
                           'h-9 px-4 py-2',
-                          'bg-background ring-foreground/10 hover:bg-muted/50 dark:ring-foreground/15 dark:hover:bg-muted/50 border border-transparent shadow-sm ring-1 shadow-black/15 duration-200'
+                          'border-border bg-background hover:bg-muted border shadow-sm duration-200'
                         )}
                       >
                         {button.icon && (
@@ -93,7 +93,7 @@ export function FeaturesList({
                 itemIconColors[idx % itemIconColors.length];
 
               return (
-                <div className="min-w-0 space-y-3 break-words" key={idx}>
+                <div className="min-w-0 grid gap-3 break-words" key={idx}>
                   <div className="flex min-w-0 items-center gap-2">
                     {item.icon && (
                       <SmartIcon
@@ -102,11 +102,11 @@ export function FeaturesList({
                         className={cn('shrink-0', iconColorClass)}
                       />
                     )}
-                    <h3 className="min-w-0 text-sm font-medium break-words">
+                    <h3 className="text-foreground min-w-0 text-base leading-7 font-semibold break-words md:text-lg">
                       {item.title}
                     </h3>
                   </div>
-                  <p className="text-muted-foreground min-w-0 text-sm break-words">
+                  <p className="text-muted-foreground min-w-0 text-sm leading-6 break-words">
                     {item.description ?? ''}
                   </p>
                 </div>

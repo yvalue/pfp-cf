@@ -1,6 +1,6 @@
 'use client';
 
-import { CSSProperties, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Check, Loader2, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { toast } from 'sonner';
@@ -34,8 +34,6 @@ import {
   PricingItem,
   Pricing as PricingType,
 } from '@/shared/types/blocks/pricing';
-
-import styles from './pricing-tabs.module.css';
 
 type SelectedCurrencies = Record<string, string>;
 
@@ -121,6 +119,26 @@ function getPricingGridClassName(itemCount: number): string {
   }
 
   return 'max-w-7xl grid-cols-1 md:grid-cols-2 xl:grid-cols-4';
+}
+
+function getTabsGridClassName(groupCount: number): string {
+  if (groupCount <= 1) {
+    return 'grid-cols-1';
+  }
+
+  if (groupCount === 2) {
+    return 'grid-cols-2';
+  }
+
+  if (groupCount === 3) {
+    return 'grid-cols-3';
+  }
+
+  if (groupCount === 4) {
+    return 'grid-cols-4';
+  }
+
+  return 'grid-cols-5';
 }
 
 function getDefaultFreeCard(
@@ -340,10 +358,7 @@ export function Pricing({
     0,
     section.groups?.findIndex((item) => item.name === group) ?? 0
   );
-  const tabsListStyle = {
-    '--pricing-tab-count': groupCount,
-    '--pricing-tab-index': activeGroupIndex,
-  } as CSSProperties;
+  const tabsGridClassName = getTabsGridClassName(groupCount);
   const baseFreeCard = getDefaultFreeCard(section.free_cards);
   const activeFreeCard = group ? section.free_cards?.[group] : undefined;
   const displayedFreeCard = baseFreeCard
@@ -362,14 +377,14 @@ export function Pricing({
     return (
       <Card
         className={cn(
-          'border-border/60 bg-background hover:border-primary relative flex h-full flex-col rounded-3xl border px-6 py-6 shadow-sm shadow-zinc-950/5 transition-colors duration-200 lg:px-7 lg:py-7',
+          'border-border bg-background hover:border-primary relative flex h-full flex-col rounded-3xl border p-6 shadow-sm transition-colors duration-200',
           cardClassName
         )}
       >
         <CardHeader className="p-0">
           <div className="flex items-center justify-between gap-4">
             <CardTitle className="min-w-0 flex-1 font-medium">
-              <h3 className="text-foreground text-3xl leading-none font-semibold tracking-tight">
+              <h3 className="text-foreground text-lg font-semibold md:text-xl">
                 {displayedFreeCard.title}
               </h3>
             </CardTitle>
@@ -404,20 +419,20 @@ export function Pricing({
         <div className="mt-2">
           <Button
             disabled
-            className="border-border/80 bg-background text-foreground hover:bg-background h-11 w-full rounded-full border px-6 text-sm font-medium shadow-sm shadow-black/5"
+            className="border-border bg-background text-foreground hover:bg-background h-10 w-full rounded-xl border px-6 text-sm font-medium shadow-sm"
           >
             <span>{displayedFreeCard.button?.title}</span>
           </Button>
         </div>
 
-        <CardContent className="border-border/60 mt-2 flex flex-1 flex-col border-t p-0 pt-2">
+        <CardContent className="border-border mt-2 flex flex-1 flex-col border-t p-0 pt-2">
           {displayedFreeCard.features_title && (
-            <p className="text-muted-foreground mb-4 text-sm font-medium">
+            <p className="text-muted-foreground mb-4 text-sm leading-6 font-medium">
               {displayedFreeCard.features_title}
             </p>
           )}
 
-          <ul className="space-y-3 text-sm">
+          <ul className="grid gap-3 text-sm leading-6">
             {displayedFreeCard.features?.map((feature, index) => (
               <li key={index} className="flex items-start gap-3">
                 {displayedFreeCard.crossed_features?.includes(feature) ? (
@@ -425,7 +440,7 @@ export function Pricing({
                 ) : (
                   <Check className="text-primary mt-1 size-4 shrink-0" />
                 )}
-                <span className="text-muted-foreground leading-normal">
+                <span className="text-muted-foreground text-sm leading-6">
                   <TextHighlight text={feature} />
                 </span>
               </li>
@@ -440,7 +455,7 @@ export function Pricing({
     <section
       id={section.id}
       className={cn(
-        'bg-muted/20 relative overflow-hidden py-20 md:py-28',
+        'bg-muted relative overflow-hidden py-20 md:py-28',
         section.className,
         className
       )}
@@ -449,7 +464,9 @@ export function Pricing({
         aria-hidden
         className="pointer-events-none absolute inset-0 overflow-hidden"
       >
-        <div className="bg-primary/5 absolute top-12 left-1/2 h-72 w-full max-w-4xl -translate-x-1/2 rounded-full blur-3xl" />
+        <div className="absolute inset-x-0 top-12 flex justify-center px-4">
+          <div className="bg-accent h-72 w-full max-w-4xl rounded-3xl blur-3xl" />
+        </div>
       </div>
 
       <div className="relative container">
@@ -457,10 +474,10 @@ export function Pricing({
           {section.sr_only_title && (
             <h1 className="sr-only">{section.sr_only_title}</h1>
           )}
-          <h2 className="text-foreground mx-auto max-w-3xl text-4xl font-bold tracking-tight text-balance md:text-6xl">
+          <h2 className="text-foreground mx-auto max-w-3xl text-4xl font-semibold tracking-tight text-balance md:text-6xl">
             {section.title}
           </h2>
-          <p className="text-muted-foreground mx-auto mt-5 max-w-4xl text-base text-pretty whitespace-pre-line md:text-lg">
+          <p className="text-muted-foreground mx-auto mt-5 max-w-4xl text-base leading-7 text-pretty whitespace-pre-line md:text-lg md:leading-8">
             {section.description}
           </p>
         </div>
@@ -470,29 +487,43 @@ export function Pricing({
             <Tabs value={group} onValueChange={setGroup} className="max-w-full">
               <TabsList
                 className={cn(
-                  'bg-background/90 relative inline-grid h-auto w-max min-w-max rounded-full border border-zinc-300/80 p-1 shadow-none backdrop-blur-sm',
-                  styles.tabsList
+                  'border-border bg-background relative inline-grid h-auto w-max min-w-max rounded-2xl border p-1 shadow-sm',
+                  tabsGridClassName
                 )}
-                style={tabsListStyle}
               >
                 <div
                   aria-hidden
                   className={cn(
-                    'bg-primary absolute inset-y-1 left-1 rounded-full',
-                    styles.tabIndicator
+                    'pointer-events-none absolute inset-1 grid gap-1',
+                    tabsGridClassName
                   )}
-                />
+                >
+                  {section.groups.map((item, i) => (
+                    <div
+                      key={item.name ?? `indicator-${i}`}
+                      className={cn(
+                        'rounded-xl transition-colors duration-200',
+                        i === activeGroupIndex && 'bg-primary'
+                      )}
+                    />
+                  ))}
+                </div>
                 {section.groups.map((item, i) => {
                   return (
                     <TabsTrigger
                       key={item.name ?? `group-${i}`}
                       value={item.name || ''}
-                      className="text-foreground data-[state=active]:text-primary-foreground relative z-10 h-8 min-w-28 shrink-0 rounded-full bg-transparent px-3 text-sm font-medium tracking-tight transition duration-300 ease-out will-change-transform active:scale-[0.98] data-[state=active]:bg-transparent data-[state=active]:shadow-none md:h-9 md:min-w-32 md:px-4"
+                      className={cn(
+                        'relative z-10 h-10 min-w-28 shrink-0 rounded-xl px-3 text-sm leading-6 font-medium tracking-tight transition-colors duration-200 md:min-w-32 md:px-4',
+                        i === activeGroupIndex
+                          ? 'text-primary-foreground'
+                          : 'text-foreground'
+                      )}
                     >
                       <span className="flex items-center justify-center gap-1">
                         <span>{item.title}</span>
                         {item.label && (
-                          <span className="text-xs font-semibold opacity-80">
+                          <span className="text-xs leading-5 font-semibold">
                             {item.label}
                           </span>
                         )}
@@ -507,7 +538,7 @@ export function Pricing({
 
         <div
           className={cn(
-            'mx-auto grid w-full gap-6 lg:gap-8',
+            'mx-auto grid w-full gap-4',
             pricingGridClassName
           )}
         >
@@ -534,20 +565,20 @@ export function Pricing({
               <Card
                 key={item.product_id}
                 className={cn(
-                  'hover:border-primary relative flex h-full flex-col rounded-3xl border px-6 py-6 shadow-sm shadow-zinc-950/5 transition-colors duration-200 lg:px-7 lg:py-7',
-                  'border-border/60 bg-background',
-                  isFeatured && 'bg-primary/5 shadow-primary/10'
+                  'hover:border-primary relative flex h-full flex-col rounded-3xl border p-6 shadow-sm transition-colors duration-200',
+                  'border-border bg-background',
+                  isFeatured && 'bg-accent'
                 )}
               >
                 <CardHeader className="p-0">
                   <div className="flex items-center justify-between gap-4">
                     <CardTitle className="min-w-0 flex-1 font-medium">
-                      <h3 className="text-foreground text-3xl leading-none font-semibold tracking-tight">
+                      <h3 className="text-foreground text-lg font-semibold md:text-xl">
                         {item.title}
                       </h3>
                     </CardTitle>
                     {item.label && (
-                      <span className="border-primary/10 bg-primary/10 text-primary inline-flex h-7 shrink-0 items-center rounded-full border px-3 text-xs font-semibold tracking-widest">
+                      <span className="border-primary bg-accent text-primary inline-flex h-7 shrink-0 items-center rounded-xl border px-3 text-xs leading-5 font-semibold tracking-widest">
                         {item.label}
                       </span>
                     )}
@@ -586,7 +617,7 @@ export function Pricing({
                       >
                         <SelectTrigger
                           size="sm"
-                          className="border-border/80 bg-background ml-auto h-9 min-w-24 rounded-full px-3 text-xs font-semibold tracking-widest uppercase shadow-none"
+                          className="border-border bg-background ml-auto h-10 min-w-24 rounded-xl px-4 text-xs leading-5 font-semibold tracking-widest uppercase shadow-sm"
                         >
                           <SelectValue placeholder="Currency" />
                         </SelectTrigger>
@@ -595,7 +626,7 @@ export function Pricing({
                             <SelectItem
                               key={currency.currency}
                               value={currency.currency}
-                              className="text-xs font-medium uppercase"
+                              className="text-xs leading-5 font-medium uppercase"
                             >
                               {currency.currency.toUpperCase()}
                             </SelectItem>
@@ -606,7 +637,7 @@ export function Pricing({
                   </div>
 
                   {item.tip && (
-                    <p className="text-muted-foreground/80 mt-2.5 text-sm leading-6">
+                    <p className="text-muted-foreground mt-2.5 text-sm leading-6">
                       {item.tip}
                     </p>
                   )}
@@ -616,7 +647,7 @@ export function Pricing({
                   {isCurrentPlan ? (
                     <Button
                       variant="outline"
-                      className="border-border/80 bg-background h-11 w-full rounded-full px-6 text-sm font-medium shadow-sm"
+                      className="border-border bg-background h-10 w-full rounded-xl px-6 text-sm leading-6 font-medium shadow-sm"
                       disabled
                     >
                       <span>{t('current_plan')}</span>
@@ -626,10 +657,10 @@ export function Pricing({
                       onClick={() => handlePayment(item)}
                       disabled={isLoading}
                       className={cn(
-                        'focus-visible:ring-ring inline-flex h-11 w-full items-center justify-center gap-2 rounded-full px-6 text-sm font-medium whitespace-nowrap transition-all focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
+                        'focus-visible:ring-ring inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl px-6 text-sm leading-6 font-medium whitespace-nowrap transition-all focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none',
                         isFeatured
-                          ? 'bg-primary text-primary-foreground hover:bg-primary/80 shadow-primary/10 border border-white/20 shadow-md'
-                          : 'border-border/80 bg-background text-foreground hover:bg-muted/90 border shadow-sm shadow-black/5'
+                          ? 'bg-primary text-primary-foreground hover:bg-primary border border-white shadow-sm'
+                          : 'border-border bg-background text-foreground hover:bg-muted border shadow-sm'
                       )}
                     >
                       {isLoading && item.product_id === loadingProductId ? (
@@ -652,14 +683,14 @@ export function Pricing({
                   )}
                 </div>
 
-                <CardContent className="border-border/60 mt-2 flex flex-1 flex-col border-t p-0 pt-2">
+                <CardContent className="border-border mt-2 flex flex-1 flex-col border-t p-0 pt-2">
                   {item.features_title && (
-                    <p className="text-muted-foreground mb-4 text-sm font-medium">
+                    <p className="text-muted-foreground mb-4 text-sm leading-6 font-medium">
                       {item.features_title}
                     </p>
                   )}
 
-                  <ul className="space-y-3 text-sm">
+                  <ul className="grid gap-3 text-sm leading-6">
                     {item.features?.map((feature, index) => (
                       <li key={index} className="flex items-start gap-3">
                         {item.crossed_features?.includes(feature) ? (
@@ -667,7 +698,7 @@ export function Pricing({
                         ) : (
                           <Check className="text-primary mt-1 size-4 shrink-0" />
                         )}
-                        <span className="text-muted-foreground leading-normal">
+                        <span className="text-muted-foreground text-sm leading-6">
                           <TextHighlight text={feature} />
                         </span>
                       </li>

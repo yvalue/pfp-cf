@@ -21,6 +21,9 @@ export function LocaleSelector({
 }: {
   type?: 'icon' | 'button';
 }) {
+  const iconTriggerClassName =
+    'size-10 rounded-full text-foreground transition-colors hover:bg-primary hover:text-primary-foreground';
+
   const currentLocale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
@@ -49,9 +52,7 @@ export function LocaleSelector({
       <Button
         variant={type === 'icon' ? 'ghost' : 'outline'}
         size={type === 'icon' ? 'icon' : 'sm'}
-        className={
-          type === 'icon' ? 'h-auto w-auto p-0' : 'hover:bg-primary/10'
-        }
+        className={type === 'icon' ? iconTriggerClassName : 'hover:bg-muted'}
         disabled
       >
         {type === 'icon' ? (
@@ -70,11 +71,15 @@ export function LocaleSelector({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         {type === 'icon' ? (
-          <Button variant="ghost" size="icon" className="h-auto w-auto p-0">
+          <Button
+            variant="ghost"
+            size="icon"
+            className={iconTriggerClassName}
+          >
             <Languages size={18} />
           </Button>
         ) : (
-          <Button variant="outline" size="sm" className="hover:bg-primary/10">
+          <Button variant="outline" size="sm" className="hover:bg-muted">
             <Globe size={16} />
             {localeNames[currentLocale]}
           </Button>

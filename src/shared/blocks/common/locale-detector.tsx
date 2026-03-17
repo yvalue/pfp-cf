@@ -29,6 +29,7 @@ export function LocaleDetector() {
   const [browserLocale, setBrowserLocale] = useState<string | null>(null);
   const [bannerHeight, setBannerHeight] = useState(0);
   const bannerRef = useRef<HTMLDivElement>(null);
+  const spacerRef = useRef<HTMLDivElement>(null);
   const hasCheckedRef = useRef(false);
 
   const detectBrowserLocale = (): string | null => {
@@ -191,6 +192,12 @@ export function LocaleDetector() {
     };
   }, [showBanner]);
 
+  useEffect(() => {
+    if (spacerRef.current) {
+      spacerRef.current.style.height = `${bannerHeight}px`;
+    }
+  }, [bannerHeight]);
+
   const handleSwitch = () => {
     if (browserLocale) {
       switchToLocale(browserLocale);
@@ -237,7 +244,7 @@ export function LocaleDetector() {
     <>
       <div
         ref={bannerRef}
-        className="from-primary to-primary/80 text-primary-foreground fixed top-0 right-0 left-0 z-[51] hidden bg-gradient-to-r shadow-lg md:block"
+        className="bg-primary text-primary-foreground fixed top-0 right-0 left-0 z-50 hidden shadow-lg md:block"
       >
         <div className="container py-2.5">
           <div className="flex items-center justify-between gap-4">
@@ -259,7 +266,7 @@ export function LocaleDetector() {
               </Button>
               <button
                 onClick={handleDismiss}
-                className="bg-primary/10 flex-shrink-0 rounded p-1 transition-colors"
+                className="bg-background text-foreground flex-shrink-0 rounded p-1 transition-colors"
                 aria-label="Close"
               >
                 <X className="h-4 w-4" />
@@ -269,8 +276,8 @@ export function LocaleDetector() {
         </div>
       </div>
       <div
+        ref={spacerRef}
         aria-hidden="true"
-        style={{ height: bannerHeight }}
         className="pointer-events-none"
       />
     </>

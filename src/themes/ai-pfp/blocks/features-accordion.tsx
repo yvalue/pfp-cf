@@ -47,13 +47,13 @@ export function FeaturesAccordion({
       )}
     >
       {/* add overflow-x-hidden to container */}
-      <div className="container space-y-8 overflow-x-hidden px-2 sm:px-6 md:space-y-16 lg:space-y-20 dark:[--color-border:color-mix(in_oklab,var(--color-white)_10%,transparent)]">
+      <div className="container grid gap-8 overflow-x-hidden px-2 sm:px-6 md:gap-16 lg:gap-20">
         <ScrollAnimation>
           <div className="mx-auto max-w-4xl text-center text-balance">
             <h2 className="text-foreground mb-4 text-3xl font-semibold tracking-tight md:text-4xl">
               {section.title}
             </h2>
-            <p className="text-muted-foreground mb-6 md:mb-12 lg:mb-16">
+            <p className="text-muted-foreground mb-6 text-base leading-7 md:mb-12 md:text-lg md:leading-8 lg:mb-16">
               {section.description}
             </p>
           </div>
@@ -71,22 +71,24 @@ export function FeaturesAccordion({
               {section.items?.map((item, idx) => (
                 <AccordionItem value={`item-${idx + 1}`} key={idx}>
                   <AccordionTrigger>
-                    <div className="flex items-center gap-2 text-base">
+                    <div className="text-foreground flex items-center gap-2 text-base font-semibold md:text-lg">
                       {item.icon && (
                         <SmartIcon name={item.icon as string} size={24} />
                       )}
                       {item.title}
                     </div>
                   </AccordionTrigger>
-                  <AccordionContent>{item.description}</AccordionContent>
+                  <AccordionContent className="text-muted-foreground text-base leading-7">
+                    {item.description}
+                  </AccordionContent>
                 </AccordionItem>
               ))}
             </Accordion>
           </ScrollAnimation>
 
           <ScrollAnimation delay={0.2} direction="right">
-            <div className="relative min-w-0 overflow-hidden rounded-3xl">
-              <div className="relative aspect-76/59 w-full min-w-0">
+            <div className="border-border relative min-w-0 overflow-hidden rounded-3xl border shadow-sm">
+              <div className="relative aspect-video w-full min-w-0">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={previewImage?.image || `${activeItem}-id`}

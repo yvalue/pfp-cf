@@ -23,20 +23,20 @@ export function ToolDashboardWorkbench({
     <section
       data-slot="tool-dashboard-workbench"
       className={cn(
-        'border-border/60 bg-card/30 rounded-[32px] border p-2',
+        'border-border bg-card rounded-3xl border p-4 shadow-sm',
         className
       )}
       {...props}
     >
       <div
         className={cn(
-          'grid gap-2 xl:grid-cols-[minmax(0,420px)_minmax(0,1fr)]',
+          'grid gap-4 xl:grid-cols-2',
           gridClassName
         )}
       >
         <div
           className={cn(
-            'border-border/60 bg-card min-w-0 rounded-[28px] border px-6 py-6 shadow-sm lg:px-8 lg:py-8',
+            'border-border bg-card min-w-0 rounded-3xl border p-6 shadow-sm',
             leftPaneClassName
           )}
         >
@@ -45,7 +45,7 @@ export function ToolDashboardWorkbench({
 
         <div
           className={cn(
-            'border-border/60 bg-card min-w-0 rounded-[28px] border px-6 py-6 shadow-sm lg:px-8 lg:py-8',
+            'border-border bg-card min-w-0 rounded-3xl border p-6 shadow-sm',
             rightPaneClassName
           )}
         >

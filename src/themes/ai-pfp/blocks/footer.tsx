@@ -12,9 +12,10 @@ export function Footer({ footer }: { footer: FooterType }) {
       id={footer.id}
       className={`py-8 sm:py-8 ${footer.className || ''} overflow-x-hidden`}
     >
-      <div className="container space-y-8 overflow-x-hidden">
+      <div className="container grid gap-8 overflow-x-hidden">
         <div className="grid min-w-0 gap-12 md:grid-cols-5">
-          <div className="min-w-0 space-y-4 break-words md:col-span-2 md:space-y-6">
+          <div className="min-w-0 break-words md:col-span-2">
+            <div className="grid gap-4 md:gap-6">
             {footer.brand ? <BrandLogo brand={footer.brand} /> : null}
 
             {footer.brand?.description ? (
@@ -23,26 +24,29 @@ export function Footer({ footer }: { footer: FooterType }) {
                 dangerouslySetInnerHTML={{ __html: footer.brand.description }}
               />
             ) : null}
+            </div>
           </div>
 
           <div className="col-span-3 grid min-w-0 gap-6 sm:grid-cols-3">
             {footer.nav?.items.map((item, idx) => (
-              <div key={idx} className="min-w-0 space-y-4 text-sm break-words">
-                <span className="block font-medium break-words">
-                  {item.title}
-                </span>
+              <div key={idx} className="min-w-0 text-sm break-words">
+                <div className="grid gap-4">
+                  <span className="block font-medium break-words">
+                    {item.title}
+                  </span>
 
-                <div className="flex min-w-0 flex-wrap gap-4 sm:flex-col">
-                  {item.children?.map((subItem, iidx) => (
-                    <Link
-                      key={iidx}
-                      href={subItem.url || ''}
-                      target={subItem.target || ''}
-                      className="text-muted-foreground hover:text-primary block break-words duration-150"
-                    >
-                      <span className="break-words">{subItem.title || ''}</span>
-                    </Link>
-                  ))}
+                  <div className="flex min-w-0 flex-wrap gap-4 sm:flex-col">
+                    {item.children?.map((subItem, iidx) => (
+                      <Link
+                        key={iidx}
+                        href={subItem.url || ''}
+                        target={subItem.target || ''}
+                        className="text-muted-foreground hover:text-primary block break-words duration-150"
+                      >
+                        <span className="break-words">{subItem.title || ''}</span>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               </div>
             ))}

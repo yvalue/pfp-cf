@@ -685,7 +685,7 @@ export function HeroGenerator({
           <Link
             href={announcementUrl}
             target={section.announcement?.target || '_self'}
-            className="text-muted-foreground hover:text-foreground border-border bg-background/80 mx-auto flex w-fit items-center gap-2 rounded-xl border px-4 py-2 text-sm shadow-sm transition-colors"
+            className="text-muted-foreground hover:text-foreground border-border bg-background mx-auto flex w-fit items-center gap-2 rounded-xl border px-4 py-2 text-sm leading-6 shadow-sm transition-colors"
           >
             <RiInformationLine className="size-4" />
             <span>{announcementTitle}</span>
@@ -722,13 +722,13 @@ export function HeroGenerator({
             </span>
           </h2>
           {description && (
-            <p className="text-muted-foreground mx-auto mt-6 max-w-3xl text-lg leading-relaxed">
+            <p className="text-muted-foreground mx-auto mt-6 max-w-3xl text-base leading-7 md:text-lg md:leading-8">
               {description}
             </p>
           )}
         </div>
 
-        <div className="border-border bg-background/75 mt-12 overflow-hidden rounded-2xl border shadow-lg shadow-zinc-950/5">
+        <div className="border-border bg-background mt-12 overflow-hidden rounded-3xl border shadow-sm">
           <div className="relative">
             <Textarea
               value={prompt}
@@ -737,21 +737,21 @@ export function HeroGenerator({
                 section.placeholder ||
                 'Describe the PFP you want to generate...'
               }
-              className="min-h-40 resize-none border-0 bg-transparent px-6 py-6 text-base shadow-none focus-visible:ring-0"
+              className="min-h-40 resize-none border-0 p-6 text-base leading-7 shadow-none focus-visible:ring-0"
             />
-            <Sparkles className="text-primary/35 absolute top-5 right-5 size-5" />
+            <Sparkles className="text-primary absolute top-5 right-5 size-5" />
           </div>
 
           {mode === 'image-to-image' && (
-            <div className="border-border border-t px-4 py-4">
+            <div className="border-border border-t p-4">
               <ImageUploader
                 title="Reference image"
                 titleHint={`${getNanoBananaReferenceImageFormatsLabel()}, up to ${maxReferenceImageSizeMB}MB each`}
-                itemTileClassName="border-primary/20 bg-primary/[0.06] hover:border-primary/25 hover:bg-primary/[0.08] border border-dashed"
-                emptyTileClassName="border-primary/20 bg-primary/[0.06] hover:border-primary/25 hover:bg-primary/[0.08] border border-dashed"
-                emptyIconShellClassName="border-primary/25 bg-background/80 text-primary border-dashed"
+                itemTileClassName="border-primary bg-accent hover:border-primary hover:bg-secondary border border-dashed"
+                emptyTileClassName="border-primary bg-accent hover:border-primary hover:bg-secondary border border-dashed"
+                emptyIconShellClassName="border-primary bg-background text-primary border-dashed"
                 emptyLabelClassName="text-primary"
-                emptyMetaClassName="text-primary/70"
+                emptyMetaClassName="text-primary"
                 allowMultiple={maxReferenceImages > 1}
                 maxImages={maxReferenceImages}
                 maxSizeMB={maxReferenceImageSizeMB}
@@ -760,11 +760,11 @@ export function HeroGenerator({
             </div>
           )}
 
-          <div className="border-border border-t px-4 py-3">
+          <div className="border-border border-t p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-wrap items-center gap-2">
                 <Select value={modelFamilyId} onValueChange={setModelFamilyId}>
-                  <SelectTrigger className="h-10 min-w-32 rounded-xl">
+                  <SelectTrigger className="h-10 min-w-32 rounded-xl text-sm leading-6">
                     <SelectValue placeholder="Model" />
                   </SelectTrigger>
                   <SelectContent>
@@ -796,7 +796,7 @@ export function HeroGenerator({
                 )}
 
                 <Select value={aspectRatio} onValueChange={setAspectRatio}>
-                  <SelectTrigger className="h-10 min-w-24 rounded-xl">
+                  <SelectTrigger className="h-10 min-w-24 rounded-xl text-sm leading-6">
                     <SelectValue aria-label={aspectRatio}>
                       <AspectRatioOption ratio={aspectRatio} selected />
                     </SelectValue>
@@ -819,7 +819,7 @@ export function HeroGenerator({
                     setResolution(value as NanoBananaResolution)
                   }
                 >
-                  <SelectTrigger className="h-10 min-w-24 rounded-xl">
+                  <SelectTrigger className="h-10 min-w-24 rounded-xl text-sm leading-6">
                     <SelectValue placeholder="Quality" />
                   </SelectTrigger>
                   <SelectContent>
@@ -837,7 +837,7 @@ export function HeroGenerator({
                     setCount(clamp(Number(value), 1, effectiveMaxCount))
                   }
                 >
-                  <SelectTrigger className="h-10 min-w-28 rounded-xl">
+                  <SelectTrigger className="h-10 min-w-28 rounded-xl text-sm leading-6">
                     <SelectValue placeholder="Count" />
                   </SelectTrigger>
                   <SelectContent>
@@ -857,7 +857,7 @@ export function HeroGenerator({
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="text-muted-foreground size-9 rounded-xl"
+                className="text-muted-foreground size-10 rounded-xl"
                 disabled
                 aria-label="Settings"
               >
@@ -868,17 +868,17 @@ export function HeroGenerator({
         </div>
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
-          <div className="text-muted-foreground flex items-center gap-5 text-sm">
+          <div className="text-muted-foreground flex items-center gap-4 text-sm leading-6">
             <label className="inline-flex items-center gap-2">
               <Switch checked={skipCaptcha} onCheckedChange={setSkipCaptcha} />
-              <span className="inline-flex items-center gap-1 text-base">
+              <span className="inline-flex items-center gap-1 text-sm leading-6 font-medium">
                 {fastModeLabel}
                 <RiFlashlightFill className="size-4 text-amber-400" />
               </span>
             </label>
             <label className="inline-flex items-center gap-2">
               <Switch checked={watermark} onCheckedChange={setWatermark} />
-              <span className="inline-flex items-center gap-1 text-base">
+              <span className="inline-flex items-center gap-1 text-sm leading-6 font-medium">
                 Watermark
                 <RiVipCrown2Fill className="size-4 text-amber-400" />
               </span>
@@ -887,7 +887,7 @@ export function HeroGenerator({
 
           <Button
             size="lg"
-            className="min-w-44 rounded-xl text-base"
+            className="min-w-44 rounded-xl text-sm leading-6"
             onClick={handleGenerate}
             disabled={
               !isMounted ||
@@ -917,7 +917,7 @@ export function HeroGenerator({
             ) : (
               <>
                 Submit
-                <span className="ml-2 inline-flex items-center gap-1 rounded-md bg-black/10 px-1.5 text-base dark:bg-white/15">
+                <span className="bg-muted ml-2 inline-flex items-center gap-1 rounded-xl px-2 py-1 text-sm leading-6">
                   {totalCost}
                   <RiVipDiamondFill className="size-4 text-amber-400" />
                 </span>
@@ -927,10 +927,10 @@ export function HeroGenerator({
         </div>
 
         {(isGenerating || generatedImages.length > 0) && (
-          <div className="border-border bg-background/80 mt-8 rounded-2xl border p-5 md:p-6">
+          <div className="border-border bg-background mt-8 rounded-3xl border p-6 shadow-sm">
             {isGenerating && (
-              <div className="mb-6 space-y-3">
-                <div className="flex items-center justify-between gap-3 text-sm">
+              <div className="mb-6 grid gap-3">
+                <div className="flex items-center justify-between gap-3 text-sm leading-6">
                   <div className="flex items-center gap-2">
                     <Loader2 className="text-primary size-4 animate-spin" />
                     <span>{statusText || 'Generating image...'}</span>
@@ -938,7 +938,7 @@ export function HeroGenerator({
                   <span>{progress}%</span>
                 </div>
                 {taskStatus && (
-                  <p className="text-muted-foreground text-xs uppercase">
+                  <p className="text-muted-foreground text-xs leading-5 uppercase">
                     Status: {taskStatus}
                   </p>
                 )}
@@ -951,7 +951,7 @@ export function HeroGenerator({
                 {generatedImages.map((image) => (
                   <div
                     key={image.id}
-                    className="border-border relative overflow-hidden rounded-xl border"
+                    className="border-border relative overflow-hidden rounded-3xl border shadow-sm"
                   >
                     <LazyImage
                       src={image.url}
@@ -962,7 +962,7 @@ export function HeroGenerator({
                       <Button
                         size="icon"
                         variant="secondary"
-                        className="size-8 rounded-lg opacity-90"
+                        className="size-8 rounded-xl"
                         onClick={() => handleDownloadImage(image)}
                         disabled={downloadingImageId === image.id}
                       >

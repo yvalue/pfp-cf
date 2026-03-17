@@ -41,24 +41,20 @@ export function FeaturesFlow({ section }: { section: Section }) {
         {section.sr_only_title && (
           <h1 className="sr-only">{section.sr_only_title}</h1>
         )}
-        <h2 className="mx-auto mb-6 max-w-full text-3xl font-bold text-pretty md:max-w-5xl lg:text-4xl">
+        <h2 className="text-foreground mx-auto mb-6 max-w-full text-3xl font-semibold tracking-tight text-pretty md:max-w-5xl md:text-4xl">
           {section.title}
         </h2>
-        <p className="text-muted-foreground text-md mx-auto mb-4 max-w-full md:max-w-5xl">
+        <p className="text-muted-foreground mx-auto mb-4 max-w-full text-base leading-7 md:max-w-5xl md:text-lg md:leading-8">
           {section.description}
         </p>
       </motion.div>
-      <div className="container flex flex-col items-center justify-center space-y-8 px-6 md:space-y-16">
+      <div className="container flex flex-col items-center justify-center gap-8 px-6 md:gap-16">
         {section.items.map((item, index) => {
           const isImageRight = item.image_position === 'right';
           return (
             <motion.div
               key={index}
-              className={cn(
-                'grid items-center gap-6 py-16 sm:grid-cols-2 md:gap-12 lg:gap-24',
-                isImageRight &&
-                  'sm:[&>*:first-child]:order-2 sm:[&>*:last-child]:order-1'
-              )}
+              className="grid items-center gap-6 py-16 sm:grid-cols-2 md:gap-12 lg:gap-24"
               initial={{
                 opacity: 0,
                 y: 30,
@@ -75,6 +71,7 @@ export function FeaturesFlow({ section }: { section: Section }) {
               }}
             >
               <motion.div
+                className={cn(isImageRight && 'sm:order-2')}
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
@@ -86,13 +83,13 @@ export function FeaturesFlow({ section }: { section: Section }) {
               >
                 <LazyImage
                   src={item.image?.src ?? ''}
-                  className="rounded-2xl"
+                  className="rounded-3xl border border-border shadow-sm"
                   alt={item.image?.alt ?? ''}
                 />
               </motion.div>
 
               <motion.div
-                className="relative space-y-4"
+                className={cn('relative grid gap-4', isImageRight && 'sm:order-1')}
                 initial={{ opacity: 0, x: isImageRight ? -20 : 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
@@ -102,10 +99,12 @@ export function FeaturesFlow({ section }: { section: Section }) {
                   ease: [0.22, 1, 0.36, 1] as const,
                 }}
               >
-                <h3 className="text-xl font-medium md:text-2xl lg:text-2xl">
+                <h3 className="text-foreground text-base leading-7 font-semibold md:text-lg">
                   {item.title}
                 </h3>
-                <p className="text-muted-foreground">{item.description}</p>
+                <p className="text-muted-foreground text-base leading-7">
+                  {item.description}
+                </p>
               </motion.div>
             </motion.div>
           );

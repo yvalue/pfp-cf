@@ -19,7 +19,9 @@ export function Logos({
     >
       <div className={`mx-auto max-w-5xl px-6`}>
         <ScrollAnimation>
-          <p className="text-md text-center font-medium">{section.title}</p>
+          <p className="text-muted-foreground text-center text-sm leading-6 font-medium md:text-base">
+            {section.title}
+          </p>
         </ScrollAnimation>
         <ScrollAnimation delay={0.2}>
           <div className="mx-auto mt-12 flex max-w-4xl flex-wrap items-center justify-center gap-x-12 gap-y-8 sm:gap-x-16 sm:gap-y-12">

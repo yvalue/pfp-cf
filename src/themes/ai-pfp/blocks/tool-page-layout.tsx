@@ -76,8 +76,8 @@ function Sidebar({ items, primaryAction }: SidebarProps) {
             <Link
               key={item.href}
               className={cn(
-                'flex items-center rounded-2xl px-3 py-2 text-sm font-medium text-foreground transition-colors',
-                item.active && 'bg-accent/60'
+                'flex items-center rounded-xl px-3 py-2 text-sm font-medium text-foreground transition-colors',
+                item.active && 'bg-accent'
               )}
               href={item.href}
             >
@@ -93,7 +93,7 @@ function Sidebar({ items, primaryAction }: SidebarProps) {
       }
       footer={
         primaryAction ? (
-          <div className="border-border/60 bg-background/95 grid gap-1.5 rounded-2xl border px-2 py-2">
+          <div className="border-border bg-background grid gap-2 rounded-3xl border p-3 shadow-sm">
             {primaryAction.href ? (
               <Button asChild className="w-full justify-center" size="sm">
                 <Link href={primaryAction.href}>{primaryAction.label}</Link>

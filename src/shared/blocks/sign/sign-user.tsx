@@ -147,7 +147,7 @@ export function SignUser({
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
-              className="relative size-8 rounded-full p-0"
+              className="hover:ring-primary relative size-10 rounded-full bg-transparent p-0 transition-colors hover:bg-transparent hover:ring-2"
             >
               <Avatar className="size-full">
                 <AvatarImage

@@ -464,8 +464,7 @@ export function ImageUploader({
     <div
       className={cn(
         'relative focus:outline-none',
-        isDragActive &&
-          'ring-primary/70 ring-offset-background ring-2 ring-offset-2',
+        isDragActive && 'ring-primary ring-offset-background ring-2 ring-offset-2',
         className
       )}
       tabIndex={0}
@@ -476,8 +475,8 @@ export function ImageUploader({
       onDrop={handleDrop}
     >
       {isDragActive && (
-        <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center bg-black/10 backdrop-blur-sm">
-          <div className="bg-background/80 text-foreground rounded-full px-4 py-2 text-sm font-medium shadow-sm">
+        <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center bg-background backdrop-blur-sm">
+          <div className="bg-background text-foreground rounded-full px-4 py-2 text-sm font-medium shadow-sm">
             Drop to upload
           </div>
         </div>
@@ -516,7 +515,7 @@ export function ImageUploader({
           <div
             key={item.id}
             className={cn(
-              'group border-border bg-muted/50 hover:border-border hover:bg-muted relative overflow-hidden rounded-xl border p-1 shadow-sm transition',
+              'group border-border bg-muted hover:border-border hover:bg-muted relative overflow-hidden rounded-xl border p-1 shadow-sm transition',
               itemTileClassName
             )}
           >
@@ -527,17 +526,17 @@ export function ImageUploader({
                 className="h-32 w-32 rounded-lg object-cover"
               />
               {item.size && (
-                <span className="bg-background text-muted-foreground absolute bottom-2 left-2 rounded-md px-2 py-1 text-[10px] font-medium">
+                <span className="bg-background text-muted-foreground absolute bottom-2 left-2 rounded-md px-2 py-1 text-xs font-medium">
                   {formatBytes(item.size)}
                 </span>
               )}
               {item.status !== 'uploading' && (
-                <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/35 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
+                <div className="bg-foreground absolute inset-0 z-10 flex items-center justify-center opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
                   <Button
                     type="button"
                     size="icon"
                     variant="secondary"
-                    className="bg-background/50 text-foreground hover:bg-background/50 h-10 w-10 rounded-full shadow-sm backdrop-blur focus-visible:ring-2 focus-visible:ring-white/70"
+                    className="bg-background text-foreground hover:bg-background h-10 w-10 rounded-full shadow-sm backdrop-blur focus-visible:ring-2 focus-visible:ring-ring"
                     onClick={() => openReplacePicker(item.id)}
                     aria-label="Upload a new image to replace"
                   >
@@ -546,12 +545,12 @@ export function ImageUploader({
                 </div>
               )}
               {item.status === 'uploading' && (
-                <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60 text-xs font-medium text-white">
+                <div className="bg-foreground text-background absolute inset-0 z-10 flex items-center justify-center text-xs font-medium">
                   Uploading...
                 </div>
               )}
               {item.status === 'error' && (
-                <div className="absolute inset-0 z-10 flex items-center justify-center bg-red-500/70 text-xs font-medium text-white">
+                <div className="bg-destructive text-destructive-foreground absolute inset-0 z-10 flex items-center justify-center text-xs font-medium">
                   Failed
                 </div>
               )}
@@ -571,7 +570,7 @@ export function ImageUploader({
         {items.length < maxCount && (
           <div
             className={cn(
-              'group border-border bg-muted/50 hover:border-border hover:bg-muted relative overflow-hidden rounded-xl border border-dashed p-1 shadow-sm transition',
+              'group border-border bg-muted hover:border-border hover:bg-muted relative overflow-hidden rounded-xl border border-dashed p-1 shadow-sm transition',
               emptyTileClassName
             )}
           >

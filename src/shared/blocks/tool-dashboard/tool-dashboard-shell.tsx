@@ -53,7 +53,7 @@ export function ToolDashboardSidebar({
 
   return (
     <>
-      <div className="border-border/60 bg-background/80 sticky top-0 z-30 border-b backdrop-blur lg:hidden">
+      <div className="border-border bg-background sticky top-0 z-30 border-b lg:hidden">
         <div className="flex h-14 items-center justify-between gap-3 px-4">
           <div className="min-w-0 flex-1">{brand}</div>
 
@@ -83,7 +83,7 @@ export function ToolDashboardSidebar({
         {isMobileOpen ? (
           <div
             id={menuId}
-            className="border-border/60 grid gap-3 border-t px-4 py-4"
+            className="border-border grid gap-3 border-t px-4 py-4"
           >
             {navigation ? <nav className="grid gap-2">{navigation}</nav> : null}
             {children}
@@ -96,14 +96,14 @@ export function ToolDashboardSidebar({
       <aside
         data-slot="tool-dashboard-sidebar"
         className={cn(
-          'border-border/60 bg-card/70 fixed inset-y-0 left-0 z-40 hidden h-screen w-[240px] border-r lg:block',
+          'border-border bg-card fixed inset-y-0 left-0 z-40 hidden h-screen w-[240px] border-r lg:block',
           className
         )}
         {...props}
       >
         <div className="flex h-screen flex-col">
           {brand ? (
-            <div className="border-border/60 border-b px-6 py-3">{brand}</div>
+            <div className="border-border border-b px-6 py-3">{brand}</div>
           ) : null}
 
           {navigation ? (
@@ -115,7 +115,7 @@ export function ToolDashboardSidebar({
           {children}
 
           {footer ? (
-            <div className="border-border/60 border-t px-3 py-2">{footer}</div>
+            <div className="border-border border-t px-3 py-2">{footer}</div>
           ) : null}
         </div>
       </aside>

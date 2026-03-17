@@ -53,21 +53,21 @@ export function ToolDashboardSection({
     <section
       data-slot="tool-dashboard-section"
       className={cn(
-        'border-border/60 bg-card rounded-[32px] border px-6 py-8 shadow-sm lg:px-8 lg:py-10',
+        'border-border bg-card rounded-3xl border p-6 shadow-sm lg:p-8',
         className
       )}
       {...props}
     >
-      <div className={cn('flex flex-col gap-6', contentClassName)}>
+      <div className={cn('flex flex-col gap-4', contentClassName)}>
         {hasHeader ? (
           <div
             className={cn(
-              'border-border/60 flex flex-col gap-4 border-b pb-6',
+              'border-border flex flex-col gap-4 border-b pb-4',
               headerClassName
             )}
           >
             {eyebrow ? (
-              <div className="text-muted-foreground text-sm font-medium tracking-[0.24em] uppercase">
+              <div className="text-muted-foreground text-sm font-medium tracking-widest uppercase">
                 {eyebrow}
               </div>
             ) : null}
@@ -111,7 +111,7 @@ export function ToolDashboardIntro({
   return (
     <ToolDashboardSection {...props} contentClassName={contentClassName}>
       {highlights ? (
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)]">
+        <div className="grid gap-4 lg:grid-cols-2">
           <div className="min-w-0">{children}</div>
           <div className="min-w-0">{highlights}</div>
         </div>
@@ -138,7 +138,7 @@ export function ToolDashboardFaq({
           type="single"
           collapsible
           className={cn(
-            'border-border/60 bg-background/60 rounded-[24px] border p-2',
+            'border-border bg-background rounded-3xl border p-3 shadow-sm',
             accordionClassName
           )}
         >
@@ -147,7 +147,7 @@ export function ToolDashboardFaq({
               key={item.value ?? `faq-${index}`}
               value={item.value ?? `faq-${index}`}
               className={cn(
-                'border-border/60 rounded-[20px] border-b px-5',
+                'border-border rounded-2xl border-b px-5',
                 itemClassName
               )}
             >

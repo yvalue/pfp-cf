@@ -168,17 +168,17 @@ interface BackendTask {
 const POLL_INTERVAL = 5000;
 const GENERATION_TIMEOUT = 180000;
 const MAX_PROMPT_LENGTH = 1000;
-const sectionClassName = 'grid gap-6 lg:max-xl:gap-5';
+const sectionClassName = 'grid gap-4';
 const tabTriggerClassName =
-  'text-foreground data-[state=active]:text-primary-foreground relative z-10 h-9 min-w-0 rounded-full bg-transparent px-4 text-sm font-medium tracking-tight transition-[transform,color] duration-300 ease-out will-change-transform active:scale-[0.98] data-[state=active]:bg-transparent data-[state=active]:shadow-none';
-const selectTriggerClassName = 'h-10 w-full rounded-xl';
-const panelClassName = 'rounded-3xl border border-border/60 backdrop-blur';
+  'relative z-10 h-10 min-w-0 rounded-xl px-4 text-sm leading-6 font-medium tracking-tight transition-colors duration-200';
+const selectTriggerClassName = 'h-10 w-full rounded-xl text-sm leading-6';
+const panelClassName = 'rounded-3xl border border-border shadow-sm';
 const comparisonLabelClassName =
-  'absolute rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest backdrop-blur';
+  'absolute rounded-xl px-3 py-1 text-xs leading-5 font-semibold uppercase tracking-widest';
 const usageStepClassName =
-  'border-border/70 bg-background/95 grid grid-cols-[auto_1fr] items-center gap-3 rounded-2xl border px-4 py-3';
+  'border-border bg-background flex items-center gap-3 rounded-2xl border p-4 shadow-sm';
 const workbenchPaneClassName =
-  'rounded-3xl border border-border/60 bg-background/95 backdrop-blur-xl';
+  'rounded-3xl border border-border bg-background shadow-sm';
 
 async function uploadImageFile(file: File) {
   const formData = new FormData();
@@ -282,8 +282,8 @@ function FieldBadge({
     <span
       className={
         variant === 'required'
-          ? 'bg-primary/10 text-primary inline-flex items-center rounded-full px-2 text-xs font-medium'
-          : 'bg-muted text-muted-foreground inline-flex items-center rounded-full px-2 text-xs font-medium'
+          ? 'bg-accent text-primary inline-flex items-center rounded-xl px-2 text-xs leading-5 font-medium'
+          : 'bg-muted text-muted-foreground inline-flex items-center rounded-xl px-2 text-xs leading-5 font-medium'
       }
     >
       {children}
@@ -305,7 +305,7 @@ function FieldHeader({
   return (
     <div className="flex flex-wrap items-center justify-between gap-2">
       <div className="flex flex-wrap items-center gap-2">
-        <h3 className="text-sm font-medium">{label}</h3>
+        <h3 className="text-sm leading-6 font-medium">{label}</h3>
         <FieldBadge variant={badgeVariant}>{badge}</FieldBadge>
       </div>
       {trailing ? <div>{trailing}</div> : null}
@@ -324,12 +324,11 @@ function EffectThumbnail({
   return (
     <div
       className={cn(
-        'relative h-12 w-12 shrink-0 overflow-hidden rounded-2xl lg:max-xl:h-10 lg:max-xl:w-10',
+        'relative h-12 w-12 shrink-0 overflow-hidden rounded-2xl',
         cardClassName
       )}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_16%,rgba(255,255,255,0.22),transparent_18%)]" />
-      <div className="absolute inset-x-2.5 top-1.5 h-2.5 rounded-full bg-white/70" />
+      <div className="absolute inset-x-2.5 top-1.5 h-2.5 rounded-xl bg-white" />
       <div
         className={cn(
           'absolute inset-x-2.5 top-5 bottom-1.5 rounded-2xl',
@@ -338,7 +337,7 @@ function EffectThumbnail({
       />
       <div
         className={cn(
-          'absolute top-1.5 left-1.5 h-2 w-2 rounded-full',
+          'absolute top-1.5 left-1.5 h-2 w-2 rounded-xl',
           accentClassName
         )}
       />
@@ -349,8 +348,8 @@ function EffectThumbnail({
 function ComparisonHandle() {
   return (
     <div className="pointer-events-none relative flex h-full items-center justify-center text-white">
-      <div className="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-white" />
-      <div className="relative z-10 inline-flex items-center gap-5 bg-transparent px-0 text-xs font-semibold tracking-widest">
+      <div className="absolute inset-y-0 inset-x-0 mx-auto w-0.5 bg-white" />
+      <div className="relative z-10 inline-flex items-center gap-4 px-0 text-xs leading-5 font-semibold tracking-widest">
         <span aria-hidden className="text-sm text-white">
           &#x25C0;
         </span>
@@ -415,7 +414,6 @@ export function ProfessionalHeadshotGenerator({
   const isPromptTooLong = promptLength > MAX_PROMPT_LENGTH;
   const remainingCredits = user?.credits?.remainingCredits ?? 0;
   const count = Math.max(1, parseInt(countValue, 10) || 1);
-  const activeTabIndex = activeTab === 'parameter' ? 1 : 0;
 
   const selectedEffect =
     section.effects.find((item) => item.id === selectedEffectId) ??
@@ -991,30 +989,55 @@ export function ProfessionalHeadshotGenerator({
 
   return (
     <ToolDashboardWorkbench
-      className="border-0 bg-transparent px-0 py-2"
+      className="border-0 px-0 py-2"
       gridClassName="gap-4 lg:grid-cols-12 xl:grid-cols-12"
-      leftPaneClassName={`${workbenchPaneClassName} lg:col-span-4 lg:px-5 lg:py-5 xl:px-7 xl:py-6`}
-      rightPaneClassName={`${workbenchPaneClassName} lg:col-span-8 lg:px-7 lg:py-6`}
+      leftPaneClassName={`${workbenchPaneClassName} lg:col-span-4 lg:p-6`}
+      rightPaneClassName={`${workbenchPaneClassName} lg:col-span-8 lg:p-6`}
       left={
-        <div className="flex h-full flex-col gap-6 lg:max-xl:gap-5">
+        <div className="flex h-full flex-col gap-4">
           <Tabs
             value={activeTab}
             onValueChange={(value) => setActiveTab(value as HeadshotTab)}
-            className="flex min-h-0 flex-1 flex-col gap-6 lg:max-xl:gap-5"
+            className="flex min-h-0 flex-1 flex-col gap-4"
           >
-            <TabsList className="border-border/70 bg-background/80 relative inline-grid h-auto w-full grid-cols-2 rounded-full border p-1 shadow-none backdrop-blur-sm">
+            <TabsList className="border-border bg-background relative inline-grid h-auto w-full grid-cols-2 rounded-2xl border p-1 shadow-sm">
               <div
                 aria-hidden
-                className="bg-primary absolute inset-y-1 left-1 rounded-full transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
-                style={{
-                  width: 'calc((100% - 0.5rem) / 2)',
-                  transform: `translateX(${activeTabIndex * 100}%)`,
-                }}
-              />
-              <TabsTrigger value="upload" className={tabTriggerClassName}>
+                className="pointer-events-none absolute inset-1 grid grid-cols-2 gap-1"
+              >
+                <div
+                  className={cn(
+                    'rounded-xl transition-colors duration-200',
+                    activeTab === 'upload' && 'bg-primary'
+                  )}
+                />
+                <div
+                  className={cn(
+                    'rounded-xl transition-colors duration-200',
+                    activeTab === 'parameter' && 'bg-primary'
+                  )}
+                />
+              </div>
+              <TabsTrigger
+                value="upload"
+                className={cn(
+                  tabTriggerClassName,
+                  activeTab === 'upload'
+                    ? 'text-primary-foreground'
+                    : 'text-foreground'
+                )}
+              >
                 {section.tabs.upload}
               </TabsTrigger>
-              <TabsTrigger value="parameter" className={tabTriggerClassName}>
+              <TabsTrigger
+                value="parameter"
+                className={cn(
+                  tabTriggerClassName,
+                  activeTab === 'parameter'
+                    ? 'text-primary-foreground'
+                    : 'text-foreground'
+                )}
+              >
                 {section.tabs.parameter}
               </TabsTrigger>
             </TabsList>
@@ -1054,30 +1077,30 @@ export function ProfessionalHeadshotGenerator({
                     onDragLeave={() => setIsUploadDragActive(false)}
                     onDrop={handleUploadDrop}
                     className={cn(
-                      'border-primary/40 bg-primary/5 flex min-h-32 flex-col overflow-hidden rounded-3xl border-2 border-dashed px-6 py-5 text-center transition-colors lg:max-xl:min-h-28 lg:max-xl:px-4 lg:max-xl:py-4',
-                      isUploadDragActive && 'border-primary bg-primary/10'
+                      'border-primary bg-accent flex min-h-32 flex-col overflow-hidden rounded-3xl border-2 border-dashed p-6 text-center transition-colors',
+                      isUploadDragActive && 'border-primary bg-secondary'
                     )}
                   >
                     {referenceImageItems.length > 0 ? (
                       <>
-                        <div className="max-h-44 overflow-y-auto pr-1 lg:max-xl:max-h-40">
+                        <div className="max-h-44 overflow-y-auto pr-1">
                           <div className="grid grid-cols-2 gap-3">
                             {referenceImageItems.map((item) => (
                               <div
                                 key={item.id}
-                                className="border-primary/15 bg-background/80 group relative overflow-hidden rounded-2xl border border-dashed"
+                                className="border-primary bg-background group relative overflow-hidden rounded-2xl border border-dashed"
                               >
                                 <img
                                   src={item.preview}
                                   alt="Reference"
                                   className="aspect-square w-full object-cover"
                                 />
-                                <div className="bg-foreground/65 text-primary-foreground absolute inset-x-0 bottom-0 px-2 py-1 text-[10px]">
+                                <div className="bg-foreground text-primary-foreground absolute inset-x-0 bottom-0 px-2 py-1 text-xs leading-4">
                                   {item.status}
                                 </div>
                                 <button
                                   type="button"
-                                  className="bg-foreground/70 text-primary-foreground absolute top-2 right-2 inline-flex h-7 w-7 items-center justify-center rounded-full"
+                                  className="bg-foreground text-primary-foreground absolute top-2 right-2 inline-flex h-7 w-7 items-center justify-center rounded-xl"
                                   onClick={(event) => {
                                     event.stopPropagation();
                                     handleRemoveReferenceImage(item.id);
@@ -1089,29 +1112,29 @@ export function ProfessionalHeadshotGenerator({
                             ))}
 
                             {remainingUploadSlots > 0 ? (
-                              <div className="border-primary/35 bg-background/70 text-primary flex aspect-square items-center justify-center rounded-2xl border border-dashed">
+                              <div className="border-primary bg-background text-primary flex aspect-square items-center justify-center rounded-2xl border border-dashed">
                                 <Upload className="size-6" />
                               </div>
                             ) : null}
                           </div>
                         </div>
 
-                        <div className="text-muted-foreground mt-4 grid gap-1 text-xs leading-5 lg:max-xl:leading-4">
+                        <div className="text-muted-foreground mt-4 grid gap-1 text-xs leading-5">
                           <p>{uploadFormatsText}</p>
                           <p className="font-medium">{uploadSupportsText}</p>
                         </div>
                       </>
                     ) : (
                       <div className="grid flex-1 place-items-center">
-                        <div className="grid gap-2 lg:max-xl:gap-1.5">
-                          <div className="bg-primary/10 text-primary mx-auto flex size-14 items-center justify-center rounded-2xl lg:max-xl:size-12">
-                            <Upload className="size-6 lg:max-xl:size-5" />
+                        <div className="grid gap-2">
+                          <div className="bg-accent text-primary mx-auto flex size-14 items-center justify-center rounded-2xl">
+                            <Upload className="size-6" />
                           </div>
-                          <div className="grid gap-1.5 lg:max-xl:gap-1">
-                            <p className="text-foreground text-base font-medium break-words lg:max-xl:text-sm">
+                          <div className="grid gap-1">
+                            <p className="text-foreground text-sm leading-6 font-medium break-words">
                               {section.upload.title}
                             </p>
-                            <p className="text-muted-foreground text-xs leading-5 lg:max-xl:leading-4">
+                            <p className="text-muted-foreground text-xs leading-5">
                               {uploadFormatsText}
                               <br />
                               <span className="text-muted-foreground font-medium">
@@ -1125,13 +1148,13 @@ export function ProfessionalHeadshotGenerator({
                   </div>
 
                   {isReferenceUploading ? (
-                    <p className="text-muted-foreground text-xs">
+                    <p className="text-muted-foreground text-xs leading-5">
                       Uploading images...
                     </p>
                   ) : null}
 
                   {hasReferenceUploadError ? (
-                    <p className="text-destructive text-xs">
+                    <p className="text-destructive text-xs leading-5">
                       {generatorT('form.some_images_failed_to_upload')}
                     </p>
                   ) : null}
@@ -1142,7 +1165,7 @@ export function ProfessionalHeadshotGenerator({
                     badge={section.fields.optional_badge}
                     label={section.fields.description_label}
                     trailing={
-                      <div className="text-muted-foreground flex items-center gap-2 text-xs">
+                      <div className="text-muted-foreground flex items-center gap-2 text-xs leading-5">
                         <Sparkles className="size-3.5" />
                         <span>
                           {promptLength}/{MAX_PROMPT_LENGTH}
@@ -1156,17 +1179,17 @@ export function ProfessionalHeadshotGenerator({
                     }
                   />
 
-                  <div className="border-border/70 bg-background/95 h-32 overflow-hidden rounded-3xl border lg:max-xl:h-28">
+                  <div className="border-border bg-background h-32 overflow-hidden rounded-3xl border">
                     <textarea
                       value={prompt}
                       onChange={(event) => setPrompt(event.target.value)}
                       placeholder={section.description_placeholder}
-                      className="text-muted-foreground placeholder:text-muted-foreground h-full w-full resize-none border-0 bg-transparent px-4 py-4 text-sm leading-5 outline-none lg:max-xl:px-3.5 lg:max-xl:py-3.5"
+                      className="text-muted-foreground placeholder:text-muted-foreground h-full w-full resize-none border-0 p-4 text-sm leading-5 outline-none"
                     />
                   </div>
                 </section>
 
-                <section className="grid gap-3 lg:max-xl:gap-2.5">
+                <section className="grid gap-4">
                   <FieldHeader
                     badge={section.fields.optional_badge}
                     label={section.fields.effect_style_label}
@@ -1176,7 +1199,7 @@ export function ProfessionalHeadshotGenerator({
                     <DropdownMenuTrigger asChild>
                       <button
                         type="button"
-                        className="border-border/70 bg-background/95 hover:border-border flex w-full min-w-0 items-center gap-3 rounded-3xl border px-3 py-2.5 text-left shadow-sm transition-colors outline-none"
+                        className="border-border bg-background hover:border-border flex h-10 w-full min-w-0 items-center gap-3 rounded-xl border px-3 text-left text-sm leading-6 shadow-sm transition-colors outline-none"
                       >
                         {selectedEffect ? (
                           <EffectThumbnail
@@ -1188,7 +1211,7 @@ export function ProfessionalHeadshotGenerator({
                           />
                         ) : null}
                         <div className="min-w-0 flex-1">
-                          <div className="text-foreground truncate text-sm font-semibold">
+                          <div className="text-foreground truncate text-sm leading-6 font-semibold">
                             {selectedEffect?.label ??
                               section.fields.effect_style_label}
                           </div>
@@ -1199,7 +1222,7 @@ export function ProfessionalHeadshotGenerator({
 
                     <DropdownMenuContent
                       align="start"
-                      className="border-border/70 bg-background/95 w-[var(--radix-dropdown-menu-trigger-width)] rounded-3xl border p-2 shadow-xl"
+                      className="border-border bg-background min-w-72 rounded-2xl border p-3 shadow-sm"
                       sideOffset={8}
                     >
                       {section.effects.map((effect) => {
@@ -1208,7 +1231,7 @@ export function ProfessionalHeadshotGenerator({
                         return (
                           <DropdownMenuItem
                             key={effect.id}
-                            className="focus:bg-primary/5 flex items-center gap-3 rounded-2xl px-3 py-3"
+                            className="focus:bg-accent flex items-center gap-3 rounded-2xl px-3 py-3"
                             onSelect={() => setSelectedEffectId(effect.id)}
                           >
                             <EffectThumbnail
@@ -1217,7 +1240,7 @@ export function ProfessionalHeadshotGenerator({
                               silhouetteClassName={effect.silhouetteClassName}
                             />
                             <div className="min-w-0 flex-1">
-                              <div className="text-foreground truncate text-sm font-semibold">
+                              <div className="text-foreground truncate text-sm leading-6 font-semibold">
                                 {effect.label}
                               </div>
                             </div>
@@ -1256,7 +1279,7 @@ export function ProfessionalHeadshotGenerator({
                   </Select>
                 </div>
 
-                <div className="grid gap-4 lg:max-xl:gap-3.5">
+                <div className="grid gap-4">
                   <div className="grid min-w-0 gap-2">
                     <FieldHeader
                       badge={section.fields.default_badge}
@@ -1331,19 +1354,19 @@ export function ProfessionalHeadshotGenerator({
           </Tabs>
 
           {!isMounted ? (
-            <Button className="w-full" disabled size="lg">
+            <Button className="w-full text-sm leading-6" disabled size="lg">
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               {generatorT('loading')}
             </Button>
           ) : isCheckSign ? (
-            <Button className="w-full" disabled size="lg">
+            <Button className="w-full text-sm leading-6" disabled size="lg">
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               {generatorT('checking_account')}
             </Button>
           ) : user ? (
             <Button
               size="lg"
-              className="mt-auto min-w-44 rounded-xl text-base lg:max-xl:min-w-0 lg:max-xl:text-sm"
+              className="mt-auto w-full rounded-xl text-sm leading-6"
               onClick={handleGenerate}
               disabled={
                 isGenerating ||
@@ -1364,7 +1387,7 @@ export function ProfessionalHeadshotGenerator({
                   {section.buttons.submit}
                 </>
               )}
-              <span className="bg-foreground/10 ml-2 inline-flex items-center gap-1 rounded-md px-1.5 text-base lg:max-xl:text-sm">
+              <span className="bg-secondary ml-2 inline-flex items-center gap-1 rounded-xl px-2 py-1 text-sm leading-6">
                 {totalCost}
                 <RiVipDiamondFill className="size-4 text-amber-400" />
               </span>
@@ -1372,7 +1395,7 @@ export function ProfessionalHeadshotGenerator({
           ) : (
             <Button
               size="lg"
-              className="w-full"
+              className="w-full text-sm leading-6"
               onClick={() => setIsShowSignModal(true)}
             >
               <User className="mr-2 h-4 w-4" />
@@ -1383,37 +1406,37 @@ export function ProfessionalHeadshotGenerator({
         </div>
       }
       right={
-        <div className="grid gap-5">
-          <div className="grid gap-1.5">
-            <h2 className="text-foreground text-2xl font-semibold tracking-tight">
+        <div className="grid gap-4">
+          <div className="grid gap-2">
+            <h2 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
               {section.title}
             </h2>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-muted-foreground text-base leading-7 md:text-lg md:leading-8">
               {section.description}
             </p>
           </div>
 
           {isGenerating || generatedImages.length > 0 ? (
-            <section className={`${panelClassName} bg-background/95 p-5`}>
+            <section className={`${panelClassName} bg-background p-6`}>
               <header className="mb-4 flex items-center justify-between gap-3">
                 <div>
-                  <h3 className="text-foreground text-lg font-semibold">
+                  <h3 className="text-foreground text-lg font-semibold md:text-xl">
                     {generatorT('generated_images')}
                   </h3>
-                  <p className="text-muted-foreground text-xs">
+                  <p className="text-muted-foreground text-xs leading-5">
                     {generatedImages.length}/{count}
                   </p>
                 </div>
                 {isGenerating ? (
-                  <span className="text-muted-foreground text-xs">
+                  <span className="text-muted-foreground text-xs leading-5">
                     {taskStatusText || `${currentTaskNumber}/${count}`}
                   </span>
                 ) : null}
               </header>
 
               {(isGenerating || progress > 0) && (
-                <div className="mb-5 space-y-2 rounded-2xl border border-border/60 bg-muted/30 p-4">
-                  <div className="flex items-center justify-between text-sm">
+                <div className="mb-5 grid gap-2 rounded-2xl border border-border bg-muted p-4">
+                  <div className="flex items-center justify-between text-sm leading-6">
                     <span>{generatorT('progress')}</span>
                     <span>{progress}%</span>
                   </div>
@@ -1425,17 +1448,17 @@ export function ProfessionalHeadshotGenerator({
                 <div
                   className={
                     generatedImages.length === 1
-                      ? 'grid grid-cols-1 gap-6'
-                      : 'grid gap-6 sm:grid-cols-2'
+                      ? 'grid grid-cols-1 gap-4'
+                      : 'grid gap-4 sm:grid-cols-2'
                   }
                 >
                   {generatedImages.map((image) => (
-                    <div key={image.id} className="space-y-3">
+                    <div key={image.id} className="grid gap-3">
                       <div
                         className={
                           generatedImages.length === 1
-                            ? 'relative overflow-hidden rounded-3xl border border-border/60 bg-muted/20'
-                            : 'relative aspect-square overflow-hidden rounded-3xl border border-border/60 bg-muted/20'
+                            ? 'relative overflow-hidden rounded-3xl border border-border bg-muted'
+                            : 'relative aspect-square overflow-hidden rounded-3xl border border-border bg-muted'
                         }
                       >
                         <LazyImage
@@ -1451,7 +1474,7 @@ export function ProfessionalHeadshotGenerator({
                           <Button
                             size="sm"
                             variant="secondary"
-                            className="rounded-xl text-foreground"
+                            className="rounded-xl text-foreground text-sm leading-6 shadow-sm"
                             onClick={() => handleDownloadImage(image)}
                             disabled={downloadingImageId === image.id}
                           >
@@ -1470,23 +1493,23 @@ export function ProfessionalHeadshotGenerator({
                   ))}
                 </div>
               ) : (
-                <div className="flex min-h-52 items-center justify-center rounded-3xl border border-dashed border-border/70 bg-muted/20 p-6 text-center">
-                  <p className="text-muted-foreground text-sm">
+                <div className="flex min-h-52 items-center justify-center rounded-3xl border border-dashed border-border bg-muted p-6 text-center">
+                  <p className="text-muted-foreground text-base leading-7">
                     {generatorT('ready_for_generating')}
                   </p>
                 </div>
               )}
             </section>
           ) : (
-            <div className="grid gap-4 lg:grid-cols-[minmax(0,1.18fr)_minmax(280px,0.82fr)]">
-              <section className={`${panelClassName} bg-background/95 p-4`}>
+            <div className="grid gap-4 lg:grid-cols-2">
+              <section className={`${panelClassName} bg-background p-6`}>
                 <header className="mb-3 text-center">
-                  <h3 className="text-foreground text-lg font-semibold">
+                  <h3 className="text-foreground text-lg font-semibold md:text-xl">
                     {section.result.example_title}
                   </h3>
                 </header>
 
-                <div className="bg-foreground/95 relative overflow-hidden rounded-3xl shadow-inner">
+                <div className="bg-foreground relative overflow-hidden rounded-3xl shadow-sm">
                   <ReactCompareSlider
                     position={50}
                     handle={<ComparisonHandle />}
@@ -1495,10 +1518,10 @@ export function ProfessionalHeadshotGenerator({
                         <ReactCompareSliderImage
                           alt={section.images.before.alt}
                           src={section.images.before.src}
-                          style={{ objectFit: 'cover' }}
+                          className="object-cover"
                         />
                         <div
-                          className={`${comparisonLabelClassName} bg-foreground/65 text-primary-foreground top-4 left-4`}
+                          className={`${comparisonLabelClassName} bg-foreground text-primary-foreground top-4 left-4`}
                         >
                           {section.result.before_label}
                         </div>
@@ -1509,36 +1532,33 @@ export function ProfessionalHeadshotGenerator({
                         <ReactCompareSliderImage
                           alt={section.images.after.alt}
                           src={section.images.after.src}
-                          style={{ objectFit: 'cover' }}
+                          className="object-cover"
                         />
                         <div
-                          className={`${comparisonLabelClassName} bg-background/88 text-foreground top-4 right-4`}
+                          className={`${comparisonLabelClassName} bg-background text-foreground top-4 right-4`}
                         >
                           {section.result.after_label}
                         </div>
                       </div>
                     }
-                    style={{
-                      width: '100%',
-                      aspectRatio: '1 / 1',
-                    }}
+                    className="aspect-square w-full"
                   />
                 </div>
               </section>
 
-              <section className={`${panelClassName} bg-background/95 p-5`}>
+              <section className={`${panelClassName} bg-background p-6`}>
                 <header>
-                  <h3 className="text-foreground text-center text-lg font-semibold">
+                  <h3 className="text-foreground text-center text-lg font-semibold md:text-xl">
                     {section.result.how_to_use_title}
                   </h3>
                 </header>
                 <div className="mt-4 grid gap-3">
                   {section.result.usage_steps.map((step, index) => (
                     <div key={step} className={usageStepClassName}>
-                      <div className="bg-primary text-primary-foreground flex size-7 items-center justify-center rounded-full text-sm font-semibold shadow-sm">
+                      <div className="bg-primary text-primary-foreground flex size-7 items-center justify-center rounded-xl text-sm font-semibold shadow-sm">
                         {index + 1}
                       </div>
-                      <p className="text-foreground text-sm leading-6">
+                      <p className="text-foreground text-base leading-7">
                         {step}
                       </p>
                     </div>
@@ -1558,7 +1578,7 @@ export function ProfessionalHeadshotGenerator({
             <div className="flex justify-center">
               <Button
                 variant="outline"
-                className="rounded-xl text-foreground"
+                className="rounded-xl text-foreground text-sm leading-6 shadow-sm"
                 onClick={() => {
                   if (generatedImages[0]) {
                     void handleDownloadImage(generatedImages[0]);
