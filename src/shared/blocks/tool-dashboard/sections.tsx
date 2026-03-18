@@ -53,7 +53,7 @@ export function ToolDashboardSection({
     <section
       data-slot="tool-dashboard-section"
       className={cn(
-        'border-border bg-card rounded-3xl border p-6 shadow-sm lg:p-8',
+        'border-border bg-card rounded-3xl border p-6 lg:p-8',
         className
       )}
       {...props}
@@ -138,7 +138,7 @@ export function ToolDashboardFaq({
           type="single"
           collapsible
           className={cn(
-            'border-border bg-background rounded-3xl border p-3 shadow-sm',
+            'border-border bg-background rounded-3xl border p-3',
             accordionClassName
           )}
         >
