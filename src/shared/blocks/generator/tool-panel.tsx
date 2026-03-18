@@ -38,11 +38,10 @@ import { ToolDashboardWorkbench } from '@/shared/blocks/tool-dashboard';
 import { AspectRatioOption } from '@/shared/components/ui/aspect-ratio-option';
 import { Button } from '@/shared/components/ui/button';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/shared/components/ui/dropdown-menu';
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from '@/shared/components/ui/dialog';
 import { Progress } from '@/shared/components/ui/progress';
 import {
   Select,
@@ -319,14 +318,16 @@ function EffectThumbnail({
   accentClassName,
   cardClassName,
   silhouetteClassName,
+  size = 'lg',
 }: Pick<
   EffectOption,
   'accentClassName' | 'cardClassName' | 'silhouetteClassName'
->) {
+> & { size?: 'sm' | 'lg' }) {
   return (
     <div
       className={cn(
-        'relative h-12 w-12 shrink-0 overflow-hidden rounded-2xl',
+        'relative shrink-0 overflow-hidden rounded-sm',
+        size === 'sm' ? 'h-8 w-8' : 'h-24 w-24',
         cardClassName
       )}
     >
@@ -397,6 +398,7 @@ export function ProfessionalHeadshotGenerator({
   );
   const [isMounted, setIsMounted] = useState(false);
   const [isUploadDragActive, setIsUploadDragActive] = useState(false);
+  const [isEffectDialogOpen, setIsEffectDialogOpen] = useState(false);
 
   const uploadInputRef = useRef<HTMLInputElement | null>(null);
   const referenceImageItemsRef = useRef<ImageUploaderValue[]>([]);
@@ -1175,63 +1177,66 @@ export function ProfessionalHeadshotGenerator({
                     label={section.fields.effect_style_label}
                   />
 
-                  <DropdownMenu modal={false}>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        type="button"
-                        className="border-border bg-background hover:border-border flex h-10 w-full min-w-0 items-center gap-3 rounded-xl border px-3 text-left text-sm leading-6 transition-colors outline-none"
-                      >
-                        {selectedEffect ? (
-                          <EffectThumbnail
-                            accentClassName={selectedEffect.accentClassName}
-                            cardClassName={selectedEffect.cardClassName}
-                            silhouetteClassName={
-                              selectedEffect.silhouetteClassName
-                            }
-                          />
-                        ) : null}
-                        <div className="min-w-0 flex-1">
-                          <div className="text-foreground truncate text-sm leading-6 font-semibold">
-                            {selectedEffect?.label ??
-                              section.fields.effect_style_label}
-                          </div>
-                        </div>
-                        <ChevronsUpDown className="text-muted-foreground size-4 shrink-0" />
-                      </button>
-                    </DropdownMenuTrigger>
-
-                    <DropdownMenuContent
-                      align="start"
-                      className="border-border bg-background min-w-72 rounded-2xl border p-3 shadow-none"
-                      sideOffset={8}
+                  <Dialog open={isEffectDialogOpen} onOpenChange={setIsEffectDialogOpen}>
+                    <button
+                      type="button"
+                      onClick={() => setIsEffectDialogOpen(true)}
+                      className="border-border bg-background hover:border-border flex h-10 w-full min-w-0 items-center gap-3 rounded-xl border px-3 text-left text-sm leading-6 transition-colors outline-none"
                     >
-                      {section.effects.map((effect) => {
-                        const isSelected = effect.id === selectedEffectId;
+                      {selectedEffect ? (
+                        <EffectThumbnail
+                          size="sm"
+                          accentClassName={selectedEffect.accentClassName}
+                          cardClassName={selectedEffect.cardClassName}
+                          silhouetteClassName={
+                            selectedEffect.silhouetteClassName
+                          }
+                        />
+                      ) : null}
+                      <div className="min-w-0 flex-1">
+                        <div className="text-foreground truncate text-sm leading-6 font-semibold">
+                          {selectedEffect?.label ??
+                            section.fields.effect_style_label}
+                        </div>
+                      </div>
+                      <ChevronsUpDown className="text-muted-foreground size-4 shrink-0" />
+                    </button>
 
-                        return (
-                          <DropdownMenuItem
-                            key={effect.id}
-                            className="focus:bg-accent flex items-center gap-3 rounded-2xl px-3 py-3"
-                            onSelect={() => setSelectedEffectId(effect.id)}
-                          >
-                            <EffectThumbnail
-                              accentClassName={effect.accentClassName}
-                              cardClassName={effect.cardClassName}
-                              silhouetteClassName={effect.silhouetteClassName}
-                            />
-                            <div className="min-w-0 flex-1">
-                              <div className="text-foreground truncate text-sm leading-6 font-semibold">
+                    <DialogContent className="sm:max-w-3xl p-4">
+                      <DialogTitle className="text-base font-semibold">
+                        {section.fields.effect_style_label}
+                      </DialogTitle>
+                      <div className="mt-2 grid grid-cols-[repeat(auto-fill,minmax(8rem,1fr))] gap-3">
+                        {section.effects.map((effect) => {
+                          const isSelected = effect.id === selectedEffectId;
+
+                          return (
+                            <button
+                              key={effect.id}
+                              type="button"
+                              className={cn(
+                                'flex flex-col items-center gap-2 rounded-2xl px-1 py-3 transition-colors',
+                                isSelected ? 'bg-accent' : 'hover:bg-accent'
+                              )}
+                              onClick={() => {
+                                setSelectedEffectId(effect.id);
+                                setIsEffectDialogOpen(false);
+                              }}
+                            >
+                              <EffectThumbnail
+                                accentClassName={effect.accentClassName}
+                                cardClassName={effect.cardClassName}
+                                silhouetteClassName={effect.silhouetteClassName}
+                              />
+                              <div className="text-foreground w-full truncate text-center text-xs leading-4 font-medium">
                                 {effect.label}
                               </div>
-                            </div>
-                            {isSelected ? (
-                              <Check className="text-primary size-4 shrink-0" />
-                            ) : null}
-                          </DropdownMenuItem>
-                        );
-                      })}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </section>
               </div>
             </TabsContent>
