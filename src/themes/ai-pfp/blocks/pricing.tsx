@@ -377,7 +377,7 @@ export function Pricing({
     return (
       <Card
         className={cn(
-          'border-border bg-background relative flex h-full flex-col rounded-3xl border p-6 shadow-none transition-[box-shadow,colors] duration-200 hover:shadow-md',
+          'border-border bg-background relative flex h-full flex-col rounded-3xl border p-6 shadow-none transition-all duration-200 hover:scale-[1.02] hover:shadow-md',
           cardClassName
         )}
       >
@@ -538,7 +538,7 @@ export function Pricing({
               <Card
                 key={item.product_id}
                 className={cn(
-                  'relative flex h-full flex-col rounded-3xl border p-6 shadow-none transition-[box-shadow,colors] duration-200 hover:shadow-md',
+                  'relative flex h-full flex-col rounded-3xl border p-6 shadow-none transition-all duration-200 hover:scale-[1.02] hover:shadow-md',
                   isFeatured
                     ? 'border-primary/40 bg-accent'
                     : 'border-border bg-background'
