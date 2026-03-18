@@ -1108,7 +1108,7 @@ export function ProfessionalHeadshotGenerator({
                       <div className="grid flex-1 place-items-center">
                         <div className="grid gap-2">
                           <div className="mx-auto flex size-14 items-center justify-center">
-                            <RiImageAddLine className="size-9 text-gray-400" />
+                            <RiImageAddLine className="size-14 text-gray-400" />
                           </div>
                           <div className="grid gap-1">
                             <p className="text-foreground text-sm leading-6 font-medium break-words">
