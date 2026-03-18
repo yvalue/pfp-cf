@@ -1064,11 +1064,11 @@ export function ProfessionalHeadshotGenerator({
                     {referenceImageItems.length > 0 ? (
                       <>
                         <div className="max-h-44 overflow-y-auto pr-1">
-                          <div className="grid grid-cols-2 gap-3">
+                          <div className="grid grid-cols-4 gap-3">
                             {referenceImageItems.map((item) => (
                               <div
                                 key={item.id}
-                                className="border-primary bg-background group relative overflow-hidden rounded-2xl border border-dashed"
+                                className="border-primary bg-background group relative overflow-hidden rounded-md border border-dashed"
                               >
                                 <img
                                   src={item.preview}
@@ -1092,7 +1092,7 @@ export function ProfessionalHeadshotGenerator({
                             ))}
 
                             {remainingUploadSlots > 0 ? (
-                              <div className="border-primary bg-background flex aspect-square items-center justify-center rounded-2xl border border-dashed">
+                              <div className="border-primary bg-background flex aspect-square items-center justify-center rounded-lg border border-dashed">
                                 <RiImageAddLine className="size-7 text-gray-400" />
                               </div>
                             ) : null}
