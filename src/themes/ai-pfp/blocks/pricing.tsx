@@ -377,7 +377,7 @@ export function Pricing({
     return (
       <Card
         className={cn(
-          'border-border bg-background hover:border-primary relative flex h-full flex-col rounded-3xl border p-6 shadow-sm transition-colors duration-200',
+          'border-border bg-background relative flex h-full flex-col rounded-3xl border p-6 shadow-none transition-[box-shadow,colors] duration-200 hover:shadow-md',
           cardClassName
         )}
       >
@@ -418,8 +418,8 @@ export function Pricing({
 
         <div className="mt-2">
           <Button
-            disabled
-            className="border-border bg-background text-foreground hover:bg-background h-10 w-full rounded-xl border px-6 text-sm font-medium shadow-sm"
+            aria-disabled="true"
+            className="border-border bg-background text-foreground hover:border-primary hover:bg-accent hover:text-primary h-10 w-full cursor-not-allowed rounded-xl border px-6 text-sm font-medium shadow-none transition-colors duration-200"
           >
             <span>{displayedFreeCard.button?.title}</span>
           </Button>
@@ -455,20 +455,11 @@ export function Pricing({
     <section
       id={section.id}
       className={cn(
-        'bg-muted relative overflow-hidden py-20 md:py-28',
+        'bg-background relative overflow-hidden py-20 md:py-28',
         section.className,
         className
       )}
     >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 overflow-hidden"
-      >
-        <div className="absolute inset-x-0 top-12 flex justify-center px-4">
-          <div className="bg-accent h-72 w-full max-w-4xl rounded-3xl blur-3xl" />
-        </div>
-      </div>
-
       <div className="relative container">
         <div className="mx-auto mb-8 max-w-4xl px-4 text-center md:mb-10">
           {section.sr_only_title && (
@@ -485,13 +476,13 @@ export function Pricing({
         {section.groups && section.groups.length > 0 && (
           <div className="mx-auto mb-4 flex w-full justify-center overflow-x-auto px-4 md:mb-6">
             <Tabs value={group} onValueChange={setGroup} className="max-w-full">
-              <TabsList
-                className={cn(
-                  aiPfpSegmentedTabsListClassName,
-                  'w-max min-w-max',
-                  tabsGridClassName
-                )}
-              >
+                <TabsList
+                  className={cn(
+                    aiPfpSegmentedTabsListClassName,
+                    'w-max min-w-max shadow-none',
+                    tabsGridClassName
+                  )}
+                >
                 {section.groups.map((item, i) => {
                   return (
                     <TabsTrigger
@@ -499,7 +490,7 @@ export function Pricing({
                       value={item.name || ''}
                       className={cn(
                         aiPfpSegmentedTabsTriggerClassName,
-                        'min-w-28 shrink-0 px-3 md:min-w-32 md:px-4'
+                        'min-w-28 shrink-0 px-3 shadow-none data-[state=active]:shadow-none md:min-w-32 md:px-4'
                       )}
                     >
                       <span className="flex items-center justify-center gap-1">
@@ -547,7 +538,7 @@ export function Pricing({
               <Card
                 key={item.product_id}
                 className={cn(
-                  'hover:border-primary relative flex h-full flex-col rounded-3xl border p-6 shadow-sm transition-colors duration-200',
+                  'relative flex h-full flex-col rounded-3xl border p-6 shadow-none transition-[box-shadow,colors] duration-200 hover:shadow-md',
                   'border-border bg-background',
                   isFeatured && 'bg-accent'
                 )}
@@ -599,7 +590,7 @@ export function Pricing({
                       >
                         <SelectTrigger
                           size="sm"
-                          className="border-border bg-background ml-auto h-10 min-w-24 rounded-xl px-4 text-xs leading-5 font-semibold tracking-widest uppercase shadow-sm"
+                          className="border-border bg-background text-foreground hover:border-primary hover:bg-accent hover:text-primary ml-auto h-10 min-w-24 rounded-xl px-4 text-xs leading-5 font-semibold tracking-widest uppercase shadow-none transition-colors duration-200"
                         >
                           <SelectValue placeholder="Currency" />
                         </SelectTrigger>
@@ -629,8 +620,8 @@ export function Pricing({
                   {isCurrentPlan ? (
                     <Button
                       variant="outline"
-                      className="border-border bg-background h-10 w-full rounded-xl px-6 text-sm leading-6 font-medium shadow-sm"
-                      disabled
+                      aria-disabled="true"
+                      className="border-border bg-background text-foreground hover:border-primary hover:bg-accent hover:text-primary h-10 w-full cursor-not-allowed rounded-xl px-6 text-sm leading-6 font-medium shadow-none transition-colors duration-200"
                     >
                       <span>{t('current_plan')}</span>
                     </Button>
@@ -639,10 +630,10 @@ export function Pricing({
                       onClick={() => handlePayment(item)}
                       disabled={isLoading}
                       className={cn(
-                        'focus-visible:ring-ring inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl px-6 text-sm leading-6 font-medium whitespace-nowrap transition-all focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none',
+                        'focus-visible:ring-ring inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl px-6 text-sm leading-6 font-medium whitespace-nowrap transition-colors duration-200 focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none',
                         isFeatured
-                          ? 'bg-primary text-primary-foreground hover:bg-primary border border-white shadow-sm'
-                          : 'border-border bg-background text-foreground hover:bg-muted border shadow-sm'
+                          ? 'border-border bg-primary text-primary-foreground hover:border-primary hover:bg-primary/90 border shadow-none'
+                          : 'border-border bg-background text-foreground hover:border-primary hover:bg-accent hover:text-primary border shadow-none'
                       )}
                     >
                       {isLoading && item.product_id === loadingProductId ? (
