@@ -1,9 +1,11 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { IconRefresh, IconUpload, IconX } from '@tabler/icons-react';
+import { IconRefresh, IconX } from '@tabler/icons-react';
 import { ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
+
+import { RiImageAddLine } from 'react-icons/ri';
 
 import { Button } from '@/shared/components/ui/button';
 import { cn } from '@/shared/lib/utils';
@@ -516,7 +518,7 @@ export function ImageUploader({
           <div
             key={item.id}
             className={cn(
-              'group border-border bg-muted hover:border-border hover:bg-muted relative overflow-hidden rounded-xl border p-1 shadow-sm transition',
+              'group border-border bg-muted hover:border-border hover:bg-muted relative overflow-hidden rounded-xl border shadow-sm transition',
               itemTileClassName
             )}
           >
@@ -571,7 +573,7 @@ export function ImageUploader({
         {items.length < maxCount && (
           <div
             className={cn(
-              'group border-border bg-muted hover:border-border hover:bg-muted relative overflow-hidden rounded-xl border border-dashed p-1 shadow-sm transition',
+              'group border-border bg-muted hover:border-border hover:bg-muted relative overflow-hidden rounded-xl border border-dashed shadow-sm transition',
               emptyTileClassName
             )}
           >
@@ -581,17 +583,7 @@ export function ImageUploader({
                 className="flex h-28 w-28 flex-col items-center justify-center gap-2"
                 onClick={openFilePicker}
               >
-                <div
-                  className={cn(
-                    'border-border flex h-9 w-9 items-center justify-center rounded-full border border-dashed',
-                    emptyIconShellClassName
-                  )}
-                >
-                  <IconUpload className="h-4 w-4" />
-                </div>
-                <span className={cn('text-xs font-medium', emptyLabelClassName)}>
-                  Upload
-                </span>
+                <RiImageAddLine className="h-8 w-8 text-gray-400" />
                 <span
                   className={cn('text-primary text-xs', emptyMetaClassName)}
                 >
