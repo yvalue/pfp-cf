@@ -35,6 +35,7 @@
     },
     "sections": {
       "generator": {
+        "id": "generator",
         "title": "Professional Headshot Generator",
         "description": "Make professional headshots in seconds with a reusable comparison and guidance layout.",
         "tabs": {
@@ -221,6 +222,7 @@
         }
       },
       "guide": {
+        "id": "guide",
         "title": "Professional Headshot Full Guide",
         "description": "A strong professional headshot depends on expression, lighting, composition, scene fit, and export quality working together.",
         "className": "border-border/60 border-t",
@@ -244,6 +246,7 @@
         ]
       },
       "base_image_guide": {
+        "id": "base_image_guide",
         "title": "How to Create an Upload-Ready Professional Headshot Base Image",
         "description": "To generate a high-quality result, the base photo matters. Follow the steps below to prepare a clear portrait image for better AI output.",
         "className": "border-border/60 mt-8 border-t",
@@ -279,6 +282,7 @@
         ]
       },
       "faq": {
+        "id": "faq",
         "title": "Professional headshot questions",
         "description": "Common questions about uploading, generating, and using your professional headshot.",
         "items": [

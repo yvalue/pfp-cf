@@ -35,6 +35,7 @@
     },
     "sections": {
       "generator": {
+        "id": "generator",
         "title": "专业证件照生成器",
         "description": "通过可复用的对比与引导布局，在几秒内生成专业证件照。",
         "tabs": {
@@ -221,6 +222,7 @@
         }
       },
       "guide": {
+        "id": "guide",
         "title": "专业证件照完整指南",
         "description": "一张优秀的专业证件照，离不开表情、光线、构图、场景适配与导出规格的共同配合。",
         "className": "border-border/60 border-t",
@@ -244,6 +246,7 @@
         ]
       },
       "base_image_guide": {
+        "id": "base_image_guide",
         "title": "如何拍出适合上传的专业证件照底图",
         "description": "高质量生成结果离不开高质量底图。按照以下步骤准备清晰人像，有助于获得更好的 AI 输出。",
         "className": "border-border/60 mt-8 border-t",
@@ -279,6 +282,7 @@
         ]
       },
       "faq": {
+        "id": "faq",
         "title": "专业证件照常见问题",
         "description": "关于上传、生成与使用专业证件照的一些常见问题。",
         "items": [

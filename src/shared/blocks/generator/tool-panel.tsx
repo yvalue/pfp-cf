@@ -93,6 +93,8 @@ type ToolImage = {
 };
 
 export type ProfessionalHeadshotGeneratorSection = {
+  id?: string;
+  name?: string;
   title: string;
   description: string;
   tabs: {
@@ -326,8 +328,8 @@ function EffectThumbnail({
   return (
     <div
       className={cn(
-        'relative shrink-0 overflow-hidden rounded-sm',
-        size === 'sm' ? 'h-8 w-8' : 'h-24 w-24',
+        'relative shrink-0 overflow-hidden',
+        size === 'sm' ? 'h-8 w-8 rounded-sm' : 'h-24 w-24 rounded-md',
         cardClassName
       )}
     >
@@ -993,6 +995,7 @@ export function ProfessionalHeadshotGenerator({
 
   return (
     <ToolDashboardWorkbench
+      id={section.id || section.name}
       className="border-0 px-0 py-2"
       gridClassName="gap-4 lg:grid-cols-12 xl:grid-cols-12"
       leftPaneClassName={`${workbenchPaneClassName} lg:col-span-4 lg:p-6`}
@@ -1202,7 +1205,7 @@ export function ProfessionalHeadshotGenerator({
                       <ChevronsUpDown className="text-muted-foreground size-4 shrink-0" />
                     </button>
 
-                    <DialogContent className="sm:max-w-3xl p-4">
+                    <DialogContent className="sm:max-w-3xl rounded-md p-4">
                       <DialogTitle className="text-base font-semibold">
                         {section.fields.effect_style_label}
                       </DialogTitle>

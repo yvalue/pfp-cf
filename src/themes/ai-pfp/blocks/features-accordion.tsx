@@ -40,6 +40,7 @@ export function FeaturesAccordion({
   return (
     // overflow-x-hidden to prevent horizontal scroll
     <section
+      id={section.id || section.name}
       className={cn(
         'overflow-x-hidden py-8 md:py-16',
         section.className,
@@ -60,7 +61,7 @@ export function FeaturesAccordion({
         </ScrollAnimation>
 
         {/* grid: clamp min-w-0 and fix px padding/breakpoints */}
-        <div className="grid min-w-0 gap-12 sm:px-6 md:grid-cols-2 lg:gap-20 lg:px-0">
+        <div className="grid min-w-0 items-stretch gap-12 sm:px-6 md:grid-cols-2 lg:gap-20 lg:px-0">
           <ScrollAnimation delay={0.1} direction="left">
             <Accordion
               type="single"
@@ -86,26 +87,25 @@ export function FeaturesAccordion({
             </Accordion>
           </ScrollAnimation>
 
-          <ScrollAnimation delay={0.2} direction="right">
-            <div className="border-border relative min-w-0 overflow-hidden rounded-3xl border shadow-sm">
-              <div className="relative aspect-video w-full min-w-0">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={previewImage?.image || `${activeItem}-id`}
-                    initial={{ opacity: 0, y: 6, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 6, scale: 0.98 }}
-                    transition={{ duration: 0.2 }}
-                    className="size-full overflow-hidden rounded-3xl"
-                  >
-                    <LazyImage
-                      src={previewImage?.image || ''}
-                      className="size-full object-cover object-left-top dark:mix-blend-lighten"
-                      alt={previewImage?.alt || ''}
-                    />
-                  </motion.div>
-                </AnimatePresence>
-              </div>
+          <ScrollAnimation delay={0.2} direction="right" className="md:h-full">
+            <div className="border-border relative w-full min-w-0 overflow-hidden rounded-3xl border shadow-sm aspect-square md:aspect-auto md:h-full">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={previewImage?.image || `${activeItem}-id`}
+                  initial={{ opacity: 0, y: 6, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute inset-0 overflow-hidden rounded-3xl"
+                >
+                  <LazyImage
+                    src={previewImage?.image || ''}
+                    className="size-full object-cover object-center dark:mix-blend-lighten"
+                    wrapperClassName="block size-full"
+                    alt={previewImage?.alt || ''}
+                  />
+                </motion.div>
+              </AnimatePresence>
             </div>
           </ScrollAnimation>
         </div>

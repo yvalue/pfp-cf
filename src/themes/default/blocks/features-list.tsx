@@ -17,6 +17,7 @@ export function FeaturesList({
   return (
     // Prevent scrollbar overflow from scroll animations
     <section
+      id={section.id || section.name}
       className={cn(
         'overflow-hidden py-16 md:py-24',
         section.className,
