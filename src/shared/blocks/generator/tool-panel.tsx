@@ -175,13 +175,13 @@ const GENERATION_TIMEOUT = 180000;
 const MAX_PROMPT_LENGTH = 1000;
 const sectionClassName = 'grid gap-4';
 const selectTriggerClassName = 'h-10 w-full rounded-xl text-sm leading-6';
-const panelClassName = 'rounded-3xl border border-border shadow-sm';
+const panelClassName = 'rounded-3xl border border-border';
 const comparisonLabelClassName =
   'absolute rounded-xl px-3 py-1 text-xs leading-5 font-semibold uppercase tracking-widest';
 const usageStepClassName =
-  'border-border bg-background flex items-center gap-3 rounded-2xl border p-4 shadow-sm';
+  'border-border bg-background flex items-center gap-3 rounded-2xl border p-4';
 const workbenchPaneClassName =
-  'rounded-3xl border border-border bg-background shadow-sm';
+  'rounded-3xl border border-border bg-background';
 
 async function uploadImageFile(file: File) {
   const formData = new FormData();
@@ -1180,7 +1180,7 @@ export function ProfessionalHeadshotGenerator({
                     <DropdownMenuTrigger asChild>
                       <button
                         type="button"
-                        className="border-border bg-background hover:border-border flex h-10 w-full min-w-0 items-center gap-3 rounded-xl border px-3 text-left text-sm leading-6 shadow-sm transition-colors outline-none"
+                        className="border-border bg-background hover:border-border flex h-10 w-full min-w-0 items-center gap-3 rounded-xl border px-3 text-left text-sm leading-6 transition-colors outline-none"
                       >
                         {selectedEffect ? (
                           <EffectThumbnail
@@ -1203,7 +1203,7 @@ export function ProfessionalHeadshotGenerator({
 
                     <DropdownMenuContent
                       align="start"
-                      className="border-border bg-background min-w-72 rounded-2xl border p-3 shadow-sm"
+                      className="border-border bg-background min-w-72 rounded-2xl border p-3 shadow-none"
                       sideOffset={8}
                     >
                       {section.effects.map((effect) => {
@@ -1368,7 +1368,7 @@ export function ProfessionalHeadshotGenerator({
                   {section.buttons.submit}
                 </>
               )}
-              <span className="ml-2 inline-flex items-center gap-1 text-sm leading-6">
+              <span className="ml-2 inline-flex items-center gap-2 text-sm leading-6">
                 {totalCost}
                 <RiVipDiamondFill className="size-4 text-amber-400" />
               </span>
@@ -1455,7 +1455,7 @@ export function ProfessionalHeadshotGenerator({
                           <Button
                             size="sm"
                             variant="secondary"
-                            className="rounded-xl text-foreground text-sm leading-6 shadow-sm"
+                            className="rounded-xl text-foreground text-sm leading-6"
                             onClick={() => handleDownloadImage(image)}
                             disabled={downloadingImageId === image.id}
                           >
@@ -1559,7 +1559,7 @@ export function ProfessionalHeadshotGenerator({
             <div className="flex justify-center">
               <Button
                 variant="outline"
-                className="rounded-xl text-foreground text-sm leading-6 shadow-sm"
+                className="rounded-xl text-foreground text-sm leading-6 shadow-none"
                 onClick={() => {
                   if (generatedImages[0]) {
                     void handleDownloadImage(generatedImages[0]);

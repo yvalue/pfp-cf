@@ -685,7 +685,7 @@ export function HeroGenerator({
           <Link
             href={announcementUrl}
             target={section.announcement?.target || '_self'}
-            className="text-muted-foreground hover:text-foreground border-border bg-background mx-auto flex w-fit items-center gap-2 rounded-xl border my-4 px-4 py-1 text-xs leading-5 shadow-sm transition-colors"
+            className="text-muted-foreground hover:text-foreground border-border bg-background mx-auto flex w-fit items-center gap-2 rounded-xl border my-4 px-4 py-1 text-xs leading-5 transition-colors"
           >
             <RiInformationLine className="size-4" />
             <span>{announcementTitle}</span>
@@ -728,7 +728,7 @@ export function HeroGenerator({
           )}
         </div>
 
-        <div className="border-border bg-background mt-10 overflow-hidden rounded-3xl border shadow-sm">
+        <div className="border-border bg-background mt-10 overflow-hidden rounded-3xl border">
           <div className="relative">
             <Textarea
               value={prompt}
@@ -737,7 +737,7 @@ export function HeroGenerator({
                 section.placeholder ||
                 'Describe the PFP you want to generate...'
               }
-              className="min-h-40 resize-none border-0 p-6 text-base leading-7 shadow-none focus-visible:ring-0"
+              className="min-h-40 resize-none border-0 p-6 text-base leading-7 focus-visible:ring-0"
             />
             <Sparkles className="text-primary absolute right-5 bottom-5 size-5" />
           </div>
@@ -917,7 +917,7 @@ export function HeroGenerator({
             ) : (
               <>
                 Submit
-                <span className="ml-2 inline-flex items-center gap-1 text-sm leading-6">
+                <span className="ml-2 inline-flex items-center gap-2 text-sm leading-6">
                   {totalCost}
                   <RiVipDiamondFill className="size-4 text-amber-400" />
                 </span>
@@ -927,7 +927,7 @@ export function HeroGenerator({
         </div>
 
         {(isGenerating || generatedImages.length > 0) && (
-          <div className="border-border bg-background mt-8 rounded-3xl border p-6 shadow-sm">
+          <div className="border-border bg-background mt-8 rounded-3xl border p-6">
             {isGenerating && (
               <div className="mb-6 grid gap-3">
                 <div className="flex items-center justify-between gap-3 text-sm leading-6">
@@ -951,7 +951,7 @@ export function HeroGenerator({
                 {generatedImages.map((image) => (
                   <div
                     key={image.id}
-                    className="border-border relative overflow-hidden rounded-3xl border shadow-sm"
+                    className="border-border relative overflow-hidden rounded-3xl border"
                   >
                     <LazyImage
                       src={image.url}

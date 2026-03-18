@@ -19,7 +19,6 @@ Use for content sections:
 - `bg-card` or `bg-background`
 - `rounded-3xl`
 - `p-6`
-- `shadow-sm`
 
 Attach heading, description, and actions inside a consistent header region before content.
 

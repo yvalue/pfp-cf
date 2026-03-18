@@ -28,7 +28,7 @@ Apply a constrained, repeatable Tailwind style system for the `ai-pfp` theme. Fa
 
 - Keep classes semantic: `bg-background`, `bg-card`, `bg-muted`, `bg-accent`, `text-foreground`, `text-muted-foreground`, `border-border`.
 - Remove numeric opacity variants for UI surfaces in this theme.
-- Keep card chrome simple: `border border-border`, `rounded-3xl`, `shadow-sm`.
+- Keep card chrome simple: `border border-border`, `rounded-3xl`; do not pair borders with shadows by default.
 - Keep controls simple: `h-10`, `rounded-xl`, `text-sm`.
 - Converge spacing onto a small set of tokens instead of preserving page-specific drift.
 - Prefer shared layout blocks over page-local wrappers when structure repeats.

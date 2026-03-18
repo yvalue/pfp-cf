@@ -419,7 +419,7 @@ export function Pricing({
         <div className="mt-2">
           <Button
             aria-disabled="true"
-            className="border-border bg-background text-foreground hover:border-primary hover:bg-accent hover:text-primary h-10 w-full cursor-not-allowed rounded-xl border px-6 text-sm font-medium shadow-none transition-colors duration-200"
+            className="border-border bg-background text-foreground hover:border-primary hover:bg-accent hover:text-primary h-10 w-full cursor-not-allowed rounded-xl border px-6 text-sm font-medium transition-colors duration-200"
           >
             <span>{displayedFreeCard.button?.title}</span>
           </Button>
@@ -476,13 +476,13 @@ export function Pricing({
         {section.groups && section.groups.length > 0 && (
           <div className="mx-auto mb-4 flex w-full justify-center overflow-x-auto px-4 md:mb-6">
             <Tabs value={group} onValueChange={setGroup} className="max-w-full">
-                <TabsList
-                  className={cn(
-                    aiPfpSegmentedTabsListClassName,
-                    'w-max min-w-max shadow-none',
-                    tabsGridClassName
-                  )}
-                >
+              <TabsList
+                className={cn(
+                  aiPfpSegmentedTabsListClassName,
+                  'w-max min-w-max',
+                  tabsGridClassName
+                )}
+              >
                 {section.groups.map((item, i) => {
                   return (
                     <TabsTrigger
@@ -490,7 +490,7 @@ export function Pricing({
                       value={item.name || ''}
                       className={cn(
                         aiPfpSegmentedTabsTriggerClassName,
-                        'min-w-28 shrink-0 px-3 shadow-none data-[state=active]:shadow-none md:min-w-32 md:px-4'
+                        'min-w-28 shrink-0 px-3 md:min-w-32 md:px-4'
                       )}
                     >
                       <span className="flex items-center justify-center gap-1">
@@ -539,8 +539,9 @@ export function Pricing({
                 key={item.product_id}
                 className={cn(
                   'relative flex h-full flex-col rounded-3xl border p-6 shadow-none transition-[box-shadow,colors] duration-200 hover:shadow-md',
-                  'border-border bg-background',
-                  isFeatured && 'bg-accent'
+                  isFeatured
+                    ? 'border-primary/40 bg-accent'
+                    : 'border-border bg-background'
                 )}
               >
                 <CardHeader className="p-0">
@@ -632,8 +633,8 @@ export function Pricing({
                       className={cn(
                         'focus-visible:ring-ring inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl px-6 text-sm leading-6 font-medium whitespace-nowrap transition-colors duration-200 focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none',
                         isFeatured
-                          ? 'border-border bg-primary text-primary-foreground hover:border-primary hover:bg-primary/90 border shadow-none'
-                          : 'border-border bg-background text-foreground hover:border-primary hover:bg-accent hover:text-primary border shadow-none'
+                          ? 'border-border bg-primary text-primary-foreground hover:border-primary hover:bg-primary/90 border'
+                          : 'border-border bg-background text-foreground hover:border-primary hover:bg-accent hover:text-primary border'
                       )}
                     >
                       {isLoading && item.product_id === loadingProductId ? (

@@ -24,10 +24,9 @@ Avoid:
 
 ## Shadows
 
-Prefer:
-- `shadow-sm`
+Avoid shadows for bordered surfaces by default.
 
-Allow stronger shadows only when the surrounding file already uses them consistently and the visual hierarchy requires it.
+Allow shadows only when the component is intentionally floating and separation cannot be expressed well enough with border and background alone.
 
 ## Radius
 

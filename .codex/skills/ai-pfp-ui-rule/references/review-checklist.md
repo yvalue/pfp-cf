@@ -6,7 +6,7 @@ Run this pass before finishing.
 
 - Are surfaces using semantic colors instead of custom or opacity-based colors?
 - Is border usage normalized to `border-border`?
-- Are shadow and radius choices aligned with nearby components?
+- Are radius choices aligned with nearby components, and are shadows avoided unless they are clearly necessary?
 
 ## Spacing Check
 

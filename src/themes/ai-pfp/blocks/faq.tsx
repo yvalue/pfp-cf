@@ -33,14 +33,14 @@ export function Faq({
             </div>
           </div>
 
-          <div className="border-border bg-background overflow-hidden rounded-3xl border shadow-sm">
+          <div className="border-primary/40 bg-background overflow-hidden rounded-3xl border">
             <div className="px-5 py-2 sm:px-7 md:px-9 md:py-3">
               <Accordion type="single" collapsible className="w-full">
                 {section.items?.map((item, idx) => (
                   <AccordionItem
                     key={idx}
                     value={item.question || item.title || ''}
-                    className="border-border border-b last:border-b-0"
+                    className="border-primary/40 border-b last:border-b-0"
                   >
                     <AccordionTrigger className="text-foreground cursor-pointer items-center py-5 text-sm font-semibold hover:no-underline md:text-base">
                       {item.question || item.title || ''}

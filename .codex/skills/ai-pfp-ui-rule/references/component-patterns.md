@@ -8,7 +8,6 @@ Prefer:
 - `h-10`
 - `rounded-xl`
 - `text-sm`
-- `shadow-sm` only when the button sits on a flat surface and needs separation
 
 Primary button pattern:
 - `bg-primary text-primary-foreground`
@@ -34,7 +33,6 @@ Tabs list:
 - `bg-background`
 - `rounded-2xl`
 - `p-1`
-- `shadow-sm`
 
 Tabs trigger:
 - `h-10`
@@ -50,7 +48,6 @@ Prefer:
 - `bg-background` or `bg-card`
 - `rounded-3xl`
 - `p-6`
-- `shadow-sm`
 
 Nested informational blocks can step down to:
 - `rounded-2xl`
@@ -72,5 +69,7 @@ Prefer:
 - `border border-border`
 - `bg-background`
 - `p-3` for menu or accordion shell
+
+Avoid adding shadows to bordered shells unless the component must read as floating.
 
 Keep item spacing compact and readable. Do not over-style hover and active states.
