@@ -147,14 +147,16 @@ export function SignUser({
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
-              className="hover:ring-primary relative size-10 rounded-full bg-transparent p-0 transition-colors hover:bg-transparent hover:text-foreground hover:ring-2"
+              className="hover:ring-primary data-[state=open]:ring-primary relative size-10 rounded-full bg-transparent p-0 transition-colors hover:bg-transparent hover:text-foreground hover:ring-2 data-[state=open]:ring-2"
             >
               <Avatar className="size-full">
                 <AvatarImage
                   src={displayUser.image || ''}
                   alt={displayUser.name || ''}
                 />
-                <AvatarFallback>{displayUser.name.charAt(0)}</AvatarFallback>
+                <AvatarFallback className="bg-indigo-100 dark:bg-indigo-900 text-foreground text-base leading-none font-medium">
+                  {displayUser.name.charAt(0)}
+                </AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>

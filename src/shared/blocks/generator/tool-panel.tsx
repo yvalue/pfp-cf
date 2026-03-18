@@ -29,7 +29,12 @@ import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
 import { AIMediaType, AITaskStatus } from '@/extensions/ai/types';
-import { LazyImage, type ImageUploaderValue } from '@/shared/blocks/common';
+import {
+  aiPfpSegmentedTabsListClassName,
+  aiPfpSegmentedTabsTriggerClassName,
+  LazyImage,
+  type ImageUploaderValue,
+} from '@/shared/blocks/common';
 import { ToolDashboardWorkbench } from '@/shared/blocks/tool-dashboard';
 import { AspectRatioOption } from '@/shared/components/ui/aspect-ratio-option';
 import { Button } from '@/shared/components/ui/button';
@@ -169,8 +174,6 @@ const POLL_INTERVAL = 5000;
 const GENERATION_TIMEOUT = 180000;
 const MAX_PROMPT_LENGTH = 1000;
 const sectionClassName = 'grid gap-4';
-const tabTriggerClassName =
-  'relative z-10 h-10 min-w-0 rounded-xl px-4 text-sm leading-6 font-medium tracking-tight transition-colors duration-200';
 const selectTriggerClassName = 'h-10 w-full rounded-xl text-sm leading-6';
 const panelClassName = 'rounded-3xl border border-border shadow-sm';
 const comparisonLabelClassName =
@@ -1000,43 +1003,21 @@ export function ProfessionalHeadshotGenerator({
             onValueChange={(value) => setActiveTab(value as HeadshotTab)}
             className="flex min-h-0 flex-1 flex-col gap-4"
           >
-            <TabsList className="border-border bg-background relative inline-grid h-auto w-full grid-cols-2 rounded-2xl border p-1 shadow-sm">
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-1 grid grid-cols-2 gap-1"
-              >
-                <div
-                  className={cn(
-                    'rounded-xl transition-colors duration-200',
-                    activeTab === 'upload' && 'bg-primary'
-                  )}
-                />
-                <div
-                  className={cn(
-                    'rounded-xl transition-colors duration-200',
-                    activeTab === 'parameter' && 'bg-primary'
-                  )}
-                />
-              </div>
+            <TabsList
+              className={cn(
+                aiPfpSegmentedTabsListClassName,
+                'grid-cols-2'
+              )}
+            >
               <TabsTrigger
                 value="upload"
-                className={cn(
-                  tabTriggerClassName,
-                  activeTab === 'upload'
-                    ? 'text-primary-foreground'
-                    : 'text-foreground'
-                )}
+                className={aiPfpSegmentedTabsTriggerClassName}
               >
                 {section.tabs.upload}
               </TabsTrigger>
               <TabsTrigger
                 value="parameter"
-                className={cn(
-                  tabTriggerClassName,
-                  activeTab === 'parameter'
-                    ? 'text-primary-foreground'
-                    : 'text-foreground'
-                )}
+                className={aiPfpSegmentedTabsTriggerClassName}
               >
                 {section.tabs.parameter}
               </TabsTrigger>

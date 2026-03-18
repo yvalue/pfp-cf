@@ -22,10 +22,7 @@ export function ToolDashboardWorkbench({
   return (
     <section
       data-slot="tool-dashboard-workbench"
-      className={cn(
-        'border-border bg-card rounded-3xl border p-4 shadow-sm',
-        className
-      )}
+      className={cn('p-4', className)}
       {...props}
     >
       <div

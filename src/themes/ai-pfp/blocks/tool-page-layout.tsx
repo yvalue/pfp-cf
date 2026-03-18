@@ -136,11 +136,11 @@ function Topbar({
         </Breadcrumb>
       }
       userInfo={
-        <>
+        <div className="flex items-center gap-4 sm:gap-6">
           {showTheme ? <ThemeToggler /> : null}
-          {showLocale ? <LocaleSelector type="button" /> : null}
+          {showLocale ? <LocaleSelector /> : null}
           {showSign ? <SignUser userNav={userNav} /> : null}
-        </>
+        </div>
       }
     />
   );

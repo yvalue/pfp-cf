@@ -5,7 +5,11 @@ import { Check, Loader2, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
-import { SmartIcon } from '@/shared/blocks/common';
+import {
+  aiPfpSegmentedTabsListClassName,
+  aiPfpSegmentedTabsTriggerClassName,
+  SmartIcon,
+} from '@/shared/blocks/common';
 import { PaymentModal } from '@/shared/blocks/payment/payment-modal';
 import { TextHighlight } from '@/shared/components/text-highlight';
 import { Button } from '@/shared/components/ui/button';
@@ -354,10 +358,6 @@ export function Pricing({
     section.items?.filter((item) => !item.group || item.group === group) ?? [];
   const pricingGridClassName = getPricingGridClassName(visibleItems.length);
   const groupCount = section.groups?.length ?? 0;
-  const activeGroupIndex = Math.max(
-    0,
-    section.groups?.findIndex((item) => item.name === group) ?? 0
-  );
   const tabsGridClassName = getTabsGridClassName(groupCount);
   const baseFreeCard = getDefaultFreeCard(section.free_cards);
   const activeFreeCard = group ? section.free_cards?.[group] : undefined;
@@ -487,37 +487,19 @@ export function Pricing({
             <Tabs value={group} onValueChange={setGroup} className="max-w-full">
               <TabsList
                 className={cn(
-                  'border-border bg-background relative inline-grid h-auto w-max min-w-max rounded-2xl border p-1 shadow-sm',
+                  aiPfpSegmentedTabsListClassName,
+                  'w-max min-w-max',
                   tabsGridClassName
                 )}
               >
-                <div
-                  aria-hidden
-                  className={cn(
-                    'pointer-events-none absolute inset-1 grid gap-1',
-                    tabsGridClassName
-                  )}
-                >
-                  {section.groups.map((item, i) => (
-                    <div
-                      key={item.name ?? `indicator-${i}`}
-                      className={cn(
-                        'rounded-xl transition-colors duration-200',
-                        i === activeGroupIndex && 'bg-primary'
-                      )}
-                    />
-                  ))}
-                </div>
                 {section.groups.map((item, i) => {
                   return (
                     <TabsTrigger
                       key={item.name ?? `group-${i}`}
                       value={item.name || ''}
                       className={cn(
-                        'relative z-10 h-10 min-w-28 shrink-0 rounded-xl px-3 text-sm leading-6 font-medium tracking-tight transition-colors duration-200 md:min-w-32 md:px-4',
-                        i === activeGroupIndex
-                          ? 'text-primary-foreground'
-                          : 'text-foreground'
+                        aiPfpSegmentedTabsTriggerClassName,
+                        'min-w-28 shrink-0 px-3 md:min-w-32 md:px-4'
                       )}
                     >
                       <span className="flex items-center justify-center gap-1">

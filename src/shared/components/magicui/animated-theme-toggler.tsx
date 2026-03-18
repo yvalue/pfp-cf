@@ -1,7 +1,7 @@
 "use client";
 
-import { Moon, SunDim } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { RiMoonLine, RiSunLine } from "react-icons/ri";
 import { flushSync } from "react-dom";
 import { cn } from "@/shared/lib/utils";
 import { useTheme } from "next-themes";
@@ -67,7 +67,11 @@ export const AnimatedThemeToggler = ({ className }: props) => {
       className={cn(className)}
       aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
     >
-      {isDarkMode ? <SunDim /> : <Moon />}
+      {isDarkMode ? (
+        <RiSunLine className="size-5" />
+      ) : (
+        <RiMoonLine className="size-5" />
+      )}
     </button>
   );
 };

@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Check, Globe, Languages } from 'lucide-react';
-import { useLocale } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
+import { useLocale } from 'next-intl';
+import { RiCheckLine, RiTranslate2 } from 'react-icons/ri';
 
 import { usePathname, useRouter } from '@/core/i18n/navigation';
 import { localeNames } from '@/config/locale';
@@ -48,22 +48,20 @@ export function LocaleSelector({
 
   // Return a placeholder during SSR to avoid hydration mismatch
   if (!mounted) {
-    return (
-      type === 'icon' ? (
-        <button className={iconTriggerClassName} disabled>
-          <Languages size={18} />
-        </button>
-      ) : (
+    return type === 'icon' ? (
+      <button className={iconTriggerClassName} disabled>
+        <RiTranslate2 className="size-5" />
+      </button>
+    ) : (
         <Button
           variant="outline"
           size="sm"
           className="hover:bg-muted focus:bg-muted"
           disabled
         >
-          <Globe size={16} />
+          <RiTranslate2 className="size-4" />
           {localeNames[currentLocale]}
         </Button>
-      )
     );
   }
 
@@ -72,7 +70,7 @@ export function LocaleSelector({
       <DropdownMenuTrigger asChild>
         {type === 'icon' ? (
           <button className={iconTriggerClassName}>
-            <Languages size={18} />
+            <RiTranslate2 className="size-5" />
           </button>
         ) : (
           <Button
@@ -80,7 +78,7 @@ export function LocaleSelector({
             size="sm"
             className="hover:bg-muted focus:bg-muted"
           >
-            <Globe size={16} />
+            <RiTranslate2 className="size-4" />
             {localeNames[currentLocale]}
           </Button>
         )}
@@ -94,7 +92,7 @@ export function LocaleSelector({
           >
             <span>{localeNames[locale]}</span>
             {locale === currentLocale && (
-              <Check size={16} className="text-primary" />
+              <RiCheckLine className="text-primary size-4" />
             )}
           </DropdownMenuItem>
         ))}

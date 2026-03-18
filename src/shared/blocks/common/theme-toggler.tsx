@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Monitor, Moon, SunDim } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { RiComputerLine, RiMoonLine, RiSunLine } from 'react-icons/ri';
 
 import { AnimatedThemeToggler } from '@/shared/components/magicui/animated-theme-toggler';
 import { Button } from '@/shared/components/ui/button';
@@ -39,7 +39,7 @@ export function ThemeToggler({
   if (type === 'button') {
     return (
       <Button variant="outline" size="sm" className="hover:bg-muted">
-        <SunDim />
+        <RiSunLine className="size-4" />
       </Button>
     );
   } else if (type === 'toggle') {
@@ -56,29 +56,27 @@ export function ThemeToggler({
           onClick={() => setTheme('light')}
           aria-label="Switch to light mode"
         >
-          <SunDim />
+          <RiSunLine className="size-4" />
         </ToggleGroupItem>
         <ToggleGroupItem
           value="dark"
           onClick={() => setTheme('dark')}
           aria-label="Switch to dark mode"
         >
-          <Moon />
+          <RiMoonLine className="size-4" />
         </ToggleGroupItem>
         <ToggleGroupItem
           value="system"
           onClick={() => setTheme('system')}
           aria-label="Switch to system mode"
         >
-          <Monitor />
+          <RiComputerLine className="size-4" />
         </ToggleGroupItem>
       </ToggleGroup>
     );
   }
 
   return (
-    <AnimatedThemeToggler
-      className={cn(iconTriggerClassName, className)}
-    />
+    <AnimatedThemeToggler className={cn(iconTriggerClassName, className)} />
   );
 }
