@@ -14,6 +14,17 @@ export function getActiveTheme(): string {
   return defaultTheme;
 }
 
+function getBlockExportName(blockName: string): string {
+  const exportBaseName =
+    blockName.split('/').filter(Boolean).pop() || blockName;
+  return kebabToPascalCase(exportBaseName);
+}
+
+function resolveBlockComponent(module: any, blockName: string) {
+  const exportName = getBlockExportName(blockName);
+  return module[exportName] || module[blockName];
+}
+
 /**
  * load theme page
  */
@@ -39,6 +50,12 @@ export async function getThemePage(pageName: string, theme?: string) {
 
     throw error;
   }
+}
+
+export async function getThemePageStrict(pageName: string, theme?: string) {
+  const loadTheme = theme || getActiveTheme();
+  const module = await import(`@/themes/${loadTheme}/pages/${pageName}`);
+  return module.default;
 }
 
 /**
@@ -68,6 +85,12 @@ export async function getThemeLayout(layoutName: string, theme?: string) {
   }
 }
 
+export async function getThemeLayoutStrict(layoutName: string, theme?: string) {
+  const loadTheme = theme || getActiveTheme();
+  const module = await import(`@/themes/${loadTheme}/layouts/${layoutName}`);
+  return module.default;
+}
+
 /**
  * convert kebab-case to PascalCase
  */
@@ -83,13 +106,11 @@ function kebabToPascalCase(str: string): string {
  */
 export async function getThemeBlock(blockName: string, theme?: string) {
   const loadTheme = theme || getActiveTheme();
-  const pascalCaseName = kebabToPascalCase(blockName);
 
   try {
     // load theme block
     const module = await import(`@/themes/${loadTheme}/blocks/${blockName}`);
-    // Try PascalCase named export first, then original blockName
-    const component = module[pascalCaseName] || module[blockName];
+    const component = resolveBlockComponent(module, blockName);
     if (!component) {
       throw new Error(`No valid export found in block "${blockName}"`);
     }
@@ -101,8 +122,10 @@ export async function getThemeBlock(blockName: string, theme?: string) {
         const fallbackModule = await import(
           `@/themes/${defaultTheme}/blocks/${blockName}`
         );
-        const fallbackComponent =
-          fallbackModule[pascalCaseName] || fallbackModule[blockName];
+        const fallbackComponent = resolveBlockComponent(
+          fallbackModule,
+          blockName
+        );
         if (!fallbackComponent) {
           throw new Error(
             `No valid export found in fallback block "${blockName}"`
@@ -116,4 +139,16 @@ export async function getThemeBlock(blockName: string, theme?: string) {
 
     throw error;
   }
+}
+
+export async function getThemeBlockStrict(blockName: string, theme?: string) {
+  const loadTheme = theme || getActiveTheme();
+  const module = await import(`@/themes/${loadTheme}/blocks/${blockName}`);
+  const component = resolveBlockComponent(module, blockName);
+
+  if (!component) {
+    throw new Error(`No valid export found in block "${blockName}"`);
+  }
+
+  return component;
 }

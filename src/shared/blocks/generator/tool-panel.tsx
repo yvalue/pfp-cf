@@ -1,13 +1,13 @@
 'use client';
 
 import {
-  type ChangeEvent,
-  type DragEvent,
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
+  type ChangeEvent,
+  type DragEvent,
   type ReactNode,
 } from 'react';
 import {
@@ -19,12 +19,12 @@ import {
   User,
   X,
 } from 'lucide-react';
-import { RiImageAddLine, RiVipDiamondFill } from 'react-icons/ri';
+import { useTranslations } from 'next-intl';
 import {
   ReactCompareSlider,
   ReactCompareSliderImage,
 } from 'react-compare-slider';
-import { useTranslations } from 'next-intl';
+import { RiImageAddLine, RiVipDiamondFill } from 'react-icons/ri';
 import { toast } from 'sonner';
 
 import { AIMediaType, AITaskStatus } from '@/extensions/ai/types';
@@ -34,7 +34,6 @@ import {
   LazyImage,
   type ImageUploaderValue,
 } from '@/shared/blocks/common';
-import { ToolDashboardWorkbench } from '@/shared/blocks/tool-dashboard';
 import { AspectRatioOption } from '@/shared/components/ui/aspect-ratio-option';
 import { Button } from '@/shared/components/ui/button';
 import {
@@ -59,12 +58,12 @@ import {
 import { useAppContext } from '@/shared/contexts/app';
 import {
   extractImageUrls,
-  getNanoBananaModelFamily,
   getNanoBananaMaxBatchCount,
   getNanoBananaMaxReferenceImages,
   getNanoBananaMaxReferenceImageSizeMB,
-  getNanoBananaResolution,
+  getNanoBananaModelFamily,
   getNanoBananaReferenceImageFormatsLabel,
+  getNanoBananaResolution,
   NANO_BANANA_MODEL_FAMILIES,
   resolveNanoBananaGeneration,
   type NanoBananaResolution,
@@ -72,14 +71,14 @@ import {
 import { cn } from '@/shared/lib/utils';
 
 type FieldBadgeVariant = 'required' | 'muted';
-type HeadshotTab = 'upload' | 'parameter';
+type ToolPanelTab = 'upload' | 'parameter';
 
-type SelectOption = {
+type ToolPanelSelectOption = {
   label: string;
   value: string;
 };
 
-type EffectOption = {
+type ToolPanelEffectOption = {
   id: string;
   label: string;
   accentClassName: string;
@@ -87,12 +86,12 @@ type EffectOption = {
   silhouetteClassName: string;
 };
 
-type ToolImage = {
+type ToolPanelImage = {
   src: string;
   alt: string;
 };
 
-export type ProfessionalHeadshotGeneratorSection = {
+export type ToolPanelSection = {
   id?: string;
   name?: string;
   title: string;
@@ -120,11 +119,11 @@ export type ProfessionalHeadshotGeneratorSection = {
   };
   description_placeholder: string;
   description_counter?: string;
-  effects: EffectOption[];
+  effects: ToolPanelEffectOption[];
   selects: {
-    aspect_ratio: SelectOption[];
-    resolution: SelectOption[];
-    batch_size: SelectOption[];
+    aspect_ratio: ToolPanelSelectOption[];
+    resolution: ToolPanelSelectOption[];
+    batch_size: ToolPanelSelectOption[];
   };
   result: {
     example_title: string;
@@ -143,13 +142,13 @@ export type ProfessionalHeadshotGeneratorSection = {
     submit_cost: number;
   };
   images: {
-    before: ToolImage;
-    after: ToolImage;
+    before: ToolPanelImage;
+    after: ToolPanelImage;
   };
 };
 
-interface ProfessionalHeadshotGeneratorProps {
-  section: ProfessionalHeadshotGeneratorSection;
+interface ToolPanelProps {
+  section: ToolPanelSection;
 }
 
 interface GeneratedImage {
@@ -180,8 +179,8 @@ const comparisonLabelClassName =
   'absolute rounded-xl px-3 py-1 text-xs leading-5 font-semibold uppercase tracking-widest';
 const usageStepClassName =
   'border-border bg-background flex items-center gap-3 rounded-2xl border p-4';
-const workbenchPaneClassName =
-  'rounded-3xl border border-border bg-background';
+const toolPanelPaneClassName =
+  'border-border bg-background min-w-0 rounded-3xl border p-6 shadow-sm';
 
 async function uploadImageFile(file: File) {
   const formData = new FormData();
@@ -322,7 +321,7 @@ function EffectThumbnail({
   silhouetteClassName,
   size = 'lg',
 }: Pick<
-  EffectOption,
+  ToolPanelEffectOption,
   'accentClassName' | 'cardClassName' | 'silhouetteClassName'
 > & { size?: 'sm' | 'lg' }) {
   return (
@@ -353,7 +352,7 @@ function EffectThumbnail({
 function ComparisonHandle() {
   return (
     <div className="pointer-events-none relative flex h-full items-center justify-center text-white">
-      <div className="absolute inset-y-0 inset-x-0 mx-auto w-0.5 bg-white" />
+      <div className="absolute inset-x-0 inset-y-0 mx-auto w-0.5 bg-white" />
       <div className="relative z-10 inline-flex items-center gap-4 px-0 text-xs leading-5 font-semibold tracking-widest">
         <span aria-hidden className="text-sm text-white">
           &#x25C0;
@@ -366,11 +365,9 @@ function ComparisonHandle() {
   );
 }
 
-export function ProfessionalHeadshotGenerator({
-  section,
-}: ProfessionalHeadshotGeneratorProps) {
+export function ToolPanel({ section }: ToolPanelProps) {
   const generatorT = useTranslations('ai.image.generator');
-  const [activeTab, setActiveTab] = useState<HeadshotTab>('upload');
+  const [activeTab, setActiveTab] = useState<ToolPanelTab>('upload');
   const [selectedEffectId, setSelectedEffectId] = useState(
     section.effects[0]?.id ?? ''
   );
@@ -467,7 +464,8 @@ export function ProfessionalHeadshotGenerator({
         const optionCount = parseInt(item.value, 10);
         return (
           !Number.isNaN(optionCount) &&
-          optionCount <= getNanoBananaMaxBatchCount(selectedModelFamily?.id ?? '')
+          optionCount <=
+            getNanoBananaMaxBatchCount(selectedModelFamily?.id ?? '')
         );
       }),
     [section.selects.batch_size, selectedModelFamily]
@@ -574,7 +572,10 @@ export function ProfessionalHeadshotGenerator({
   const handleUploadFiles = useCallback(
     async (selectedFiles: File[]) => {
       const maxBytes = maxReferenceImageSizeMB * 1024 * 1024;
-      const availableSlots = Math.max(0, maxReferenceImages - referenceImageItems.length);
+      const availableSlots = Math.max(
+        0,
+        maxReferenceImages - referenceImageItems.length
+      );
 
       const filesToAdd = selectedFiles
         .filter((file) => {
@@ -956,640 +957,648 @@ export function ProfessionalHeadshotGenerator({
     user,
   ]);
 
-  const handleDownloadImage = useCallback(
-    async (image: GeneratedImage) => {
-      if (!image.url) {
-        return;
+  const handleDownloadImage = useCallback(async (image: GeneratedImage) => {
+    if (!image.url) {
+      return;
+    }
+
+    try {
+      setDownloadingImageId(image.id);
+
+      const response = await fetch(
+        `/api/proxy/file?url=${encodeURIComponent(image.url)}`
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch image');
       }
 
-      try {
-        setDownloadingImageId(image.id);
-
-        const response = await fetch(
-          `/api/proxy/file?url=${encodeURIComponent(image.url)}`
-        );
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch image');
-        }
-
-        const blob = await response.blob();
-        const blobUrl = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = blobUrl;
-        link.download = `${image.id}.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setTimeout(() => URL.revokeObjectURL(blobUrl), 200);
-        toast.success('Image downloaded');
-      } catch (error) {
-        console.error('Failed to download image:', error);
-        toast.error('Failed to download image');
-      } finally {
-        setDownloadingImageId(null);
-      }
-    },
-    []
-  );
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = `${image.id}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 200);
+      toast.success('Image downloaded');
+    } catch (error) {
+      console.error('Failed to download image:', error);
+      toast.error('Failed to download image');
+    } finally {
+      setDownloadingImageId(null);
+    }
+  }, []);
 
   return (
-    <ToolDashboardWorkbench
+    <section
       id={section.id || section.name}
+      data-slot="generator-tool-panel"
       className="border-0 px-0 py-2"
-      gridClassName="gap-4 lg:grid-cols-12 xl:grid-cols-12"
-      leftPaneClassName={`${workbenchPaneClassName} lg:col-span-4 lg:p-6`}
-      rightPaneClassName={`${workbenchPaneClassName} lg:col-span-8 lg:p-6`}
-      left={
-        <div className="flex h-full flex-col gap-4">
-          <Tabs
-            value={activeTab}
-            onValueChange={(value) => setActiveTab(value as HeadshotTab)}
-            className="flex min-h-0 flex-1 flex-col gap-4"
-          >
-            <TabsList
-              className={cn(
-                aiPfpSegmentedTabsListClassName,
-                'grid-cols-2'
-              )}
+    >
+      <div className="grid gap-4 lg:grid-cols-12 xl:grid-cols-12">
+        <div className={cn(toolPanelPaneClassName, 'lg:col-span-4')}>
+          <div className="flex h-full flex-col gap-4">
+            <Tabs
+              value={activeTab}
+              onValueChange={(value) => setActiveTab(value as ToolPanelTab)}
+              className="flex min-h-0 flex-1 flex-col gap-4"
             >
-              <TabsTrigger
-                value="upload"
-                className={aiPfpSegmentedTabsTriggerClassName}
+              <TabsList
+                className={cn(aiPfpSegmentedTabsListClassName, 'grid-cols-2')}
               >
-                {section.tabs.upload}
-              </TabsTrigger>
-              <TabsTrigger
-                value="parameter"
-                className={aiPfpSegmentedTabsTriggerClassName}
-              >
-                {section.tabs.parameter}
-              </TabsTrigger>
-            </TabsList>
+                <TabsTrigger
+                  value="upload"
+                  className={aiPfpSegmentedTabsTriggerClassName}
+                >
+                  {section.tabs.upload}
+                </TabsTrigger>
+                <TabsTrigger
+                  value="parameter"
+                  className={aiPfpSegmentedTabsTriggerClassName}
+                >
+                  {section.tabs.parameter}
+                </TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="upload" className="mt-0 flex-1">
-              <div className={sectionClassName}>
-                <section className="grid gap-2">
-                  <FieldHeader
-                    badge={section.fields.required_badge}
-                    badgeVariant="required"
-                    label={section.fields.upload_label}
-                  />
+              <TabsContent value="upload" className="mt-0 flex-1">
+                <div className={sectionClassName}>
+                  <section className="grid gap-2">
+                    <FieldHeader
+                      badge={section.fields.required_badge}
+                      badgeVariant="required"
+                      label={section.fields.upload_label}
+                    />
 
-                  <input
-                    ref={uploadInputRef}
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handleUploadInputChange}
-                    className="hidden"
-                  />
+                    <input
+                      ref={uploadInputRef}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleUploadInputChange}
+                      className="hidden"
+                    />
 
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    onClick={openUploadPicker}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter' || event.key === ' ') {
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={openUploadPicker}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          openUploadPicker();
+                        }
+                      }}
+                      onDragOver={(event) => {
                         event.preventDefault();
-                        openUploadPicker();
-                      }
-                    }}
-                    onDragOver={(event) => {
-                      event.preventDefault();
-                      setIsUploadDragActive(true);
-                    }}
-                    onDragLeave={() => setIsUploadDragActive(false)}
-                    onDrop={handleUploadDrop}
-                    className={cn(
-                      'border-primary bg-accent flex min-h-32 flex-col overflow-hidden rounded-3xl border-2 border-dashed p-6 text-center transition-colors',
-                      isUploadDragActive && 'border-primary bg-secondary'
-                    )}
-                  >
-                    {referenceImageItems.length > 0 ? (
-                      <>
-                        <div className="max-h-44 overflow-y-auto pr-1">
-                          <div className="grid grid-cols-4 gap-3">
-                            {referenceImageItems.map((item) => (
-                              <div
-                                key={item.id}
-                                className="border-primary bg-background group relative overflow-hidden rounded-md border border-dashed"
-                              >
-                                <img
-                                  src={item.preview}
-                                  alt="Reference"
-                                  className="aspect-square w-full object-cover"
-                                />
-                                <div className="bg-foreground text-primary-foreground absolute inset-x-0 bottom-0 px-2 py-1 text-xs leading-4">
-                                  {item.status}
-                                </div>
-                                <button
-                                  type="button"
-                                  className="bg-foreground text-primary-foreground absolute top-2 right-2 inline-flex h-7 w-7 items-center justify-center rounded-xl"
-                                  onClick={(event) => {
-                                    event.stopPropagation();
-                                    handleRemoveReferenceImage(item.id);
-                                  }}
-                                >
-                                  <X className="h-4 w-4" />
-                                </button>
-                              </div>
-                            ))}
-
-                            {remainingUploadSlots > 0 ? (
-                              <div className="border-primary bg-background flex aspect-square items-center justify-center rounded-lg border border-dashed">
-                                <RiImageAddLine className="size-7 text-gray-400" />
-                              </div>
-                            ) : null}
-                          </div>
-                        </div>
-
-                        <div className="text-muted-foreground mt-4 grid gap-1 text-xs leading-5">
-                          <p>{uploadFormatsText}</p>
-                          <p className="font-medium">{uploadSupportsText}</p>
-                        </div>
-                      </>
-                    ) : (
-                      <div className="grid flex-1 place-items-center">
-                        <div className="grid gap-2">
-                          <div className="mx-auto flex size-14 items-center justify-center">
-                            <RiImageAddLine className="size-14 text-gray-400" />
-                          </div>
-                          <div className="grid gap-1">
-                            <p className="text-foreground text-sm leading-6 font-medium break-words">
-                              {section.upload.title}
-                            </p>
-                            <p className="text-muted-foreground text-xs leading-5">
-                              {uploadFormatsText}
-                              <br />
-                              <span className="text-muted-foreground font-medium">
-                                {uploadSupportsText}
-                              </span>
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {isReferenceUploading ? (
-                    <p className="text-muted-foreground text-xs leading-5">
-                      Uploading images...
-                    </p>
-                  ) : null}
-
-                  {hasReferenceUploadError ? (
-                    <p className="text-destructive text-xs leading-5">
-                      {generatorT('form.some_images_failed_to_upload')}
-                    </p>
-                  ) : null}
-                </section>
-
-                <section className="grid gap-2">
-                  <FieldHeader
-                    badge={section.fields.optional_badge}
-                    label={section.fields.description_label}
-                    trailing={
-                      <div className="text-muted-foreground flex items-center gap-2 text-xs leading-5">
-                        <Sparkles className="size-3.5" />
-                        <span>
-                          {promptLength}/{MAX_PROMPT_LENGTH}
-                        </span>
-                        {isPromptTooLong ? (
-                          <span className="text-destructive">
-                            {generatorT('form.prompt_too_long')}
-                          </span>
-                        ) : null}
-                      </div>
-                    }
-                  />
-
-                  <div className="border-border bg-background h-32 overflow-hidden rounded-3xl border">
-                    <textarea
-                      value={prompt}
-                      onChange={(event) => setPrompt(event.target.value)}
-                      placeholder={section.description_placeholder}
-                      className="text-muted-foreground placeholder:text-muted-foreground h-full w-full resize-none border-0 p-4 text-sm leading-5 outline-none"
-                    />
-                  </div>
-                </section>
-
-                <section className="grid gap-4">
-                  <FieldHeader
-                    badge={section.fields.optional_badge}
-                    label={section.fields.effect_style_label}
-                  />
-
-                  <Dialog open={isEffectDialogOpen} onOpenChange={setIsEffectDialogOpen}>
-                    <button
-                      type="button"
-                      onClick={() => setIsEffectDialogOpen(true)}
-                      className="border-border bg-background hover:border-border flex h-10 w-full min-w-0 items-center gap-3 rounded-xl border px-3 text-left text-sm leading-6 transition-colors outline-none"
+                        setIsUploadDragActive(true);
+                      }}
+                      onDragLeave={() => setIsUploadDragActive(false)}
+                      onDrop={handleUploadDrop}
+                      className={cn(
+                        'border-primary bg-accent flex min-h-32 flex-col overflow-hidden rounded-3xl border-2 border-dashed p-6 text-center transition-colors',
+                        isUploadDragActive && 'border-primary bg-secondary'
+                      )}
                     >
-                      {selectedEffect ? (
-                        <EffectThumbnail
-                          size="sm"
-                          accentClassName={selectedEffect.accentClassName}
-                          cardClassName={selectedEffect.cardClassName}
-                          silhouetteClassName={
-                            selectedEffect.silhouetteClassName
-                          }
-                        />
-                      ) : null}
-                      <div className="min-w-0 flex-1">
-                        <div className="text-foreground truncate text-sm leading-6 font-semibold">
-                          {selectedEffect?.label ??
-                            section.fields.effect_style_label}
+                      {referenceImageItems.length > 0 ? (
+                        <>
+                          <div className="max-h-44 overflow-y-auto pr-1">
+                            <div className="grid grid-cols-4 gap-3">
+                              {referenceImageItems.map((item) => (
+                                <div
+                                  key={item.id}
+                                  className="border-primary bg-background group relative overflow-hidden rounded-md border border-dashed"
+                                >
+                                  <img
+                                    src={item.preview}
+                                    alt="Reference"
+                                    className="aspect-square w-full object-cover"
+                                  />
+                                  <div className="bg-foreground text-primary-foreground absolute inset-x-0 bottom-0 px-2 py-1 text-xs leading-4">
+                                    {item.status}
+                                  </div>
+                                  <button
+                                    type="button"
+                                    className="bg-foreground text-primary-foreground absolute top-2 right-2 inline-flex h-7 w-7 items-center justify-center rounded-xl"
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      handleRemoveReferenceImage(item.id);
+                                    }}
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </button>
+                                </div>
+                              ))}
+
+                              {remainingUploadSlots > 0 ? (
+                                <div className="border-primary bg-background flex aspect-square items-center justify-center rounded-lg border border-dashed">
+                                  <RiImageAddLine className="size-7 text-gray-400" />
+                                </div>
+                              ) : null}
+                            </div>
+                          </div>
+
+                          <div className="text-muted-foreground mt-4 grid gap-1 text-xs leading-5">
+                            <p>{uploadFormatsText}</p>
+                            <p className="font-medium">{uploadSupportsText}</p>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="grid flex-1 place-items-center">
+                          <div className="grid gap-2">
+                            <div className="mx-auto flex size-14 items-center justify-center">
+                              <RiImageAddLine className="size-14 text-gray-400" />
+                            </div>
+                            <div className="grid gap-1">
+                              <p className="text-foreground text-sm leading-6 font-medium break-words">
+                                {section.upload.title}
+                              </p>
+                              <p className="text-muted-foreground text-xs leading-5">
+                                {uploadFormatsText}
+                                <br />
+                                <span className="text-muted-foreground font-medium">
+                                  {uploadSupportsText}
+                                </span>
+                              </p>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      <ChevronsUpDown className="text-muted-foreground size-4 shrink-0" />
-                    </button>
+                      )}
+                    </div>
 
-                    <DialogContent className="sm:max-w-3xl rounded-md p-4">
-                      <DialogTitle className="text-base font-semibold">
-                        {section.fields.effect_style_label}
-                      </DialogTitle>
-                      <div className="mt-2 grid grid-cols-[repeat(auto-fill,minmax(8rem,1fr))] gap-3">
-                        {section.effects.map((effect) => {
-                          const isSelected = effect.id === selectedEffectId;
+                    {isReferenceUploading ? (
+                      <p className="text-muted-foreground text-xs leading-5">
+                        Uploading images...
+                      </p>
+                    ) : null}
 
-                          return (
-                            <button
-                              key={effect.id}
-                              type="button"
-                              className={cn(
-                                'flex flex-col items-center gap-2 rounded-2xl px-1 py-3 transition-colors',
-                                isSelected ? 'bg-accent' : 'hover:bg-accent'
-                              )}
-                              onClick={() => {
-                                setSelectedEffectId(effect.id);
-                                setIsEffectDialogOpen(false);
-                              }}
-                            >
-                              <EffectThumbnail
-                                accentClassName={effect.accentClassName}
-                                cardClassName={effect.cardClassName}
-                                silhouetteClassName={effect.silhouetteClassName}
-                              />
-                              <div className="text-foreground w-full truncate text-center text-xs leading-4 font-medium">
-                                {effect.label}
-                              </div>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                </section>
-              </div>
-            </TabsContent>
+                    {hasReferenceUploadError ? (
+                      <p className="text-destructive text-xs leading-5">
+                        {generatorT('form.some_images_failed_to_upload')}
+                      </p>
+                    ) : null}
+                  </section>
 
-            <TabsContent value="parameter" className="mt-0 flex-1">
-              <div className={sectionClassName}>
-                <div className="grid min-w-0 gap-2">
-                  <FieldHeader
-                    badge={section.fields.default_badge}
-                    label={section.fields.model_label}
-                  />
-                  <Select value={modelFamilyId} onValueChange={setModelFamilyId}>
-                    <SelectTrigger className={selectTriggerClassName}>
-                      <SelectValue
-                        placeholder={generatorT('form.select_model')}
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {NANO_BANANA_MODEL_FAMILIES.map((item) => (
-                        <SelectItem key={item.id} value={item.id}>
-                          {item.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="grid gap-4">
-                  <div className="grid min-w-0 gap-2">
+                  <section className="grid gap-2">
                     <FieldHeader
-                      badge={section.fields.default_badge}
-                      label={section.fields.aspect_ratio_label}
+                      badge={section.fields.optional_badge}
+                      label={section.fields.description_label}
+                      trailing={
+                        <div className="text-muted-foreground flex items-center gap-2 text-xs leading-5">
+                          <Sparkles className="size-3.5" />
+                          <span>
+                            {promptLength}/{MAX_PROMPT_LENGTH}
+                          </span>
+                          {isPromptTooLong ? (
+                            <span className="text-destructive">
+                              {generatorT('form.prompt_too_long')}
+                            </span>
+                          ) : null}
+                        </div>
+                      }
                     />
-                    <Select value={aspectRatio} onValueChange={setAspectRatio}>
-                      <SelectTrigger className={selectTriggerClassName}>
-                        <SelectValue aria-label={aspectRatio}>
-                          <AspectRatioOption ratio={aspectRatio} selected />
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent>
-                        {aspectRatios.map((option) => (
-                          <SelectItem key={option} value={option}>
-                            <AspectRatioOption
-                              ratio={option}
-                              selected={aspectRatio === option}
-                            />
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
 
+                    <div className="border-border bg-background h-32 overflow-hidden rounded-3xl border">
+                      <textarea
+                        value={prompt}
+                        onChange={(event) => setPrompt(event.target.value)}
+                        placeholder={section.description_placeholder}
+                        className="text-muted-foreground placeholder:text-muted-foreground h-full w-full resize-none border-0 p-4 text-sm leading-5 outline-none"
+                      />
+                    </div>
+                  </section>
+
+                  <section className="grid gap-4">
+                    <FieldHeader
+                      badge={section.fields.optional_badge}
+                      label={section.fields.effect_style_label}
+                    />
+
+                    <Dialog
+                      open={isEffectDialogOpen}
+                      onOpenChange={setIsEffectDialogOpen}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setIsEffectDialogOpen(true)}
+                        className="border-border bg-background hover:border-border flex h-10 w-full min-w-0 items-center gap-3 rounded-xl border px-3 text-left text-sm leading-6 transition-colors outline-none"
+                      >
+                        {selectedEffect ? (
+                          <EffectThumbnail
+                            size="sm"
+                            accentClassName={selectedEffect.accentClassName}
+                            cardClassName={selectedEffect.cardClassName}
+                            silhouetteClassName={
+                              selectedEffect.silhouetteClassName
+                            }
+                          />
+                        ) : null}
+                        <div className="min-w-0 flex-1">
+                          <div className="text-foreground truncate text-sm leading-6 font-semibold">
+                            {selectedEffect?.label ??
+                              section.fields.effect_style_label}
+                          </div>
+                        </div>
+                        <ChevronsUpDown className="text-muted-foreground size-4 shrink-0" />
+                      </button>
+
+                      <DialogContent className="rounded-md p-4 sm:max-w-3xl">
+                        <DialogTitle className="text-base font-semibold">
+                          {section.fields.effect_style_label}
+                        </DialogTitle>
+                        <div className="mt-2 grid grid-cols-[repeat(auto-fill,minmax(8rem,1fr))] gap-3">
+                          {section.effects.map((effect) => {
+                            const isSelected = effect.id === selectedEffectId;
+
+                            return (
+                              <button
+                                key={effect.id}
+                                type="button"
+                                className={cn(
+                                  'flex flex-col items-center gap-2 rounded-2xl px-1 py-3 transition-colors',
+                                  isSelected ? 'bg-accent' : 'hover:bg-accent'
+                                )}
+                                onClick={() => {
+                                  setSelectedEffectId(effect.id);
+                                  setIsEffectDialogOpen(false);
+                                }}
+                              >
+                                <EffectThumbnail
+                                  accentClassName={effect.accentClassName}
+                                  cardClassName={effect.cardClassName}
+                                  silhouetteClassName={
+                                    effect.silhouetteClassName
+                                  }
+                                />
+                                <div className="text-foreground w-full truncate text-center text-xs leading-4 font-medium">
+                                  {effect.label}
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </section>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="parameter" className="mt-0 flex-1">
+                <div className={sectionClassName}>
                   <div className="grid min-w-0 gap-2">
                     <FieldHeader
                       badge={section.fields.default_badge}
-                      label={section.fields.quality_label}
+                      label={section.fields.model_label}
                     />
                     <Select
-                      value={resolution}
-                      onValueChange={(value) =>
-                        setResolution(value as NanoBananaResolution)
-                      }
+                      value={modelFamilyId}
+                      onValueChange={setModelFamilyId}
                     >
                       <SelectTrigger className={selectTriggerClassName}>
                         <SelectValue
-                          placeholder={generatorT('form.select_quality')}
+                          placeholder={generatorT('form.select_model')}
                         />
                       </SelectTrigger>
                       <SelectContent>
-                        {supportedResolutions.map((item) => (
-                          <SelectItem key={item} value={item}>
-                            {item}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="grid min-w-0 gap-2">
-                    <FieldHeader
-                      badge={section.fields.default_badge}
-                      label={section.fields.count_label}
-                    />
-                    <Select value={countValue} onValueChange={setCountValue}>
-                      <SelectTrigger className={selectTriggerClassName}>
-                        <SelectValue placeholder={section.fields.count_label} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {countOptions.map((item) => (
-                          <SelectItem key={item.value} value={item.value}>
+                        {NANO_BANANA_MODEL_FAMILIES.map((item) => (
+                          <SelectItem key={item.id} value={item.id}>
                             {item.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
 
-          {!isMounted ? (
-            <Button className="w-full text-sm leading-6" disabled size="lg">
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {generatorT('loading')}
-            </Button>
-          ) : isCheckSign ? (
-            <Button className="w-full text-sm leading-6" disabled size="lg">
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {generatorT('checking_account')}
-            </Button>
-          ) : user ? (
-            <Button
-              size="lg"
-              className="mt-auto w-full rounded-xl text-sm leading-6"
-              onClick={handleGenerate}
-              disabled={
-                isGenerating ||
-                isPromptTooLong ||
-                isReferenceUploading ||
-                hasReferenceUploadError ||
-                referenceImageUrls.length === 0
-              }
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {generatorT('generating')}
-                </>
-              ) : (
-                <>
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  {section.buttons.submit}
-                </>
-              )}
-              <span className="ml-2 inline-flex items-center gap-2 text-sm leading-6">
-                {totalCost}
-                <RiVipDiamondFill className="size-4 text-amber-400" />
-              </span>
-            </Button>
-          ) : (
-            <Button
-              size="lg"
-              className="w-full text-sm leading-6"
-              onClick={() => setIsShowSignModal(true)}
-            >
-              <User className="mr-2 h-4 w-4" />
-              {generatorT('sign_in_to_generate')}
-            </Button>
-          )}
+                  <div className="grid gap-4">
+                    <div className="grid min-w-0 gap-2">
+                      <FieldHeader
+                        badge={section.fields.default_badge}
+                        label={section.fields.aspect_ratio_label}
+                      />
+                      <Select
+                        value={aspectRatio}
+                        onValueChange={setAspectRatio}
+                      >
+                        <SelectTrigger className={selectTriggerClassName}>
+                          <SelectValue aria-label={aspectRatio}>
+                            <AspectRatioOption ratio={aspectRatio} selected />
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {aspectRatios.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              <AspectRatioOption
+                                ratio={option}
+                                selected={aspectRatio === option}
+                              />
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-        </div>
-      }
-      right={
-        <div className="grid gap-4">
-          <div className="grid gap-2">
-            <h2 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
-              {section.title}
-            </h2>
-            <p className="text-muted-foreground text-base leading-7 md:text-lg md:leading-8">
-              {section.description}
-            </p>
-          </div>
-
-          {isGenerating || generatedImages.length > 0 ? (
-            <section className={`${panelClassName} bg-background p-6`}>
-              <header className="mb-4 flex items-center justify-between gap-3">
-                <div>
-                  <h3 className="text-foreground text-lg font-semibold md:text-xl">
-                    {generatorT('generated_images')}
-                  </h3>
-                  <p className="text-muted-foreground text-xs leading-5">
-                    {generatedImages.length}/{count}
-                  </p>
-                </div>
-                {isGenerating ? (
-                  <span className="text-muted-foreground text-xs leading-5">
-                    {taskStatusText || `${currentTaskNumber}/${count}`}
-                  </span>
-                ) : null}
-              </header>
-
-              {(isGenerating || progress > 0) && (
-                <div className="mb-5 grid gap-2 rounded-2xl border border-border bg-muted p-4">
-                  <div className="flex items-center justify-between text-sm leading-6">
-                    <span>{generatorT('progress')}</span>
-                    <span>{progress}%</span>
-                  </div>
-                  <Progress value={progress} />
-                </div>
-              )}
-
-              {generatedImages.length > 0 ? (
-                <div
-                  className={
-                    generatedImages.length === 1
-                      ? 'grid grid-cols-1 gap-4'
-                      : 'grid gap-4 sm:grid-cols-2'
-                  }
-                >
-                  {generatedImages.map((image) => (
-                    <div key={image.id} className="grid gap-3">
-                      <div
-                        className={
-                          generatedImages.length === 1
-                            ? 'relative overflow-hidden rounded-3xl border border-border bg-muted'
-                            : 'relative aspect-square overflow-hidden rounded-3xl border border-border bg-muted'
+                    <div className="grid min-w-0 gap-2">
+                      <FieldHeader
+                        badge={section.fields.default_badge}
+                        label={section.fields.quality_label}
+                      />
+                      <Select
+                        value={resolution}
+                        onValueChange={(value) =>
+                          setResolution(value as NanoBananaResolution)
                         }
                       >
-                        <LazyImage
-                          src={image.url}
-                          alt={image.prompt || section.title}
-                          className={
-                            generatedImages.length === 1
-                              ? 'h-auto w-full'
-                              : 'h-full w-full object-cover'
-                          }
-                        />
-                        <div className="absolute right-3 bottom-3 flex justify-end">
-                          <Button
-                            size="sm"
-                            variant="secondary"
-                            className="rounded-xl text-foreground text-sm leading-6"
-                            onClick={() => handleDownloadImage(image)}
-                            disabled={downloadingImageId === image.id}
-                          >
-                            {downloadingImageId === image.id ? (
-                              <Loader2 className="size-4 animate-spin" />
-                            ) : (
-                              <>
-                                <Download className="size-4" />
-                                {section.buttons.download}
-                              </>
-                            )}
-                          </Button>
-                        </div>
-                      </div>
+                        <SelectTrigger className={selectTriggerClassName}>
+                          <SelectValue
+                            placeholder={generatorT('form.select_quality')}
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {supportedResolutions.map((item) => (
+                            <SelectItem key={item} value={item}>
+                              {item}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="flex min-h-52 items-center justify-center rounded-3xl border border-dashed border-border bg-muted p-6 text-center">
-                  <p className="text-muted-foreground text-base leading-7">
-                    {generatorT('ready_for_generating')}
-                  </p>
-                </div>
-              )}
-            </section>
-          ) : (
-            <div className="grid gap-4 lg:grid-cols-2">
-              <section className={`${panelClassName} bg-background p-6`}>
-                <header className="mb-3 text-center">
-                  <h3 className="text-foreground text-lg font-semibold md:text-xl">
-                    {section.result.example_title}
-                  </h3>
-                </header>
 
-                <div className="bg-foreground relative overflow-hidden rounded-3xl shadow-sm">
-                  <ReactCompareSlider
-                    position={50}
-                    handle={<ComparisonHandle />}
-                    itemOne={
-                      <div className="relative aspect-square w-full">
-                        <ReactCompareSliderImage
-                          alt={section.images.before.alt}
-                          src={section.images.before.src}
-                          className="object-cover"
-                        />
-                        <div
-                          className={`${comparisonLabelClassName} bg-foreground text-primary-foreground top-4 left-4`}
-                        >
-                          {section.result.before_label}
-                        </div>
-                      </div>
-                    }
-                    itemTwo={
-                      <div className="relative aspect-square w-full">
-                        <ReactCompareSliderImage
-                          alt={section.images.after.alt}
-                          src={section.images.after.src}
-                          className="object-cover"
-                        />
-                        <div
-                          className={`${comparisonLabelClassName} bg-background text-foreground top-4 right-4`}
-                        >
-                          {section.result.after_label}
-                        </div>
-                      </div>
-                    }
-                    className="aspect-square w-full"
-                  />
-                </div>
-              </section>
-
-              <section className={`${panelClassName} bg-background p-6`}>
-                <header>
-                  <h3 className="text-foreground text-center text-lg font-semibold md:text-xl">
-                    {section.result.how_to_use_title}
-                  </h3>
-                </header>
-                <div className="mt-4 grid gap-3">
-                  {section.result.usage_steps.map((step, index) => (
-                    <div key={step} className={usageStepClassName}>
-                      <div className="bg-primary text-primary-foreground flex size-7 items-center justify-center rounded-xl text-sm font-semibold shadow-sm">
-                        {index + 1}
-                      </div>
-                      <p className="text-foreground text-base leading-7">
-                        {step}
-                      </p>
+                    <div className="grid min-w-0 gap-2">
+                      <FieldHeader
+                        badge={section.fields.default_badge}
+                        label={section.fields.count_label}
+                      />
+                      <Select value={countValue} onValueChange={setCountValue}>
+                        <SelectTrigger className={selectTriggerClassName}>
+                          <SelectValue
+                            placeholder={section.fields.count_label}
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {countOptions.map((item) => (
+                            <SelectItem key={item.value} value={item.value}>
+                              {item.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
-                  ))}
+                  </div>
                 </div>
-                <p className="text-muted-foreground mt-4 text-xs leading-5">
-                  <span className="text-primary">
-                    {section.result.tip_prefix}
-                  </span>{' '}
-                  {section.result.tip_text}
-                </p>
-              </section>
-            </div>
-          )}
+              </TabsContent>
+            </Tabs>
 
-          {!isGenerating ? (
-            <div className="flex justify-center">
+            {!isMounted ? (
+              <Button className="w-full text-sm leading-6" disabled size="lg">
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {generatorT('loading')}
+              </Button>
+            ) : isCheckSign ? (
+              <Button className="w-full text-sm leading-6" disabled size="lg">
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {generatorT('checking_account')}
+              </Button>
+            ) : user ? (
               <Button
-                variant="outline"
-                className="rounded-xl text-foreground text-sm leading-6 shadow-none"
-                onClick={() => {
-                  if (generatedImages[0]) {
-                    void handleDownloadImage(generatedImages[0]);
-                  }
-                }}
+                size="lg"
+                className="mt-auto w-full rounded-xl text-sm leading-6"
+                onClick={handleGenerate}
                 disabled={
-                  generatedImages.length === 0 ||
-                  downloadingImageId === generatedImages[0]?.id
+                  isGenerating ||
+                  isPromptTooLong ||
+                  isReferenceUploading ||
+                  hasReferenceUploadError ||
+                  referenceImageUrls.length === 0
                 }
               >
-                {downloadingImageId === generatedImages[0]?.id ? (
-                  <Loader2 className="size-4 animate-spin" />
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {generatorT('generating')}
+                  </>
                 ) : (
                   <>
-                    <Download className="size-4" />
-                    {section.buttons.download}
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    {section.buttons.submit}
                   </>
                 )}
+                <span className="ml-2 inline-flex items-center gap-2 text-sm leading-6">
+                  {totalCost}
+                  <RiVipDiamondFill className="size-4 text-amber-400" />
+                </span>
               </Button>
-            </div>
-          ) : null}
+            ) : (
+              <Button
+                size="lg"
+                className="w-full text-sm leading-6"
+                onClick={() => setIsShowSignModal(true)}
+              >
+                <User className="mr-2 h-4 w-4" />
+                {generatorT('sign_in_to_generate')}
+              </Button>
+            )}
+          </div>
         </div>
-      }
-    />
+
+        <div className={cn(toolPanelPaneClassName, 'grid gap-4 lg:col-span-8')}>
+          <div className="grid gap-4">
+            <div className="grid gap-2">
+              <h2 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
+                {section.title}
+              </h2>
+              <p className="text-muted-foreground text-base leading-7 md:text-lg md:leading-8">
+                {section.description}
+              </p>
+            </div>
+
+            {isGenerating || generatedImages.length > 0 ? (
+              <section className={`${panelClassName} bg-background p-6`}>
+                <header className="mb-4 flex items-center justify-between gap-3">
+                  <div>
+                    <h3 className="text-foreground text-lg font-semibold md:text-xl">
+                      {generatorT('generated_images')}
+                    </h3>
+                    <p className="text-muted-foreground text-xs leading-5">
+                      {generatedImages.length}/{count}
+                    </p>
+                  </div>
+                  {isGenerating ? (
+                    <span className="text-muted-foreground text-xs leading-5">
+                      {taskStatusText || `${currentTaskNumber}/${count}`}
+                    </span>
+                  ) : null}
+                </header>
+
+                {(isGenerating || progress > 0) && (
+                  <div className="border-border bg-muted mb-5 grid gap-2 rounded-2xl border p-4">
+                    <div className="flex items-center justify-between text-sm leading-6">
+                      <span>{generatorT('progress')}</span>
+                      <span>{progress}%</span>
+                    </div>
+                    <Progress value={progress} />
+                  </div>
+                )}
+
+                {generatedImages.length > 0 ? (
+                  <div
+                    className={
+                      generatedImages.length === 1
+                        ? 'grid grid-cols-1 gap-4'
+                        : 'grid gap-4 sm:grid-cols-2'
+                    }
+                  >
+                    {generatedImages.map((image) => (
+                      <div key={image.id} className="grid gap-3">
+                        <div
+                          className={
+                            generatedImages.length === 1
+                              ? 'border-border bg-muted relative overflow-hidden rounded-3xl border'
+                              : 'border-border bg-muted relative aspect-square overflow-hidden rounded-3xl border'
+                          }
+                        >
+                          <LazyImage
+                            src={image.url}
+                            alt={image.prompt || section.title}
+                            className={
+                              generatedImages.length === 1
+                                ? 'h-auto w-full'
+                                : 'h-full w-full object-cover'
+                            }
+                          />
+                          <div className="absolute right-3 bottom-3 flex justify-end">
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              className="text-foreground rounded-xl text-sm leading-6"
+                              onClick={() => handleDownloadImage(image)}
+                              disabled={downloadingImageId === image.id}
+                            >
+                              {downloadingImageId === image.id ? (
+                                <Loader2 className="size-4 animate-spin" />
+                              ) : (
+                                <>
+                                  <Download className="size-4" />
+                                  {section.buttons.download}
+                                </>
+                              )}
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="border-border bg-muted flex min-h-52 items-center justify-center rounded-3xl border border-dashed p-6 text-center">
+                    <p className="text-muted-foreground text-base leading-7">
+                      {generatorT('ready_for_generating')}
+                    </p>
+                  </div>
+                )}
+              </section>
+            ) : (
+              <div className="grid gap-4 lg:grid-cols-2">
+                <section className={`${panelClassName} bg-background p-6`}>
+                  <header className="mb-3 text-center">
+                    <h3 className="text-foreground text-lg font-semibold md:text-xl">
+                      {section.result.example_title}
+                    </h3>
+                  </header>
+
+                  <div className="bg-foreground relative overflow-hidden rounded-3xl shadow-sm">
+                    <ReactCompareSlider
+                      position={50}
+                      handle={<ComparisonHandle />}
+                      itemOne={
+                        <div className="relative aspect-square w-full">
+                          <ReactCompareSliderImage
+                            alt={section.images.before.alt}
+                            src={section.images.before.src}
+                            className="object-cover"
+                          />
+                          <div
+                            className={`${comparisonLabelClassName} bg-foreground text-primary-foreground top-4 left-4`}
+                          >
+                            {section.result.before_label}
+                          </div>
+                        </div>
+                      }
+                      itemTwo={
+                        <div className="relative aspect-square w-full">
+                          <ReactCompareSliderImage
+                            alt={section.images.after.alt}
+                            src={section.images.after.src}
+                            className="object-cover"
+                          />
+                          <div
+                            className={`${comparisonLabelClassName} bg-background text-foreground top-4 right-4`}
+                          >
+                            {section.result.after_label}
+                          </div>
+                        </div>
+                      }
+                      className="aspect-square w-full"
+                    />
+                  </div>
+                </section>
+
+                <section className={`${panelClassName} bg-background p-6`}>
+                  <header>
+                    <h3 className="text-foreground text-center text-lg font-semibold md:text-xl">
+                      {section.result.how_to_use_title}
+                    </h3>
+                  </header>
+                  <div className="mt-4 grid gap-3">
+                    {section.result.usage_steps.map((step, index) => (
+                      <div key={step} className={usageStepClassName}>
+                        <div className="bg-primary text-primary-foreground flex size-7 items-center justify-center rounded-xl text-sm font-semibold shadow-sm">
+                          {index + 1}
+                        </div>
+                        <p className="text-foreground text-base leading-7">
+                          {step}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-muted-foreground mt-4 text-xs leading-5">
+                    <span className="text-primary">
+                      {section.result.tip_prefix}
+                    </span>{' '}
+                    {section.result.tip_text}
+                  </p>
+                </section>
+              </div>
+            )}
+
+            {!isGenerating ? (
+              <div className="flex justify-center">
+                <Button
+                  variant="outline"
+                  className="text-foreground rounded-xl text-sm leading-6 shadow-none"
+                  onClick={() => {
+                    if (generatedImages[0]) {
+                      void handleDownloadImage(generatedImages[0]);
+                    }
+                  }}
+                  disabled={
+                    generatedImages.length === 0 ||
+                    downloadingImageId === generatedImages[0]?.id
+                  }
+                >
+                  {downloadingImageId === generatedImages[0]?.id ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <>
+                      <Download className="size-4" />
+                      {section.buttons.download}
+                    </>
+                  )}
+                </Button>
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

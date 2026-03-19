@@ -4,35 +4,6 @@
     "description": "使用带引导的工具工作台快速生成专业 AI 证件照，并查看使用说明与拍摄准备建议。"
   },
   "page": {
-    "navigation": {
-      "label": "专业证件照"
-    },
-    "sidebar": {
-      "upgrade_title": "升级"
-    },
-    "topbar": {
-      "breadcrumb_home": "首页",
-      "show_theme": true,
-      "show_locale": true,
-      "show_sign": true,
-      "user_nav": {
-        "show_name": true,
-        "show_credits": true,
-        "show_sign_out": true,
-        "items": [
-          {
-            "title": "账单",
-            "url": "/settings/billing",
-            "icon": "CreditCard"
-          },
-          {
-            "title": "活动",
-            "url": "/activity",
-            "icon": "Activity"
-          }
-        ]
-      }
-    },
     "sections": {
       "generator": {
         "id": "generator",

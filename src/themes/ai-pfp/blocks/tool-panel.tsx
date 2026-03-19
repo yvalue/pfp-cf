@@ -1,1 +1,1 @@
-export { ProfessionalHeadshotGenerator as ToolPanel } from '@/shared/blocks/generator';
+export { ToolPanel } from '@/shared/blocks/generator';

@@ -1,0 +1,39 @@
+{
+  "sidebar": {
+    "nav": {
+      "items": [
+        {
+          "url": "/professional-headshot-generator",
+          "title": "专业证件照",
+          "icon": "User"
+        }
+      ]
+    },
+    "primary_action": {
+      "title": "升级"
+    }
+  },
+  "topbar": {
+    "breadcrumb_home": "首页",
+    "show_theme": true,
+    "show_locale": true,
+    "show_sign": true,
+    "user_nav": {
+      "show_name": true,
+      "show_credits": true,
+      "show_sign_out": true,
+      "items": [
+        {
+          "title": "账单",
+          "url": "/settings/billing",
+          "icon": "CreditCard"
+        },
+        {
+          "title": "活动",
+          "url": "/activity",
+          "icon": "Activity"
+        }
+      ]
+    }
+  }
+}
