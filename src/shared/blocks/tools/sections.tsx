@@ -8,7 +8,7 @@ import {
 } from '@/shared/components/ui/accordion';
 import { cn } from '@/shared/lib/utils';
 
-type ToolDashboardSectionProps = ComponentProps<'section'> & {
+type ToolSectionProps = ComponentProps<'section'> & {
   eyebrow?: ReactNode;
   title?: ReactNode;
   description?: ReactNode;
@@ -17,18 +17,18 @@ type ToolDashboardSectionProps = ComponentProps<'section'> & {
   contentClassName?: string;
 };
 
-type ToolDashboardIntroProps = ToolDashboardSectionProps & {
+type ToolIntroProps = ToolSectionProps & {
   highlights?: ReactNode;
 };
 
-type ToolDashboardFaqItem = {
+type ToolFaqItem = {
   value?: string;
   question: ReactNode;
   answer: ReactNode;
 };
 
-type ToolDashboardFaqProps = Omit<ToolDashboardSectionProps, 'children'> & {
-  items: ToolDashboardFaqItem[];
+type ToolFaqProps = Omit<ToolSectionProps, 'children'> & {
+  items: ToolFaqItem[];
   tip?: ReactNode;
   accordionClassName?: string;
   itemClassName?: string;
@@ -36,7 +36,7 @@ type ToolDashboardFaqProps = Omit<ToolDashboardSectionProps, 'children'> & {
   children?: ReactNode;
 };
 
-export function ToolDashboardSection({
+export function ToolSection({
   eyebrow,
   title,
   description,
@@ -46,12 +46,12 @@ export function ToolDashboardSection({
   contentClassName,
   children,
   ...props
-}: ToolDashboardSectionProps) {
+}: ToolSectionProps) {
   const hasHeader = eyebrow || title || description || actions;
 
   return (
     <section
-      data-slot="tool-dashboard-section"
+      data-slot="tool-section"
       className={cn(
         'border-border bg-card rounded-3xl border p-6 lg:p-8',
         className
@@ -102,14 +102,14 @@ export function ToolDashboardSection({
   );
 }
 
-export function ToolDashboardIntro({
+export function ToolIntro({
   highlights,
   children,
   contentClassName,
   ...props
-}: ToolDashboardIntroProps) {
+}: ToolIntroProps) {
   return (
-    <ToolDashboardSection {...props} contentClassName={contentClassName}>
+    <ToolSection {...props} contentClassName={contentClassName}>
       {highlights ? (
         <div className="grid gap-4 lg:grid-cols-2">
           <div className="min-w-0">{children}</div>
@@ -118,11 +118,11 @@ export function ToolDashboardIntro({
       ) : (
         children
       )}
-    </ToolDashboardSection>
+    </ToolSection>
   );
 }
 
-export function ToolDashboardFaq({
+export function ToolFaq({
   items,
   tip,
   accordionClassName,
@@ -130,9 +130,9 @@ export function ToolDashboardFaq({
   answerClassName,
   children,
   ...props
-}: ToolDashboardFaqProps) {
+}: ToolFaqProps) {
   return (
-    <ToolDashboardSection {...props}>
+    <ToolSection {...props}>
       <div className="flex flex-col gap-4">
         <Accordion
           type="single"
@@ -174,6 +174,6 @@ export function ToolDashboardFaq({
 
         {children}
       </div>
-    </ToolDashboardSection>
+    </ToolSection>
   );
 }

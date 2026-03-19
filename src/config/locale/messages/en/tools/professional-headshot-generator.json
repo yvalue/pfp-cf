@@ -188,11 +188,11 @@
         },
         "images": {
           "before": {
-            "src": "/imgs/tool-dashboard/professional-headshot-generator/before.jpg",
+            "src": "/imgs/tools/professional-headshot-generator/before.jpg",
             "alt": "Original portrait example"
           },
           "after": {
-            "src": "/imgs/tool-dashboard/professional-headshot-generator/after.jpg",
+            "src": "/imgs/tools/professional-headshot-generator/after.jpg",
             "alt": "Enhanced professional headshot example"
           }
         }
@@ -204,7 +204,7 @@
         "description": "A strong professional headshot depends on expression, lighting, composition, scene fit, and export quality working together.",
         "className": "border-border border-t",
         "image": {
-          "src": "/imgs/tool-dashboard/professional-headshot-generator/how-to-create-professional%20headshot.jpg",
+          "src": "/imgs/tools/professional-headshot-generator/how-to-create-professional%20headshot.jpg",
           "alt": "Professional headshot full guide illustration"
         },
         "items": [
@@ -229,7 +229,7 @@
         "description": "To generate a high-quality result, the base photo matters. Follow the steps below to prepare a clear portrait image for better AI output.",
         "className": "border-border/60 mt-8 border-t",
         "image": {
-          "src": "/imgs/tool-dashboard/professional-headshot-generator/how-to-create-professional%20headshot.jpg",
+          "src": "/imgs/tools/professional-headshot-generator/how-to-create-professional%20headshot.jpg",
           "alt": "Professional headshot preparation guide illustration"
         },
         "items": [

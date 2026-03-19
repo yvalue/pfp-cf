@@ -34,7 +34,7 @@ import {
   LazyImage,
   type ImageUploaderValue,
 } from '@/shared/blocks/common';
-import { ToolDashboardWorkbench } from '@/shared/blocks/tool-dashboard';
+import { ToolWorkbench } from '@/shared/blocks/tools';
 import { AspectRatioOption } from '@/shared/components/ui/aspect-ratio-option';
 import { Button } from '@/shared/components/ui/button';
 import {
@@ -994,7 +994,7 @@ export function ProfessionalHeadshotGenerator({
   );
 
   return (
-    <ToolDashboardWorkbench
+    <ToolWorkbench
       id={section.id || section.name}
       className="border-0 px-0 py-2"
       gridClassName="gap-4 lg:grid-cols-12 xl:grid-cols-12"

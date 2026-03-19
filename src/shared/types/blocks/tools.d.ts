@@ -1,15 +1,15 @@
 import { UserNav } from './common';
 
-export interface ToolDashboardNavItem {
+export interface ToolNavItem {
   url: string;
   title: string;
   icon?: string;
   active?: boolean;
 }
 
-export interface ToolDashboardSidebarConfig {
+export interface ToolSidebarConfig {
   nav?: {
-    items: ToolDashboardNavItem[];
+    items: ToolNavItem[];
   };
   primary_action?: {
     title: string;
@@ -17,7 +17,7 @@ export interface ToolDashboardSidebarConfig {
   };
 }
 
-export interface ToolDashboardTopbarConfig {
+export interface ToolTopbarConfig {
   breadcrumb_home?: string;
   current_label?: string;
   show_theme?: boolean;
@@ -26,15 +26,15 @@ export interface ToolDashboardTopbarConfig {
   user_nav?: UserNav;
 }
 
-export interface ToolDashboardLayoutConfig {
-  sidebar?: ToolDashboardSidebarConfig;
-  topbar?: ToolDashboardTopbarConfig;
+export interface ToolLayoutConfig {
+  sidebar?: ToolSidebarConfig;
+  topbar?: ToolTopbarConfig;
 }
 
-export interface ToolDashboardPage {
+export interface ToolPage {
   title?: string;
   description?: string;
-  layout?: ToolDashboardLayoutConfig;
+  layout?: ToolLayoutConfig;
   sections?: Record<string, any>;
   show_sections?: string[];
 }

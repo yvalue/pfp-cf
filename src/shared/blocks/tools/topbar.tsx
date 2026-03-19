@@ -2,21 +2,21 @@ import type { ComponentProps, ReactNode } from 'react';
 
 import { cn } from '@/shared/lib/utils';
 
-type ToolDashboardTopbarProps = ComponentProps<'header'> & {
+type ToolTopbarProps = ComponentProps<'header'> & {
   breadcrumbs?: ReactNode;
   userInfo?: ReactNode;
 };
 
-export function ToolDashboardTopbar({
+export function ToolTopbar({
   breadcrumbs,
   userInfo,
   className,
   children,
   ...props
-}: ToolDashboardTopbarProps) {
+}: ToolTopbarProps) {
   return (
     <header
-      data-slot="tool-dashboard-topbar"
+      data-slot="tool-topbar"
       className={cn(
         'flex flex-wrap items-center justify-between gap-x-4 gap-y-3',
         className

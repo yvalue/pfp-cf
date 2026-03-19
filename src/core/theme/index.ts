@@ -42,6 +42,31 @@ export async function getThemePage(pageName: string, theme?: string) {
 }
 
 /**
+ * load theme tool page
+ */
+export async function getThemeToolPage(pageName: string, theme?: string) {
+  const loadTheme = theme || getActiveTheme();
+
+  try {
+    const module = await import(`@/themes/${loadTheme}/tools/${pageName}`);
+    return module.default;
+  } catch (error) {
+    if (loadTheme !== defaultTheme) {
+      try {
+        const fallbackModule = await import(
+          `@/themes/${defaultTheme}/tools/${pageName}`
+        );
+        return fallbackModule.default;
+      } catch (fallbackError) {
+        throw fallbackError;
+      }
+    }
+
+    throw error;
+  }
+}
+
+/**
  * load theme layout
  */
 export async function getThemeLayout(layoutName: string, theme?: string) {

@@ -6,33 +6,33 @@ import { Menu, X } from 'lucide-react';
 import { useMedia } from '@/shared/hooks/use-media';
 import { cn } from '@/shared/lib/utils';
 
-type ToolDashboardShellProps = ComponentProps<'div'>;
+type ToolShellProps = ComponentProps<'div'>;
 
-type ToolDashboardSidebarProps = ComponentProps<'aside'> & {
+type ToolSidebarProps = ComponentProps<'aside'> & {
   brand?: ReactNode;
   navigation?: ReactNode;
   footer?: ReactNode;
   mobileActions?: ReactNode;
 };
 
-type ToolDashboardMainProps = ComponentProps<'main'> & {
+type ToolMainProps = ComponentProps<'main'> & {
   innerClassName?: string;
 };
 
-export function ToolDashboardShell({
+export function ToolShell({
   className,
   ...props
-}: ToolDashboardShellProps) {
+}: ToolShellProps) {
   return (
     <div
-      data-slot="tool-dashboard-shell"
+      data-slot="tool-shell"
       className={cn('bg-background text-foreground min-h-screen', className)}
       {...props}
     />
   );
 }
 
-export function ToolDashboardSidebar({
+export function ToolSidebar({
   brand,
   navigation,
   footer,
@@ -40,10 +40,10 @@ export function ToolDashboardSidebar({
   className,
   children,
   ...props
-}: ToolDashboardSidebarProps) {
+}: ToolSidebarProps) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const isLarge = useMedia('(min-width: 64rem)');
-  const menuId = 'tool-dashboard-sidebar-mobile-menu';
+  const menuId = 'tool-sidebar-mobile-menu';
 
   useEffect(() => {
     if (isLarge) {
@@ -94,7 +94,7 @@ export function ToolDashboardSidebar({
       </div>
 
       <aside
-        data-slot="tool-dashboard-sidebar"
+        data-slot="tool-sidebar"
         className={cn(
           'border-border bg-card fixed inset-y-0 left-0 z-40 hidden h-screen w-[240px] border-r lg:block',
           className
@@ -123,15 +123,15 @@ export function ToolDashboardSidebar({
   );
 }
 
-export function ToolDashboardMain({
+export function ToolMain({
   className,
   innerClassName,
   children,
   ...props
-}: ToolDashboardMainProps) {
+}: ToolMainProps) {
   return (
     <main
-      data-slot="tool-dashboard-main"
+      data-slot="tool-main"
       className={cn('min-w-0 lg:pl-[240px]', className)}
       {...props}
     >

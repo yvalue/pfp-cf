@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
 import { envConfigs } from '@/config';
+import { getThemeBlock } from '@/core/theme';
 import { Link } from '@/core/i18n/navigation';
 import {
   BrandLogo,
@@ -10,11 +11,11 @@ import {
   ThemeToggler,
 } from '@/shared/blocks/common';
 import {
-  ToolDashboardMain,
-  ToolDashboardShell,
-  ToolDashboardSidebar,
-  ToolDashboardTopbar,
-} from '@/shared/blocks/tool-dashboard';
+  ToolMain,
+  ToolShell,
+  ToolSidebar,
+  ToolTopbar,
+} from '@/shared/blocks/tools';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -26,16 +27,12 @@ import {
 import { Button } from '@/shared/components/ui/button';
 import { cn } from '@/shared/lib/utils';
 import type {
-  ToolDashboardLayoutConfig,
-  ToolDashboardNavItem,
-} from '@/shared/types/blocks/tool-dashboard';
+  ToolLayoutConfig,
+  ToolNavItem,
+  ToolPage,
+} from '@/shared/types/blocks/tools';
 
-type ToolPageLayoutProps = {
-  layout: ToolDashboardLayoutConfig;
-  children: ReactNode;
-};
-
-function SidebarNavLink({ item }: { item: ToolDashboardNavItem }) {
+function SidebarNavLink({ item }: { item: ToolNavItem }) {
   return (
     <Link
       href={item.url}
@@ -54,12 +51,12 @@ function SidebarNavLink({ item }: { item: ToolDashboardNavItem }) {
   );
 }
 
-function Sidebar({ layout }: { layout: ToolDashboardLayoutConfig }) {
+function Sidebar({ layout }: { layout: ToolLayoutConfig }) {
   const { sidebar } = layout;
   const primaryAction = sidebar?.primary_action;
 
   return (
-    <ToolDashboardSidebar
+    <ToolSidebar
       brand={
         <BrandLogo
           brand={{
@@ -102,7 +99,7 @@ function Sidebar({ layout }: { layout: ToolDashboardLayoutConfig }) {
   );
 }
 
-function Topbar({ layout }: { layout: ToolDashboardLayoutConfig }) {
+function Topbar({ layout }: { layout: ToolLayoutConfig }) {
   const { topbar, sidebar } = layout;
 
   const currentLabel =
@@ -112,7 +109,7 @@ function Topbar({ layout }: { layout: ToolDashboardLayoutConfig }) {
     '';
 
   return (
-    <ToolDashboardTopbar
+    <ToolTopbar
       breadcrumbs={
         <Breadcrumb>
           <BreadcrumbList>
@@ -139,14 +136,64 @@ function Topbar({ layout }: { layout: ToolDashboardLayoutConfig }) {
   );
 }
 
-export function ToolPageLayout({ layout, children }: ToolPageLayoutProps) {
+function Layout({
+  layout,
+  children,
+}: {
+  layout: ToolLayoutConfig;
+  children: ReactNode;
+}) {
   return (
-    <ToolDashboardShell>
+    <ToolShell>
       <Sidebar layout={layout} />
-      <ToolDashboardMain>
+      <ToolMain>
         <Topbar layout={layout} />
         {children}
-      </ToolDashboardMain>
-    </ToolDashboardShell>
+      </ToolMain>
+    </ToolShell>
   );
+}
+
+export default async function ToolPageComponent({
+  page,
+  data,
+}: {
+  locale?: string;
+  page: ToolPage;
+  data?: Record<string, any>;
+}) {
+  const sections = await Promise.all(
+    Object.keys(page.sections ?? {}).map(async (sectionKey) => {
+      const section = page.sections?.[sectionKey];
+
+      if (!section || section.disabled === true) return null;
+      if (page.show_sections && !page.show_sections.includes(sectionKey)) {
+        return null;
+      }
+
+      const block = section.block || section.id || sectionKey;
+
+      switch (block) {
+        default:
+          try {
+            if (section.component) {
+              return section.component;
+            }
+
+            const DynamicBlock = await getThemeBlock(block);
+            return (
+              <DynamicBlock
+                key={sectionKey}
+                section={section}
+                {...(data || section.data || {})}
+              />
+            );
+          } catch {
+            return null;
+          }
+      }
+    })
+  );
+
+  return <Layout layout={page.layout ?? {}}>{sections}</Layout>;
 }

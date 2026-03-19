@@ -49,10 +49,10 @@ export const localeMessagesPaths = [
   'activity/sidebar',
   'activity/ai-tasks',
   'activity/chats',
+  'tools/professional-headshot-generator',
   'pages/index',
   'pages/pricing',
   'pages/showcases',
   'pages/blog',
   'pages/updates',
-  'pages/professional-headshot-generator',
 ];

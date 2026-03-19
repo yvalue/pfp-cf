@@ -2,7 +2,7 @@ import type { ComponentProps, ReactNode } from 'react';
 
 import { cn } from '@/shared/lib/utils';
 
-type ToolDashboardWorkbenchProps = ComponentProps<'section'> & {
+type ToolWorkbenchProps = ComponentProps<'section'> & {
   left: ReactNode;
   right: ReactNode;
   leftPaneClassName?: string;
@@ -10,7 +10,7 @@ type ToolDashboardWorkbenchProps = ComponentProps<'section'> & {
   gridClassName?: string;
 };
 
-export function ToolDashboardWorkbench({
+export function ToolWorkbench({
   left,
   right,
   className,
@@ -18,10 +18,10 @@ export function ToolDashboardWorkbench({
   leftPaneClassName,
   rightPaneClassName,
   ...props
-}: ToolDashboardWorkbenchProps) {
+}: ToolWorkbenchProps) {
   return (
     <section
-      data-slot="tool-dashboard-workbench"
+      data-slot="tool-workbench"
       className={cn('p-4', className)}
       {...props}
     >
