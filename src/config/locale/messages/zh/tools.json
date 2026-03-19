@@ -4,25 +4,25 @@
       "items": [
         {
           "url": "/professional-headshot-generator",
-          "title": "Professional Headshot",
+          "title": "职业头像生成器",
           "icon": "User"
         }
       ]
     },
     "primary_action": {
-      "title": "Upgrade",
+      "title": "升级套餐",
       "url": "/pricing"
     }
   },
   "topbar": {
-    "breadcrumb_home": "Home",
+    "breadcrumb_home": "首页",
     "show_theme": true,
     "show_locale": true,
     "show_sign": true,
     "topbanner": {
       "id": "tools-topbanner",
-      "text": "New: Compare tool outputs faster with the updated workspace.",
-      "buttonText": "Learn more",
+      "text": "新功能：你现在可以在更新后的工作区里更快地对比工具输出。",
+      "buttonText": "了解更多",
       "href": "/updates",
       "target": "_self",
       "dismissedExpiryDays": 1
@@ -33,12 +33,12 @@
       "show_sign_out": true,
       "items": [
         {
-          "title": "Billing",
+          "title": "账单",
           "url": "/settings/billing",
           "icon": "CreditCard"
         },
         {
-          "title": "Activity",
+          "title": "活动",
           "url": "/activity",
           "icon": "Activity"
         }

@@ -34,7 +34,6 @@ import {
   LazyImage,
   type ImageUploaderValue,
 } from '@/shared/blocks/common';
-import { ToolWorkbench } from '@/shared/blocks/tools';
 import { AspectRatioOption } from '@/shared/components/ui/aspect-ratio-option';
 import { Button } from '@/shared/components/ui/button';
 import {
@@ -1006,14 +1005,14 @@ export function ToolPanel({
   );
 
   return (
-    <ToolWorkbench
+    <section
       id={section.id || section.name}
+      data-slot="tool-workbench"
       className="border-0 px-0 py-2"
-      gridClassName="gap-4 lg:grid-cols-12 xl:grid-cols-12"
-      leftPaneClassName={`${workbenchPaneClassName} lg:col-span-4 lg:p-6`}
-      rightPaneClassName={`${workbenchPaneClassName} lg:col-span-8 lg:p-6`}
-      left={
-        <div className="flex h-full flex-col gap-4">
+    >
+      <div className="grid gap-4 lg:grid-cols-12 xl:grid-cols-12">
+        <div className={cn('border-border bg-card min-w-0 rounded-3xl border p-6 shadow-sm lg:col-span-4 lg:p-6', workbenchPaneClassName)}>
+          <div className="flex h-full flex-col gap-4">
           <Tabs
             value={activeTab}
             onValueChange={(value) => setActiveTab(value as HeadshotTab)}
@@ -1404,9 +1403,9 @@ export function ToolPanel({
           )}
 
         </div>
-      }
-      right={
-        <div className="grid gap-4">
+        </div>
+        <div className={cn('border-border bg-card min-w-0 rounded-3xl border p-6 shadow-sm lg:col-span-8 lg:p-6', workbenchPaneClassName)}>
+          <div className="grid gap-4">
           <div className="grid gap-2">
             <h2 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
               {section.title}
@@ -1601,7 +1600,8 @@ export function ToolPanel({
             </div>
           ) : null}
         </div>
-      }
-    />
+        </div>
+      </div>
+    </section>
   );
 }

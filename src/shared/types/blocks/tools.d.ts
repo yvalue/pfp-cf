@@ -17,6 +17,16 @@ export interface ToolSidebarConfig {
   };
 }
 
+export interface ToolTopbarBannerConfig {
+  enabled?: boolean;
+  id?: string;
+  text: string;
+  buttonText?: string;
+  href?: string;
+  target?: '_self' | '_blank';
+  dismissedExpiryDays?: number;
+}
+
 export interface ToolTopbarConfig {
   breadcrumb_home?: string;
   current_label?: string;
@@ -24,6 +34,7 @@ export interface ToolTopbarConfig {
   show_locale?: boolean;
   show_sign?: boolean;
   user_nav?: UserNav;
+  topbanner?: ToolTopbarBannerConfig;
 }
 
 export interface ToolLayoutConfig {
