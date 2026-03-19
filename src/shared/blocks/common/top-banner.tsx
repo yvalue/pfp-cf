@@ -79,6 +79,7 @@ export function TopBanner({
   const [showBanner, setShowBanner] = useState(false);
   const [bannerHeight, setBannerHeight] = useState(0);
   const bannerRef = useRef<HTMLDivElement>(null);
+  const spacerRef = useRef<HTMLDivElement>(null);
   const hasCheckedRef = useRef(false);
 
   const isDismissed = (): boolean => {
@@ -179,6 +180,12 @@ export function TopBanner({
     };
   }, [showBanner]);
 
+  useEffect(() => {
+    if (spacerRef.current) {
+      spacerRef.current.style.height = `${bannerHeight}px`;
+    }
+  }, [bannerHeight]);
+
   const handleDismiss = () => {
     setDismissed();
     setShowBanner(false);
@@ -217,7 +224,7 @@ export function TopBanner({
       <div
         ref={bannerRef}
         className={cn(
-          'from-primary to-primary text-primary-foreground fixed top-0 right-0 left-0 z-[51] hidden min-h-12 bg-gradient-to-r py-1 shadow-lg md:block',
+          'bg-primary text-primary-foreground fixed top-0 right-0 left-0 z-50 hidden min-h-12 py-1 shadow-lg md:block',
           className
         )}
       >
@@ -277,7 +284,7 @@ export function TopBanner({
               {closable ? (
                 <button
                   onClick={handleDismiss}
-                  className="bg-primary/10 flex-shrink-0 rounded p-1 transition-colors"
+                  className="bg-background text-foreground flex-shrink-0 rounded p-1 transition-colors"
                   aria-label="Close"
                 >
                   <X className="h-4 w-4" />
@@ -289,8 +296,8 @@ export function TopBanner({
       </div>
 
       <div
+        ref={spacerRef}
         aria-hidden="true"
-        style={{ height: bannerHeight }}
         className="pointer-events-none"
       />
     </>

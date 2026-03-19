@@ -1,0 +1,250 @@
+---
+title: 自定义页面开发
+description: 通过 JSON、MDX 与自定义路由三种方式扩展站点页面。
+---
+
+## 1. 页面加载机制
+
+本项目的 Landing 页面有三条主要路径：
+
+1. 首页：`src/app/[locale]/(landing)/page.tsx`
+2. 通配页面：`src/app/[locale]/(landing)/[...slug]/page.tsx`
+3. 主题渲染器：`src/themes/default/pages/dynamic-page.tsx`
+
+`[...slug]` 页面的加载优先级是：
+
+1. 先查 `content/pages/*.mdx`（静态 MDX 页面）
+2. 再查 `src/config/locale/messages/{locale}/pages/*.json`（配置驱动页面）
+3. 都没有则 404
+
+## 2. 该选哪种自定义方式
+
+1. 配置驱动页面（推荐）
+适合营销页、功能页、活动页，改文案和区块快，几乎不用写 React。
+
+2. 静态 MDX 页面
+适合隐私政策、服务条款、帮助文档这类长文本页面。
+
+3. 自定义路由 + React 页面
+适合需要实时数据、复杂交互、服务端聚合数据的页面。
+
+## 3. 方案 A：配置驱动页面（推荐）
+
+### 3.1 新增多语言配置文件
+
+示例：新增 `about` 页面
+
+1. `src/config/locale/messages/zh/pages/about.json`
+2. `src/config/locale/messages/en/pages/about.json`
+
+示例（`zh/pages/about.json`）：
+
+```json
+{
+  "metadata": {
+    "title": "关于我们",
+    "description": "了解我们的产品和团队"
+  },
+  "page": {
+    "title": "关于我们",
+    "show_sections": ["hero", "features", "faq", "cta"],
+    "sections": {
+      "hero": {
+        "id": "hero",
+        "title": "我们正在构建 AI 原生产品",
+        "description": "从 0 到 1，快速交付可上线的 AI SaaS。"
+      },
+      "features": {
+        "id": "features",
+        "title": "我们做什么",
+        "items": [
+          {
+            "title": "产品设计",
+            "description": "从场景出发设计功能闭环",
+            "icon": "RiLayout4Line"
+          },
+          {
+            "title": "工程交付",
+            "description": "以可维护为目标交付代码",
+            "icon": "RiCodeFill"
+          }
+        ]
+      },
+      "faq": {
+        "id": "faq",
+        "title": "常见问题",
+        "items": [
+          {
+            "question": "是否支持多语言？",
+            "answer": "支持，默认提供 en / zh。"
+          }
+        ]
+      },
+      "cta": {
+        "id": "cta",
+        "title": "开始体验",
+        "description": "现在就启动你的页面。",
+        "buttons": [
+          {
+            "title": "立即开始",
+            "url": "/pricing",
+            "variant": "default"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+### 3.2 注册消息路径（关键步骤）
+
+在 `src/config/locale/index.ts` 的 `localeMessagesPaths` 中新增：
+
+```ts
+'pages/about';
+```
+
+不注册这个路径，`getTranslations('pages.about')` 读不到内容。
+
+### 3.3 访问路径
+
+新增后可访问：
+
+1. 默认语言：`/about`
+2. 中文语言：`/zh/about`（取决于你的默认语言配置）
+
+### 3.4 配置页面可用区块
+
+默认主题常用区块名（`section.block`）：
+
+1. `hero`
+2. `logos`
+3. `features`
+4. `features-list`
+5. `features-accordion`
+6. `features-step`
+7. `features-flow`
+8. `features-media`
+9. `stats`
+10. `testimonials`
+11. `faq`
+12. `cta`
+13. `subscribe`
+14. `pricing`
+15. `showcases`
+16. `showcases-flow`
+17. `blog`
+18. `page-detail`
+
+`show_sections` 只控制“显示开关”，最终渲染顺序以 `sections` 里的键顺序为准。
+
+## 4. 方案 B：静态 MDX 页面
+
+### 4.1 新建文件
+
+1. `content/pages/about.zh.mdx`
+2. `content/pages/about.mdx`
+
+示例：
+
+```mdx
+---
+title: 关于我们
+description: 这是一个静态页面示例
+created_at: 2026-03-07
+---
+
+## 我们是谁
+
+这里是 MDX 正文内容。
+```
+
+### 4.2 路由规则
+
+文件名即路由 slug：
+
+1. `about.zh.mdx` -> `/zh/about`
+2. `about.mdx` -> `/about`（默认语言）
+
+### 4.3 优先级说明
+
+如果同名 slug 同时存在 MDX 与 JSON，`[...slug]` 会优先渲染 MDX 页面。
+
+## 5. 方案 C：自定义路由 + React 页面
+
+当你需要服务端数据、鉴权数据或复杂业务时，建议直接建页面文件：
+
+`src/app/[locale]/(landing)/about/page.tsx`
+
+示例：
+
+```tsx
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+
+import { getThemePage } from '@/core/theme';
+import { getMetadata } from '@/shared/lib/seo';
+import { DynamicPage } from '@/shared/types/blocks/landing';
+
+export const revalidate = 3600;
+
+export const generateMetadata = getMetadata({
+  metadataKey: 'pages.about.metadata',
+  canonicalUrl: '/about',
+});
+
+export default async function AboutPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations('pages.about');
+
+  const page: DynamicPage = {
+    title: t.raw('page.title'),
+    sections: {
+      hero: {
+        ...t.raw('page.sections.hero'),
+      },
+    },
+  };
+
+  const Page = await getThemePage('dynamic-page');
+  return <Page locale={locale} page={page} />;
+}
+```
+
+提示：如果要在区块里塞运行时数据，可放到 `section.data`，在区块组件中读取。
+
+## 6. 区块不够用时：自定义 block
+
+如果默认区块不能满足需求：
+
+1. 新建组件：`src/themes/default/blocks/feature-grid.tsx`
+2. 在页面 JSON 里指定：`"block": "feature-grid"`
+
+`dynamic-page` 会按 `section.block` 动态加载同名组件。
+
+## 7. 常见问题排查
+
+1. 页面 404
+检查 slug、路由目录、以及 `localeMessagesPaths` 是否注册。
+
+2. 文案不生效
+检查是否编辑了当前语言文件（`en` / `zh`），以及 JSON 是否合法。
+
+3. 区块不显示
+检查 `show_sections` 是否包含该 key，或该区块是否被 `disabled: true`。
+
+4. 菜单没有入口
+新增页面后，记得在 `src/config/locale/messages/{locale}/landing.json` 的 `header.nav.items` 里加导航项。
+
+## 8. 最小改动建议
+
+1. 先用方案 A（JSON）
+2. 再用方案 B（MDX）补充长文内容
+3. 只有在确实需要业务逻辑时再上方案 C
+

@@ -1,0 +1,4 @@
+interface:
+  display_name: "ShipAny Homepage JSON Config"
+  short_description: "Explain and modify ShipAny homepage JSON and theme block wiring."
+  default_prompt: "Use $shipany-homepage-json-config to inspect or update the homepage JSON section flow and theme block wiring."

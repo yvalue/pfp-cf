@@ -1,5 +1,6 @@
 'use client';
 
+import { ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { RiGithubFill, RiGoogleFill } from 'react-icons/ri';
 import { toast } from 'sonner';
@@ -10,7 +11,13 @@ import { defaultLocale } from '@/config/locale';
 import { Button } from '@/shared/components/ui/button';
 import { useAppContext } from '@/shared/contexts/app';
 import { cn } from '@/shared/lib/utils';
-import { Button as ButtonType } from '@/shared/types/blocks/common';
+
+type SocialProviderItem = {
+  name: string;
+  title: string;
+  iconNode: ReactNode;
+  onClick: () => void;
+};
 
 export function SocialProviders({
   configs,
@@ -64,13 +71,13 @@ export function SocialProviders({
     );
   };
 
-  const providers: ButtonType[] = [];
+  const providers: SocialProviderItem[] = [];
 
   if (configs.google_auth_enabled === 'true') {
     providers.push({
       name: 'google',
       title: t('google_sign_in_title'),
-      icon: <RiGoogleFill />,
+      iconNode: <RiGoogleFill />,
       onClick: () => handleSignIn({ provider: 'google' }),
     });
   }
@@ -79,7 +86,7 @@ export function SocialProviders({
     providers.push({
       name: 'github',
       title: t('github_sign_in_title'),
-      icon: <RiGithubFill />,
+      iconNode: <RiGithubFill />,
       onClick: () => handleSignIn({ provider: 'github' }),
     });
   }
@@ -100,7 +107,7 @@ export function SocialProviders({
           disabled={loading}
           onClick={provider.onClick}
         >
-          {provider.icon}
+          {provider.iconNode}
           <h3>{provider.title}</h3>
         </Button>
       ))}

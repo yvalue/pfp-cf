@@ -1,5 +1,11 @@
 import { envConfigs } from '@/config';
 import { AIMediaType } from '@/extensions/ai';
+import {
+  getNanoBananaCreditCost,
+  getNanoBananaModelFamilyFromValue,
+  getNanoBananaResolution,
+  shouldSendNanoBananaResolution,
+} from '@/shared/lib/ai-image';
 import { getUuid } from '@/shared/lib/hash';
 import { respData, respErr } from '@/shared/lib/resp';
 import { createAITask, NewAITask } from '@/shared/models/ai_task';
@@ -43,8 +49,29 @@ export async function POST(request: Request) {
     let costCredits = 2;
 
     if (mediaType === AIMediaType.IMAGE) {
-      // generate image
-      if (scene === 'image-to-image') {
+      const family = getNanoBananaModelFamilyFromValue(model);
+
+      if (family) {
+        const normalizedResolution = getNanoBananaResolution(
+          family.id,
+          options?.resolution
+        );
+
+        if (shouldSendNanoBananaResolution(family.id)) {
+          options = {
+            ...options,
+            resolution: normalizedResolution,
+          };
+        } else if (options?.resolution) {
+          const { resolution: _ignoredResolution, ...restOptions } = options;
+          options = restOptions;
+        }
+
+        costCredits = getNanoBananaCreditCost({
+          familyId: family.id,
+          resolution: normalizedResolution,
+        });
+      } else if (scene === 'image-to-image') {
         costCredits = 4;
       } else if (scene === 'text-to-image') {
         costCredits = 2;

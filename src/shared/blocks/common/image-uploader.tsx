@@ -1,9 +1,11 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { IconRefresh, IconUpload, IconX } from '@tabler/icons-react';
+import { IconRefresh, IconX } from '@tabler/icons-react';
 import { ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
+
+import { RiImageAddLine } from 'react-icons/ri';
 
 import { Button } from '@/shared/components/ui/button';
 import { cn } from '@/shared/lib/utils';
@@ -23,8 +25,14 @@ interface ImageUploaderProps {
   maxImages?: number;
   maxSizeMB?: number;
   title?: string;
+  titleHint?: string;
   emptyHint?: string;
   className?: string;
+  emptyTileClassName?: string;
+  itemTileClassName?: string;
+  emptyIconShellClassName?: string;
+  emptyLabelClassName?: string;
+  emptyMetaClassName?: string;
   defaultPreviews?: string[];
   onChange?: (items: ImageUploaderValue[]) => void;
 }
@@ -69,8 +77,14 @@ export function ImageUploader({
   maxImages = 1,
   maxSizeMB = 10,
   title,
+  titleHint,
   emptyHint,
   className,
+  emptyTileClassName,
+  itemTileClassName,
+  emptyIconShellClassName,
+  emptyLabelClassName,
+  emptyMetaClassName,
   defaultPreviews,
   onChange,
 }: ImageUploaderProps) {
@@ -452,8 +466,7 @@ export function ImageUploader({
     <div
       className={cn(
         'relative focus:outline-none',
-        isDragActive &&
-          'ring-primary/70 ring-offset-background ring-2 ring-offset-2',
+        isDragActive && 'ring-primary ring-offset-background ring-2 ring-offset-2',
         className
       )}
       tabIndex={0}
@@ -464,8 +477,8 @@ export function ImageUploader({
       onDrop={handleDrop}
     >
       {isDragActive && (
-        <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center bg-black/10 backdrop-blur-sm">
-          <div className="bg-background/80 text-foreground rounded-full px-4 py-2 text-sm font-medium shadow-sm">
+        <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center bg-background backdrop-blur-sm">
+          <div className="bg-background text-foreground rounded-full px-4 py-2 text-sm font-medium shadow-sm">
             Drop to upload
           </div>
         </div>
@@ -481,10 +494,15 @@ export function ImageUploader({
 
       {title && (
         <div className="text-foreground flex items-center justify-between text-sm font-medium">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <ImageIcon className="text-primary h-4 w-4" />
             <span>{title}</span>
             <span className="text-primary text-xs">({countLabel})</span>
+            {titleHint ? (
+              <span className="text-muted-foreground text-xs font-normal">
+                {titleHint}
+              </span>
+            ) : null}
           </div>
         </div>
       )}
@@ -492,32 +510,36 @@ export function ImageUploader({
       <div
         className={cn(
           'flex flex-wrap gap-4',
+          title && 'mt-3',
           allowMultiple ? 'flex-wrap' : 'flex-nowrap'
         )}
       >
         {items.map((item) => (
           <div
             key={item.id}
-            className="group border-border bg-muted/50 hover:border-border hover:bg-muted relative overflow-hidden rounded-xl border p-1 shadow-sm transition"
+            className={cn(
+              'group border-border bg-muted hover:border-border hover:bg-muted relative overflow-hidden rounded-xl border shadow-sm transition',
+              itemTileClassName
+            )}
           >
             <div className="relative overflow-hidden rounded-lg">
               <img
                 src={item.preview}
                 alt="Reference"
-                className="h-32 w-32 rounded-lg object-cover"
+                className="h-28 w-28 rounded-lg object-cover"
               />
               {item.size && (
-                <span className="bg-background text-muted-foreground absolute bottom-2 left-2 rounded-md px-2 py-1 text-[10px] font-medium">
+                <span className="bg-background text-muted-foreground absolute bottom-2 left-2 rounded-md px-2 py-1 text-xs font-medium">
                   {formatBytes(item.size)}
                 </span>
               )}
               {item.status !== 'uploading' && (
-                <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/35 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
+                <div className="bg-foreground absolute inset-0 z-10 flex items-center justify-center opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
                   <Button
                     type="button"
                     size="icon"
                     variant="secondary"
-                    className="bg-background/50 text-foreground hover:bg-background/50 h-10 w-10 rounded-full shadow-sm backdrop-blur focus-visible:ring-2 focus-visible:ring-white/70"
+                    className="bg-background text-foreground hover:bg-background h-10 w-10 rounded-full shadow-sm backdrop-blur focus-visible:ring-2 focus-visible:ring-ring"
                     onClick={() => openReplacePicker(item.id)}
                     aria-label="Upload a new image to replace"
                   >
@@ -526,12 +548,12 @@ export function ImageUploader({
                 </div>
               )}
               {item.status === 'uploading' && (
-                <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60 text-xs font-medium text-white">
+                <div className="bg-foreground text-background absolute inset-0 z-10 flex items-center justify-center text-xs font-medium">
                   Uploading...
                 </div>
               )}
               {item.status === 'error' && (
-                <div className="absolute inset-0 z-10 flex items-center justify-center bg-red-500/70 text-xs font-medium text-white">
+                <div className="bg-destructive text-destructive-foreground absolute inset-0 z-10 flex items-center justify-center text-xs font-medium">
                   Failed
                 </div>
               )}
@@ -549,18 +571,24 @@ export function ImageUploader({
         ))}
 
         {items.length < maxCount && (
-          <div className="group border-border bg-muted/50 hover:border-border hover:bg-muted relative overflow-hidden rounded-xl border border-dashed p-1 shadow-sm transition">
+          <div
+            className={cn(
+              'group border-border bg-muted hover:border-border hover:bg-muted relative overflow-hidden rounded-xl border border-dashed shadow-sm transition',
+              emptyTileClassName
+            )}
+          >
             <div className="relative overflow-hidden rounded-lg">
               <button
                 type="button"
-                className="flex h-32 w-32 flex-col items-center justify-center gap-2"
+                className="flex h-28 w-28 flex-col items-center justify-center gap-2"
                 onClick={openFilePicker}
               >
-                <div className="border-border flex h-10 w-10 items-center justify-center rounded-full border border-dashed">
-                  <IconUpload className="h-5 w-5" />
-                </div>
-                <span className="text-xs font-medium">Upload</span>
-                <span className="text-primary text-xs">Max {maxSizeMB}MB</span>
+                <RiImageAddLine className="h-8 w-8 text-gray-400" />
+                <span
+                  className={cn('text-primary text-xs', emptyMetaClassName)}
+                >
+                  Max {maxSizeMB}MB
+                </span>
               </button>
             </div>
           </div>

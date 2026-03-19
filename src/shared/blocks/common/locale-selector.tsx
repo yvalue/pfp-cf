@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Check, Globe, Languages } from 'lucide-react';
-import { useLocale } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
+import { useLocale } from 'next-intl';
+import { RiCheckLine, RiTranslate2 } from 'react-icons/ri';
 
 import { usePathname, useRouter } from '@/core/i18n/navigation';
 import { localeNames } from '@/config/locale';
@@ -21,6 +21,9 @@ export function LocaleSelector({
 }: {
   type?: 'icon' | 'button';
 }) {
+  const iconTriggerClassName =
+    'flex size-10 items-center justify-center rounded-full text-foreground transition-colors hover:bg-primary hover:text-primary-foreground data-[state=open]:bg-primary data-[state=open]:text-primary-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] outline-none disabled:pointer-events-none disabled:opacity-50';
+
   const currentLocale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
@@ -45,24 +48,20 @@ export function LocaleSelector({
 
   // Return a placeholder during SSR to avoid hydration mismatch
   if (!mounted) {
-    return (
-      <Button
-        variant={type === 'icon' ? 'ghost' : 'outline'}
-        size={type === 'icon' ? 'icon' : 'sm'}
-        className={
-          type === 'icon' ? 'h-auto w-auto p-0' : 'hover:bg-primary/10'
-        }
-        disabled
-      >
-        {type === 'icon' ? (
-          <Languages size={18} />
-        ) : (
-          <>
-            <Globe size={16} />
-            {localeNames[currentLocale]}
-          </>
-        )}
-      </Button>
+    return type === 'icon' ? (
+      <button className={iconTriggerClassName} disabled>
+        <RiTranslate2 className="size-5" />
+      </button>
+    ) : (
+        <Button
+          variant="outline"
+          size="sm"
+          className="hover:bg-muted focus:bg-muted"
+          disabled
+        >
+          <RiTranslate2 className="size-4" />
+          {localeNames[currentLocale]}
+        </Button>
     );
   }
 
@@ -70,12 +69,16 @@ export function LocaleSelector({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         {type === 'icon' ? (
-          <Button variant="ghost" size="icon" className="h-auto w-auto p-0">
-            <Languages size={18} />
-          </Button>
+          <button className={iconTriggerClassName}>
+            <RiTranslate2 className="size-5" />
+          </button>
         ) : (
-          <Button variant="outline" size="sm" className="hover:bg-primary/10">
-            <Globe size={16} />
+          <Button
+            variant="outline"
+            size="sm"
+            className="hover:bg-muted focus:bg-muted"
+          >
+            <RiTranslate2 className="size-4" />
             {localeNames[currentLocale]}
           </Button>
         )}
@@ -85,10 +88,11 @@ export function LocaleSelector({
           <DropdownMenuItem
             key={locale}
             onClick={() => handleSwitchLanguage(locale)}
+            className="focus:bg-muted focus:text-foreground"
           >
             <span>{localeNames[locale]}</span>
             {locale === currentLocale && (
-              <Check size={16} className="text-primary" />
+              <RiCheckLine className="text-primary size-4" />
             )}
           </DropdownMenuItem>
         ))}

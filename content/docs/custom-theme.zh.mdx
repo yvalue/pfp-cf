@@ -1,0 +1,107 @@
+---
+title: 自定义主题
+description: 通过样式变量或主题目录实现项目级主题定制。
+---
+
+## 1. 先明确“主题”在本项目里指什么
+
+本项目的主题由两部分组成：
+
+1. 视觉变量主题（颜色、字体、圆角、阴影）  
+入口文件：`src/config/style/theme.css`
+2. 组件实现主题（页面、布局、区块组件）  
+目录入口：`src/themes/{themeName}`
+
+通常你可以先做视觉变量定制；只有在页面结构差异很大时才需要新建完整主题目录。
+
+## 2. 方案 A：最小改动（只改视觉变量）
+
+直接编辑 `src/config/style/theme.css` 的两个作用域：
+
+1. `:root`（浅色）
+2. `.dark`（深色）
+
+建议优先改这些核心变量：
+
+1. `--background` / `--foreground`
+2. `--primary` / `--primary-foreground`
+3. `--muted` / `--muted-foreground`
+4. `--font-sans` / `--font-serif` / `--font-mono`
+5. `--radius`
+
+完成后刷新页面即可看到主题变化。
+
+## 3. 方案 B：切换深浅色默认策略
+
+`src/core/theme/provider.tsx` 使用 `next-themes`，默认值来自环境变量：
+
+`NEXT_PUBLIC_APPEARANCE`（在 `src/config/index.ts` 读取）
+
+常用取值：
+
+1. `system`：跟随系统
+2. `light`：默认浅色
+3. `dark`：默认深色
+
+在 `.env.development` 中设置后，重启开发服务生效。
+
+## 4. 方案 C：新建完整主题目录
+
+当你需要“不同风格组件”而不只是换色时，使用此方案。
+
+### 4.1 复制默认主题
+
+从 `src/themes/default` 复制到 `src/themes/brand`（示例名）。
+
+至少包含这三类目录：
+
+1. `pages`
+2. `layouts`
+3. `blocks`
+
+### 4.2 （可选）维护主题清单
+
+`src/config/theme/index.ts` 里的 `themeNames` 在当前项目实现中主要用于声明，不参与主题加载判断。  
+你可以不改，保持默认即可。
+
+可选示例：
+
+```ts
+export const themeNames = ['default']; // 或 ['default', 'brand']
+export const defaultTheme = 'default';
+```
+
+### 4.3 切换当前主题
+
+在 `.env.development` 设置：
+
+```bash
+NEXT_PUBLIC_THEME="brand"
+```
+
+重启后，`getThemePage/getThemeLayout/getThemeBlock` 会优先加载 `brand` 目录。  
+实际是否生效取决于 `NEXT_PUBLIC_THEME` 和 `src/themes/brand` 是否存在。
+
+### 4.4 回退机制说明
+
+如果 `brand` 缺少某个页面或区块，系统会自动回退到 `default` 主题对应文件。  
+这意味着你可以先只覆盖关键页面，逐步替换其余模块。
+
+## 5. 推荐落地顺序
+
+1. 第一步只改 `theme.css` 验证品牌色和字体
+2. 第二步按需覆盖 `src/themes/{name}/blocks/*`
+3. 第三步再覆盖 `layouts` 与 `pages`
+
+这样改动最可控，回归成本最低。
+
+## 6. 常见问题
+
+1. 改了 `.env` 不生效  
+确认已重启 `pnpm dev`。
+
+2. 页面还是默认样式  
+检查 `NEXT_PUBLIC_THEME` 是否拼写正确，以及主题目录是否存在。
+
+3. 某个区块报组件找不到  
+检查区块导出名是否与 block 名匹配；不匹配会触发加载失败。

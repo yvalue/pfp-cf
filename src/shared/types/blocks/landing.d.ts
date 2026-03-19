@@ -24,7 +24,7 @@ export interface Section {
   description?: string;
   tip?: string;
   buttons?: Button[];
-  icon?: string | ReactNode;
+  icon?: string;
   image?: Image;
   image_invert?: Image;
   items?: SectionItem[];

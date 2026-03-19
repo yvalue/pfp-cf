@@ -23,14 +23,25 @@ export function Logos({
         </ScrollAnimation>
         <ScrollAnimation delay={0.2}>
           <div className="mx-auto mt-12 flex max-w-4xl flex-wrap items-center justify-center gap-x-12 gap-y-8 sm:gap-x-16 sm:gap-y-12">
-            {section.items?.map((item, idx) => (
-              <LazyImage
-                key={idx}
-                className="h-8 w-fit dark:invert"
-                src={item.image?.src ?? ''}
-                alt={item.image?.alt ?? ''}
-              />
-            ))}
+            {section.items?.map((item, idx) => {
+              const lightSrc = item.image?.src ?? '';
+              const lightAlt = item.image?.alt ?? '';
+              const darkSrc = item.image_invert?.src ?? '';
+              const darkAlt = item.image_invert?.alt ?? lightAlt;
+
+              return (
+                <div key={idx}>
+                  {darkSrc ? (
+                    <>
+                      <LazyImage className="h-8 w-fit dark:hidden" src={lightSrc} alt={lightAlt} />
+                      <LazyImage className="hidden h-8 w-fit dark:block" src={darkSrc} alt={darkAlt} />
+                    </>
+                  ) : (
+                    <LazyImage className="h-8 w-fit" src={lightSrc} alt={lightAlt} />
+                  )}
+                </div>
+              );
+            })}
           </div>
         </ScrollAnimation>
       </div>

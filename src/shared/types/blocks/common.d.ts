@@ -1,5 +1,3 @@
-import { ReactNode } from 'react';
-
 // image props for image component
 export interface Image {
   src: string;
@@ -30,7 +28,7 @@ export interface NavItem {
   target?: string;
   type?: string;
   icon_url?: string;
-  icon?: string | ReactNode;
+  icon?: string;
   badge?: string;
   image?: Image;
   is_expand?: boolean;

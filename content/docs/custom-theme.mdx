@@ -1,0 +1,105 @@
+---
+title: Custom Theme
+description: Customize project themes via style tokens or full theme directories.
+---
+
+## 1. What “Theme” Means In This Project
+
+Theme customization has two layers:
+
+1. Visual tokens (color, font, radius, shadow)  
+File: `src/config/style/theme.css`
+2. Component implementation theme (pages, layouts, blocks)  
+Directory: `src/themes/{themeName}`
+
+In most cases, start with visual token changes first.
+
+## 2. Option A: Minimal Change (Token-Only)
+
+Edit `src/config/style/theme.css`:
+
+1. `:root` for light mode
+2. `.dark` for dark mode
+
+Recommended core tokens:
+
+1. `--background` / `--foreground`
+2. `--primary` / `--primary-foreground`
+3. `--muted` / `--muted-foreground`
+4. `--font-sans` / `--font-serif` / `--font-mono`
+5. `--radius`
+
+Refresh to verify visual changes.
+
+## 3. Option B: Default Appearance Strategy
+
+`src/core/theme/provider.tsx` uses `next-themes`, and default appearance comes from:
+
+`NEXT_PUBLIC_APPEARANCE` (loaded in `src/config/index.ts`)
+
+Common values:
+
+1. `system`
+2. `light`
+3. `dark`
+
+After changing `.env.development`, restart the dev server.
+
+## 4. Option C: Full Theme Directory
+
+Use this when you need different page/layout/block implementations.
+
+### 4.1 Copy default theme
+
+Copy `src/themes/default` to `src/themes/brand` (example).
+
+Keep these folders:
+
+1. `pages`
+2. `layouts`
+3. `blocks`
+
+### 4.2 Optional: Maintain theme list
+
+In the current project implementation, `themeNames` in `src/config/theme/index.ts` is mostly declarative and is not used as a strict loader gate.  
+You can keep it unchanged.
+
+Optional example:
+
+```ts
+export const themeNames = ['default']; // or ['default', 'brand']
+export const defaultTheme = 'default';
+```
+
+### 4.3 Activate theme
+
+Set in `.env.development`:
+
+```bash
+NEXT_PUBLIC_THEME="brand"
+```
+
+Restart dev server to apply.  
+Actual loading depends on `NEXT_PUBLIC_THEME` and whether `src/themes/brand` exists.
+
+### 4.4 Fallback behavior
+
+If a page/layout/block is missing in `brand`, loader functions fallback to `default`.  
+So you can migrate incrementally.
+
+## 5. Recommended Workflow
+
+1. Start with `theme.css` token updates
+2. Override selected `blocks` as needed
+3. Then override `layouts/pages` only when necessary
+
+## 6. Troubleshooting
+
+1. `.env` changes not applied  
+Restart `pnpm dev`.
+
+2. Still using default theme  
+Check `NEXT_PUBLIC_THEME` value and theme directory path.
+
+3. Block loading error  
+Check block file/export naming matches your configured block name.

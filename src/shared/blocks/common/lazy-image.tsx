@@ -8,6 +8,7 @@ export function LazyImage({
   src,
   alt,
   className,
+  wrapperClassName,
   width,
   height,
   placeholderSrc,
@@ -19,6 +20,7 @@ export function LazyImage({
   src: string;
   alt: string;
   className?: string;
+  wrapperClassName?: string;
   width?: number;
   height?: number;
   placeholderSrc?: string;
@@ -33,9 +35,10 @@ export function LazyImage({
       alt={alt}
       width={width}
       height={height}
-      effect="blur" // 支持 blur、opacity 等
-      placeholderSrc={placeholderSrc} // 可选
+      effect="blur"
+      placeholderSrc={placeholderSrc}
       className={className}
+      wrapperClassName={wrapperClassName}
     />
   );
 }

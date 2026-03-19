@@ -1,0 +1,111 @@
+---
+title: 自定义页面展示
+description: 说明如何控制自定义页面的展示结构、顺序与区块渲染。
+---
+
+## 1. 页面展示链路
+
+本项目 Landing 页面展示主要经过以下链路：
+
+1. 路由入口：`src/app/[locale]/(landing)/*`
+2. 页面数据：`content/pages/*.mdx` 或 `src/config/locale/messages/{locale}/pages/*.json`
+3. 动态渲染器：`src/themes/default/pages/dynamic-page.tsx`
+4. 区块组件：`src/themes/default/blocks/*.tsx`
+
+理解这条链路后，你就可以按需求控制“展示什么”和“如何展示”。
+
+## 2. 三种页面展示方式
+
+### 2.1 配置驱动展示（推荐）
+
+适合营销页、介绍页、活动页。
+
+在 `src/config/locale/messages/zh/pages/about.json` 中配置：
+
+```json
+{
+  "metadata": {
+    "title": "关于我们",
+    "description": "我们的能力与价值"
+  },
+  "page": {
+    "show_sections": ["hero", "features", "faq", "cta"],
+    "sections": {
+      "hero": {
+        "id": "hero",
+        "title": "我们帮助你快速交付 AI SaaS",
+        "description": "用工程化模板降低上线成本。"
+      },
+      "features": {
+        "id": "features",
+        "title": "核心能力"
+      }
+    }
+  }
+}
+```
+
+并在 `src/config/locale/index.ts` 的 `localeMessagesPaths` 注册：
+
+```ts
+'pages/about';
+```
+
+### 2.2 MDX 静态展示
+
+适合法律页、帮助页、品牌故事页。
+
+创建：
+
+1. `content/pages/about.zh.mdx`
+2. `content/pages/about.mdx`
+
+页面会通过 `/{locale}/about` 展示。
+
+### 2.3 自定义 React 页面展示
+
+适合需要运行时数据和复杂交互的页面。
+
+创建文件：`src/app/[locale]/(landing)/about/page.tsx`，在页面里组装 `page.sections` 后交给 `dynamic-page` 渲染。
+
+## 3. 如何控制展示效果
+
+### 3.1 区块显示与隐藏
+
+1. `page.show_sections`：白名单控制显示
+2. `section.disabled = true`：单独禁用某个区块
+
+### 3.2 区块展示顺序
+
+`dynamic-page` 按 `sections` 对象键顺序渲染，因此顺序由 `sections` 中的 key 排列决定。
+
+### 3.3 区块样式与布局
+
+常用字段：
+
+1. `section.block`：指定渲染组件（如 `features-accordion`）
+2. `section.className`：附加样式类
+3. `section.image` / `section.items` / `section.buttons`：控制展示内容
+
+### 3.4 扩展自定义区块
+
+当默认区块不满足时：
+
+1. 新建 `src/themes/default/blocks/feature-grid.tsx`
+2. 配置中使用 `"block": "feature-grid"`
+
+渲染器会自动按 block 名加载对应组件。
+
+## 4. 页面展示排查清单
+
+1. 页面 404：检查 slug 与文件路径是否匹配
+2. 文案不生效：检查当前语言文件与 JSON 格式
+3. 区块不显示：检查 `show_sections` / `disabled`
+4. 侧边栏无入口：检查 docs 的 `meta.json / meta.zh.json` 排序配置
+
+## 5. 推荐实践
+
+1. 先用 JSON 完成页面展示
+2. 长文内容用 MDX
+3. 仅在需要业务逻辑时再写自定义路由页面
+

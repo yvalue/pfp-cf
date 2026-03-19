@@ -88,6 +88,16 @@ export function Header({ header }: { header: HeaderType }) {
       >
         <NavigationMenuList className="gap-2">
           {header.nav?.items?.map((item, idx) => {
+            const isItemActive =
+              item.is_active ||
+              (!!item.url && pathname.endsWith(item.url as string));
+            const isParentActive =
+              item.is_active ||
+              !!item.children?.some(
+                (subItem: NavItem) =>
+                  !!subItem.url && pathname.endsWith(subItem.url)
+              );
+
             if (!item.children || item.children.length === 0) {
               return (
                 <NavigationMenuLink key={idx} asChild>
@@ -95,9 +105,9 @@ export function Header({ header }: { header: HeaderType }) {
                     href={item.url || ''}
                     target={item.target || '_self'}
                     className={`flex flex-row items-center gap-2 px-4 py-1.5 text-sm ${
-                      item.is_active || pathname.endsWith(item.url as string)
-                        ? 'bg-muted/40 text-muted-foreground'
-                        : ''
+                      isItemActive
+                        ? 'bg-muted/40 text-primary hover:text-primary'
+                        : 'text-muted-foreground hover:text-primary'
                     }`}
                   >
                     {item.icon && <SmartIcon name={item.icon as string} />}
@@ -109,7 +119,12 @@ export function Header({ header }: { header: HeaderType }) {
 
             return (
               <NavigationMenuItem key={idx}>
-                <NavigationMenuTrigger className="flex flex-row items-center gap-2 text-sm">
+                <NavigationMenuTrigger
+                  className={cn(
+                    'flex flex-row items-center gap-2 text-sm',
+                    isParentActive && 'bg-muted/40 text-primary'
+                  )}
+                >
                   {item.icon && (
                     <SmartIcon name={item.icon as string} className="h-4 w-4" />
                   )}

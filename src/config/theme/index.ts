@@ -1,3 +1,3 @@
-export const themeNames = ['default'];
+export const themeNames = ['default', 'ai-pfp'];
 
 export const defaultTheme = 'default';

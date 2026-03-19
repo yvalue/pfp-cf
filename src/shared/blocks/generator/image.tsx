@@ -19,6 +19,7 @@ import {
   ImageUploaderValue,
   LazyImage,
 } from '@/shared/blocks/common';
+import { AspectRatioOption } from '@/shared/components/ui/aspect-ratio-option';
 import { Button } from '@/shared/components/ui/button';
 import {
   Card,
@@ -38,6 +39,18 @@ import {
 import { Tabs, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 import { Textarea } from '@/shared/components/ui/textarea';
 import { useAppContext } from '@/shared/contexts/app';
+import {
+  extractImageUrls,
+  getNanoBananaModelFamily,
+  getNanoBananaMaxBatchCount,
+  getNanoBananaMaxReferenceImages,
+  getNanoBananaMaxReferenceImageSizeMB,
+  getNanoBananaResolution,
+  getNanoBananaReferenceImageFormatsLabel,
+  NANO_BANANA_MODEL_FAMILIES,
+  resolveNanoBananaGeneration,
+  type NanoBananaResolution,
+} from '@/shared/lib/ai-image';
 import { cn } from '@/shared/lib/utils';
 
 interface ImageGeneratorProps {
@@ -72,82 +85,6 @@ const POLL_INTERVAL = 5000;
 const GENERATION_TIMEOUT = 180000;
 const MAX_PROMPT_LENGTH = 2000;
 
-const MODEL_OPTIONS = [
-  {
-    value: 'google/nano-banana-pro',
-    label: 'Nano Banana Pro',
-    provider: 'replicate',
-    scenes: ['text-to-image', 'image-to-image'],
-  },
-  {
-    value: 'bytedance/seedream-4',
-    label: 'Seedream 4',
-    provider: 'replicate',
-    scenes: ['text-to-image', 'image-to-image'],
-  },
-  {
-    value: 'fal-ai/nano-banana-pro',
-    label: 'Nano Banana Pro',
-    provider: 'fal',
-    scenes: ['text-to-image'],
-  },
-  {
-    value: 'fal-ai/nano-banana-pro/edit',
-    label: 'Nano Banana Pro',
-    provider: 'fal',
-    scenes: ['image-to-image'],
-  },
-  {
-    value: 'fal-ai/bytedance/seedream/v4/edit',
-    label: 'Seedream 4',
-    provider: 'fal',
-    scenes: ['image-to-image'],
-  },
-  {
-    value: 'fal-ai/z-image/turbo',
-    label: 'Z-Image Turbo',
-    provider: 'fal',
-    scenes: ['text-to-image'],
-  },
-  {
-    value: 'fal-ai/flux-2-flex',
-    label: 'Flux 2 Flex',
-    provider: 'fal',
-    scenes: ['text-to-image'],
-  },
-  {
-    value: 'gemini-3-pro-image-preview',
-    label: 'Gemini 3 Pro Image Preview',
-    provider: 'gemini',
-    scenes: ['text-to-image', 'image-to-image'],
-  },
-  {
-    value: 'nano-banana-pro',
-    label: 'Nano Banana Pro',
-    provider: 'kie',
-    scenes: ['text-to-image', 'image-to-image'],
-  },
-];
-
-const PROVIDER_OPTIONS = [
-  {
-    value: 'replicate',
-    label: 'Replicate',
-  },
-  {
-    value: 'fal',
-    label: 'Fal',
-  },
-  {
-    value: 'gemini',
-    label: 'Gemini',
-  },
-  {
-    value: 'kie',
-    label: 'Kie',
-  },
-];
-
 function parseTaskResult(taskResult: string | null): any {
   if (!taskResult) {
     return null;
@@ -161,51 +98,10 @@ function parseTaskResult(taskResult: string | null): any {
   }
 }
 
-function extractImageUrls(result: any): string[] {
-  if (!result) {
-    return [];
-  }
-
-  const output = result.output ?? result.images ?? result.data;
-
-  if (!output) {
-    return [];
-  }
-
-  if (typeof output === 'string') {
-    return [output];
-  }
-
-  if (Array.isArray(output)) {
-    return output
-      .flatMap((item) => {
-        if (!item) return [];
-        if (typeof item === 'string') return [item];
-        if (typeof item === 'object') {
-          const candidate =
-            item.url ?? item.uri ?? item.image ?? item.src ?? item.imageUrl;
-          return typeof candidate === 'string' ? [candidate] : [];
-        }
-        return [];
-      })
-      .filter(Boolean);
-  }
-
-  if (typeof output === 'object') {
-    const candidate =
-      output.url ?? output.uri ?? output.image ?? output.src ?? output.imageUrl;
-    if (typeof candidate === 'string') {
-      return [candidate];
-    }
-  }
-
-  return [];
-}
-
 export function ImageGenerator({
   allowMultipleImages = true,
   maxImages = 9,
-  maxSizeMB = 5,
+  maxSizeMB,
   srOnlyTitle,
   className,
 }: ImageGeneratorProps) {
@@ -214,9 +110,13 @@ export function ImageGenerator({
   const [activeTab, setActiveTab] =
     useState<ImageGeneratorTab>('text-to-image');
 
-  const [costCredits, setCostCredits] = useState<number>(2);
-  const [provider, setProvider] = useState(PROVIDER_OPTIONS[0]?.value ?? '');
-  const [model, setModel] = useState(MODEL_OPTIONS[0]?.value ?? '');
+  const [modelFamilyId, setModelFamilyId] = useState(
+    NANO_BANANA_MODEL_FAMILIES[0]?.id ?? ''
+  );
+  const [resolution, setResolution] = useState(
+    NANO_BANANA_MODEL_FAMILIES[0]?.defaultResolution ?? '1K'
+  );
+  const [count, setCount] = useState(1);
   const [prompt, setPrompt] = useState('');
   const [referenceImageItems, setReferenceImageItems] = useState<
     ImageUploaderValue[]
@@ -225,11 +125,8 @@ export function ImageGenerator({
   const [generatedImages, setGeneratedImages] = useState<GeneratedImage[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [taskId, setTaskId] = useState<string | null>(null);
-  const [generationStartTime, setGenerationStartTime] = useState<number | null>(
-    null
-  );
   const [taskStatus, setTaskStatus] = useState<AITaskStatus | null>(null);
+  const [currentTaskNumber, setCurrentTaskNumber] = useState(0);
   const [downloadingImageId, setDownloadingImageId] = useState<string | null>(
     null
   );
@@ -246,41 +143,102 @@ export function ImageGenerator({
   const remainingCredits = user?.credits?.remainingCredits ?? 0;
   const isPromptTooLong = promptLength > MAX_PROMPT_LENGTH;
   const isTextToImageMode = activeTab === 'text-to-image';
+  const selectedModelFamily = useMemo(
+    () =>
+      getNanoBananaModelFamily(modelFamilyId) ?? NANO_BANANA_MODEL_FAMILIES[0],
+    [modelFamilyId]
+  );
+  const maxReferenceImages = useMemo(
+    () =>
+      allowMultipleImages
+        ? Math.min(
+            maxImages,
+            getNanoBananaMaxReferenceImages(selectedModelFamily?.id ?? '')
+          )
+        : 1,
+    [allowMultipleImages, maxImages, selectedModelFamily]
+  );
+  const maxReferenceImageSizeMB = useMemo(
+    () =>
+      getNanoBananaMaxReferenceImageSizeMB(selectedModelFamily?.id ?? ''),
+    [selectedModelFamily]
+  );
+  const effectiveMaxReferenceImageSizeMB = useMemo(
+    () =>
+      typeof maxSizeMB === 'number'
+        ? Math.min(maxSizeMB, maxReferenceImageSizeMB)
+        : maxReferenceImageSizeMB,
+    [maxReferenceImageSizeMB, maxSizeMB]
+  );
+  const supportedResolutions = selectedModelFamily?.supportedResolutions ?? [
+    '1K',
+  ];
+  const maxBatchCount = getNanoBananaMaxBatchCount(
+    selectedModelFamily?.id ?? ''
+  );
+  const countOptions = useMemo(
+    () =>
+      Array.from({ length: maxBatchCount }, (_, index) => index + 1).map(
+        (value) => ({
+          value: String(value),
+          label: String(value),
+        })
+      ),
+    [maxBatchCount]
+  );
+  const aspectRatios = selectedModelFamily?.aspectRatios ?? ['1:1'];
+  const defaultAspectRatio = aspectRatios.includes('auto')
+    ? 'auto'
+    : (selectedModelFamily?.defaultAspectRatio ?? aspectRatios[0] ?? '1:1');
+  const [aspectRatio, setAspectRatio] = useState(defaultAspectRatio);
+  const resolvedGeneration = useMemo(() => {
+    if (!selectedModelFamily) {
+      return null;
+    }
+
+    return resolveNanoBananaGeneration({
+      familyId: selectedModelFamily.id,
+      mode: activeTab,
+      resolution,
+    });
+  }, [activeTab, resolution, selectedModelFamily]);
+  const resolvedModel = resolvedGeneration?.model ?? null;
+  const costCredits = (resolvedGeneration?.costCredits ?? 0) * count;
 
   const handleTabChange = (value: string) => {
-    const tab = value as ImageGeneratorTab;
-    setActiveTab(tab);
-
-    const availableModels = MODEL_OPTIONS.filter(
-      (option) => option.scenes.includes(tab) && option.provider === provider
-    );
-
-    if (availableModels.length > 0) {
-      setModel(availableModels[0].value);
-    } else {
-      setModel('');
-    }
-
-    if (tab === 'text-to-image') {
-      setCostCredits(2);
-    } else {
-      setCostCredits(4);
-    }
+    setActiveTab(value as ImageGeneratorTab);
   };
 
-  const handleProviderChange = (value: string) => {
-    setProvider(value);
-
-    const availableModels = MODEL_OPTIONS.filter(
-      (option) => option.scenes.includes(activeTab) && option.provider === value
-    );
-
-    if (availableModels.length > 0) {
-      setModel(availableModels[0].value);
-    } else {
-      setModel('');
+  useEffect(() => {
+    if (!selectedModelFamily) {
+      const fallbackFamilyId = NANO_BANANA_MODEL_FAMILIES[0]?.id ?? '';
+      if (fallbackFamilyId && fallbackFamilyId !== modelFamilyId) {
+        setModelFamilyId(fallbackFamilyId);
+      }
     }
-  };
+  }, [modelFamilyId, selectedModelFamily]);
+
+  useEffect(() => {
+    if (!aspectRatios.includes(aspectRatio)) {
+      setAspectRatio(defaultAspectRatio);
+    }
+  }, [aspectRatio, aspectRatios, defaultAspectRatio]);
+
+  useEffect(() => {
+    const normalizedResolution = selectedModelFamily
+      ? getNanoBananaResolution(selectedModelFamily.id, resolution)
+      : '1K';
+
+    if (normalizedResolution !== resolution) {
+      setResolution(normalizedResolution);
+    }
+  }, [resolution, selectedModelFamily]);
+
+  useEffect(() => {
+    if (count > maxBatchCount) {
+      setCount(maxBatchCount);
+    }
+  }, [count, maxBatchCount]);
 
   const taskStatusLabel = useMemo(() => {
     if (!taskStatus) {
@@ -325,152 +283,109 @@ export function ImageGenerator({
   const resetTaskState = useCallback(() => {
     setIsGenerating(false);
     setProgress(0);
-    setTaskId(null);
-    setGenerationStartTime(null);
     setTaskStatus(null);
+    setCurrentTaskNumber(0);
   }, []);
 
   const pollTaskStatus = useCallback(
-    async (id: string) => {
+    async ({
+      id,
+      index,
+      total,
+      promptText,
+      provider,
+      model,
+    }: {
+      id: string;
+      index: number;
+      total: number;
+      promptText: string;
+      provider: string;
+      model: string;
+    }) => {
+      const generationStartTime = Date.now();
       try {
-        if (
-          generationStartTime &&
-          Date.now() - generationStartTime > GENERATION_TIMEOUT
-        ) {
-          resetTaskState();
-          toast.error('Image generation timed out. Please try again.');
-          return true;
-        }
+        while (Date.now() - generationStartTime <= GENERATION_TIMEOUT) {
+          const resp = await fetch('/api/ai/query', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ taskId: id }),
+          });
 
-        const resp = await fetch('/api/ai/query', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ taskId: id }),
-        });
-
-        if (!resp.ok) {
-          throw new Error(`request failed with status: ${resp.status}`);
-        }
-
-        const { code, message, data } = await resp.json();
-        if (code !== 0) {
-          throw new Error(message || 'Query task failed');
-        }
-
-        const task = data as BackendTask;
-        const currentStatus = task.status as AITaskStatus;
-        setTaskStatus(currentStatus);
-
-        const parsedResult = parseTaskResult(task.taskInfo);
-        const imageUrls = extractImageUrls(parsedResult);
-
-        if (currentStatus === AITaskStatus.PENDING) {
-          setProgress((prev) => Math.max(prev, 20));
-          return false;
-        }
-
-        if (currentStatus === AITaskStatus.PROCESSING) {
-          if (imageUrls.length > 0) {
-            setGeneratedImages(
-              imageUrls.map((url, index) => ({
-                id: `${task.id}-${index}`,
-                url,
-                provider: task.provider,
-                model: task.model,
-                prompt: task.prompt ?? undefined,
-              }))
-            );
-            setProgress((prev) => Math.max(prev, 85));
-          } else {
-            setProgress((prev) => Math.min(prev + 10, 80));
-          }
-          return false;
-        }
-
-        if (currentStatus === AITaskStatus.SUCCESS) {
-          if (imageUrls.length === 0) {
-            toast.error('The provider returned no images. Please retry.');
-          } else {
-            setGeneratedImages(
-              imageUrls.map((url, index) => ({
-                id: `${task.id}-${index}`,
-                url,
-                provider: task.provider,
-                model: task.model,
-                prompt: task.prompt ?? undefined,
-              }))
-            );
-            toast.success('Image generated successfully');
+          if (!resp.ok) {
+            throw new Error(`request failed with status: ${resp.status}`);
           }
 
-          setProgress(100);
-          resetTaskState();
-          return true;
+          const { code, message, data } = await resp.json();
+          if (code !== 0) {
+            throw new Error(message || 'Query task failed');
+          }
+
+          const task = data as BackendTask;
+          const currentStatus = task.status as AITaskStatus;
+          setTaskStatus(currentStatus);
+          setCurrentTaskNumber(index);
+
+          const parsedInfo = parseTaskResult(task.taskInfo);
+          const parsedResult = parseTaskResult(task.taskResult);
+          const imageUrls = Array.from(
+            new Set([
+              ...extractImageUrls(parsedInfo),
+              ...extractImageUrls(parsedResult),
+            ])
+          );
+          const completedProgress = Math.round(((index - 1) / total) * 100);
+
+          if (currentStatus === AITaskStatus.PENDING) {
+            setProgress((prev) => Math.max(prev, completedProgress + 10));
+            await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL));
+            continue;
+          }
+
+          if (currentStatus === AITaskStatus.PROCESSING) {
+            setProgress((prev) => Math.max(prev, completedProgress + 70));
+            await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL));
+            continue;
+          }
+
+          if (currentStatus === AITaskStatus.SUCCESS) {
+            if (imageUrls.length === 0) {
+              throw new Error('The provider returned no images. Please retry.');
+            }
+
+            setProgress(Math.round((index / total) * 100));
+
+            return imageUrls.map((url, imageIndex) => ({
+              id: `${task.id}-${imageIndex}`,
+              url,
+              provider,
+              model,
+              prompt: promptText,
+            }));
+          }
+
+          if (currentStatus === AITaskStatus.FAILED) {
+            const errorMessage =
+              parsedInfo?.errorMessage ||
+              parsedResult?.errorMessage ||
+              'Generate image failed';
+            throw new Error(errorMessage);
+          }
+
+          setProgress((prev) => Math.min(prev + 5, 95));
+          await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL));
         }
 
-        if (currentStatus === AITaskStatus.FAILED) {
-          const errorMessage =
-            parsedResult?.errorMessage || 'Generate image failed';
-          toast.error(errorMessage);
-          resetTaskState();
-
-          fetchUserCredits();
-
-          return true;
-        }
-
-        setProgress((prev) => Math.min(prev + 5, 95));
-        return false;
+        throw new Error('Image generation timed out. Please try again.');
       } catch (error: any) {
         console.error('Error polling image task:', error);
-        toast.error(`Query task failed: ${error.message}`);
-        resetTaskState();
-
-        fetchUserCredits();
-
-        return true;
+        throw error;
       }
     },
-    [generationStartTime, resetTaskState]
+    []
   );
-
-  useEffect(() => {
-    if (!taskId || !isGenerating) {
-      return;
-    }
-
-    let cancelled = false;
-
-    const tick = async () => {
-      if (!taskId) {
-        return;
-      }
-      const completed = await pollTaskStatus(taskId);
-      if (completed) {
-        cancelled = true;
-      }
-    };
-
-    tick();
-
-    const interval = setInterval(async () => {
-      if (cancelled || !taskId) {
-        clearInterval(interval);
-        return;
-      }
-      const completed = await pollTaskStatus(taskId);
-      if (completed) {
-        clearInterval(interval);
-      }
-    }, POLL_INTERVAL);
-
-    return () => {
-      cancelled = true;
-      clearInterval(interval);
-    };
-  }, [taskId, isGenerating, pollTaskStatus]);
 
   const handleGenerate = async () => {
     if (!user) {
@@ -489,7 +404,7 @@ export function ImageGenerator({
       return;
     }
 
-    if (!provider || !model) {
+    if (!selectedModelFamily || !resolvedModel) {
       toast.error('Provider or model is not configured correctly.');
       return;
     }
@@ -500,78 +415,109 @@ export function ImageGenerator({
     }
 
     setIsGenerating(true);
-    setProgress(15);
+    setProgress(0);
     setTaskStatus(AITaskStatus.PENDING);
     setGeneratedImages([]);
-    setGenerationStartTime(Date.now());
 
     try {
-      const options: any = {};
+      const images: GeneratedImage[] = [];
 
-      if (!isTextToImageMode) {
-        options.image_input = referenceImageUrls;
-      }
+      for (let index = 1; index <= count; index += 1) {
+        setCurrentTaskNumber(index);
+        setProgress(Math.round(((index - 1) / count) * 100));
 
-      const resp = await fetch('/api/ai/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          mediaType: AIMediaType.IMAGE,
-          scene: isTextToImageMode ? 'text-to-image' : 'image-to-image',
-          provider,
-          model,
-          prompt: trimmedPrompt,
-          options,
-        }),
-      });
+        const options: Record<string, any> = {
+          aspect_ratio: aspectRatio,
+        };
 
-      if (!resp.ok) {
-        throw new Error(`request failed with status: ${resp.status}`);
-      }
-
-      const { code, message, data } = await resp.json();
-      if (code !== 0) {
-        throw new Error(message || 'Failed to create an image task');
-      }
-
-      const newTaskId = data?.id;
-      if (!newTaskId) {
-        throw new Error('Task id missing in response');
-      }
-
-      if (data.status === AITaskStatus.SUCCESS && data.taskInfo) {
-        const parsedResult = parseTaskResult(data.taskInfo);
-        const imageUrls = extractImageUrls(parsedResult);
-
-        if (imageUrls.length > 0) {
-          setGeneratedImages(
-            imageUrls.map((url, index) => ({
-              id: `${newTaskId}-${index}`,
-              url,
-              provider,
-              model,
-              prompt: trimmedPrompt,
-            }))
-          );
-          toast.success('Image generated successfully');
-          setProgress(100);
-          resetTaskState();
-          await fetchUserCredits();
-          return;
+        if (resolvedGeneration?.shouldSendResolution) {
+          options.resolution = resolvedGeneration.resolution;
         }
+
+        if (!isTextToImageMode) {
+          options.image_input = referenceImageUrls;
+        }
+
+        const resp = await fetch('/api/ai/generate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            mediaType: AIMediaType.IMAGE,
+            scene: isTextToImageMode ? 'text-to-image' : 'image-to-image',
+            provider: selectedModelFamily.provider,
+            model: resolvedModel,
+            prompt: trimmedPrompt,
+            options,
+          }),
+        });
+
+        if (!resp.ok) {
+          throw new Error(`request failed with status: ${resp.status}`);
+        }
+
+        const { code, message, data } = await resp.json();
+        if (code !== 0) {
+          throw new Error(message || 'Failed to create an image task');
+        }
+
+        const newTaskId = data?.id;
+        if (!newTaskId) {
+          throw new Error('Task id missing in response');
+        }
+
+        let batchImages: GeneratedImage[] = [];
+
+        if (data.status === AITaskStatus.SUCCESS && data.taskInfo) {
+          const parsedTaskInfo = parseTaskResult(data.taskInfo);
+          const parsedTaskResult = parseTaskResult(data.taskResult);
+          const imageUrls = Array.from(
+            new Set([
+              ...extractImageUrls(parsedTaskInfo),
+              ...extractImageUrls(parsedTaskResult),
+            ])
+          );
+
+          if (imageUrls.length === 0) {
+            throw new Error('The provider returned no images. Please retry.');
+          }
+
+          batchImages = imageUrls.map((url, imageIndex) => ({
+            id: `${newTaskId}-${imageIndex}`,
+            url,
+            provider: selectedModelFamily.provider,
+            model: resolvedModel,
+            prompt: trimmedPrompt,
+          }));
+          setProgress(Math.round((index / count) * 100));
+        } else {
+          batchImages = await pollTaskStatus({
+            id: newTaskId,
+            index,
+            total: count,
+            promptText: trimmedPrompt,
+            provider: selectedModelFamily.provider,
+            model: resolvedModel,
+          });
+        }
+
+        images.push(...batchImages);
+        setGeneratedImages([...images]);
       }
 
-      setTaskId(newTaskId);
-      setProgress(25);
-
+      toast.success('Image generated successfully');
       await fetchUserCredits();
     } catch (error: any) {
       console.error('Failed to generate image:', error);
       toast.error(`Failed to generate image: ${error.message}`);
       resetTaskState();
+      await fetchUserCredits();
+      return;
     }
+
+    setProgress(100);
+    resetTaskState();
   };
 
   const handleDownloadImage = async (image: GeneratedImage) => {
@@ -631,19 +577,19 @@ export function ImageGenerator({
                   </TabsList>
                 </Tabs>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
                   <div className="space-y-2">
-                    <Label>{t('form.provider')}</Label>
+                    <Label>{t('form.model')}</Label>
                     <Select
-                      value={provider}
-                      onValueChange={handleProviderChange}
+                      value={modelFamilyId}
+                      onValueChange={setModelFamilyId}
                     >
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder={t('form.select_provider')} />
+                        <SelectValue placeholder={t('form.select_model')} />
                       </SelectTrigger>
                       <SelectContent>
-                        {PROVIDER_OPTIONS.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
+                        {NANO_BANANA_MODEL_FAMILIES.map((option) => (
+                          <SelectItem key={option.id} value={option.id}>
                             {option.label}
                           </SelectItem>
                         ))}
@@ -652,17 +598,58 @@ export function ImageGenerator({
                   </div>
 
                   <div className="space-y-2">
-                    <Label>{t('form.model')}</Label>
-                    <Select value={model} onValueChange={setModel}>
+                    <Label>{t('form.aspect_ratio')}</Label>
+                    <Select value={aspectRatio} onValueChange={setAspectRatio}>
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder={t('form.select_model')} />
+                        <SelectValue aria-label={aspectRatio}>
+                          <AspectRatioOption ratio={aspectRatio} selected />
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
-                        {MODEL_OPTIONS.filter(
-                          (option) =>
-                            option.scenes.includes(activeTab) &&
-                            option.provider === provider
-                        ).map((option) => (
+                        {aspectRatios.map((option) => (
+                          <SelectItem key={option} value={option}>
+                            <AspectRatioOption
+                              ratio={option}
+                              selected={aspectRatio === option}
+                            />
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>{t('form.quality')}</Label>
+                    <Select
+                      value={resolution}
+                      onValueChange={(value) =>
+                        setResolution(value as NanoBananaResolution)
+                      }
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder={t('form.select_quality')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {supportedResolutions.map((option) => (
+                          <SelectItem key={option} value={option}>
+                            {option}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>{t('form.count')}</Label>
+                    <Select
+                      value={String(count)}
+                      onValueChange={(value) => setCount(Number(value))}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder={t('form.select_count')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {countOptions.map((option) => (
                           <SelectItem key={option.value} value={option.value}>
                             {option.label}
                           </SelectItem>
@@ -676,11 +663,11 @@ export function ImageGenerator({
                   <div className="space-y-4">
                     <ImageUploader
                       title={t('form.reference_image')}
-                      allowMultiple={allowMultipleImages}
-                      maxImages={allowMultipleImages ? maxImages : 1}
-                      maxSizeMB={maxSizeMB}
+                      allowMultiple={maxReferenceImages > 1}
+                      maxImages={maxReferenceImages}
+                      maxSizeMB={effectiveMaxReferenceImageSizeMB}
                       onChange={handleReferenceImagesChange}
-                      emptyHint={t('form.reference_image_placeholder')}
+                      emptyHint={`${getNanoBananaReferenceImageFormatsLabel()}, up to ${effectiveMaxReferenceImageSizeMB}MB each, ${maxReferenceImages} image${maxReferenceImages > 1 ? 's' : ''} max`}
                     />
 
                     {hasReferenceUploadError && (

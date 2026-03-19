@@ -12,7 +12,7 @@ export function SectionHeader({
   return (
     <div
       className={cn(
-        'container space-y-6 py-16 text-center md:py-24',
+        'container grid gap-6 py-16 text-center md:py-24',
         className
       )}
     >

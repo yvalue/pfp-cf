@@ -1,331 +1,375 @@
 {
   "metadata": {
-    "title": "Pricing",
-    "description": "Start with a plan"
+    "title": "Simple, transparent pricing",
+    "description": "Choose the perfect plan for your needs. Start with our free tier and upgrade as you grow."
   },
   "page": {
-    "title": "ShipAny Pricing",
+    "title": "Simple, transparent pricing",
     "sections": {
       "pricing": {
         "id": "pricing",
-        "title": "Pricing",
-        "description": "Get all features of ShipAny, Ship your AI SaaS startups fast.",
+        "title": "Pricing Plans",
+        "description": "Choose the perfect plan for your needs.\nStart with our free tier and upgrade as you grow.",
         "groups": [
           {
-            "name": "one-time",
-            "title": "Pay as you go"
+            "name": "yearly",
+            "title": "Year (-20%)",
+            "is_featured": true
           },
           {
             "name": "monthly",
-            "title": "Monthly",
-            "is_featured": true,
-            "label": "save 15%"
+            "title": "Monthly"
           },
           {
-            "name": "yearly",
-            "title": "Annually"
+            "name": "one-time",
+            "title": "Credit Packs"
           }
         ],
+        "free_cards": {
+          "default": {
+            "title": "Free",
+            "description": "For personal use only with limited features and support",
+            "price": "$0",
+            "button": {
+              "title": "Get Started"
+            },
+            "features_title": "Features",
+            "crossed_features": [
+              "Unlimited Image Dimension",
+              "Advanced Image Model",
+              "Fast Response",
+              "Priority Support",
+              "Batch Image Generation",
+              "No Captcha"
+            ],
+            "features": [
+              "Limited Credits",
+              "Standard Image Model",
+              "Unlimited Image Dimension",
+              "Advanced Image Model",
+              "Fast Response",
+              "Priority Support",
+              "Batch Image Generation",
+              "No Captcha"
+            ]
+          },
+          "yearly": {
+            "original_price": "$0",
+            "unit": "/ month"
+          },
+          "monthly": {
+            "unit": "/ month"
+          },
+          "one-time": {}
+        },
         "items": [
           {
             "title": "Starter",
-            "description": "Get started with your first SaaS startup.",
-            "features_title": "Includes",
+            "description": "Ideal for occasional creative boosts.",
+            "features_title": "Includes:",
+            "crossed_features": ["Priority Support"],
             "features": [
-              "100 credits, valid for 1 month",
-              "NextJS boilerplate",
-              "SEO-friendly structure",
-              "Payment with Stripe",
-              "Data storage with Supabase",
-              "Google Oauth & One-Tap Login",
-              "i18n support"
+              "400 Credits",
+              "Up to 100 Images",
+              "Unlimited Image Dimension",
+              "Advanced Image Model",
+              "Fast Response",
+              "Priority Support",
+              "Batch Image Generation",
+              "No Captcha",
+              "Credits Valid for 12 Months"
             ],
             "interval": "one-time",
-            "amount": 9900,
+            "amount": 800,
             "currency": "USD",
-            "price": "$99",
-            "original_price": "$199",
-            "unit": "",
-            "is_featured": false,
-            "tip": "Pay once. Build unlimited projects!",
+            "price": "$8",
             "button": {
-              "title": "Get ShipAny",
-              "url": "/#pricing",
-              "icon": "RiFlashlightFill"
+              "title": "Purchase"
             },
             "product_id": "starter",
-            "product_name": "ShipAny Boilerplate Starter",
-            "credits": 100,
-            "valid_days": 30,
+            "product_name": "Starter",
+            "credits": 400,
+            "valid_days": 365,
             "group": "one-time"
           },
           {
-            "title": "Standard",
-            "description": "Ship Fast with your SaaS Startups.",
+            "title": "Growth",
+            "description": "Ideal for growing creative demands.",
             "label": "Popular",
-            "features_title": "Everything in Starter, plus",
+            "features_title": "Includes:",
             "features": [
-              "200 credits, valid for 3 month",
-              "Deploy with Vercel or Cloudflare",
-              "Generation of Privacy & Terms",
-              "Google Analytics Integration",
-              "Google Search Console Integration",
-              "Discord community",
-              "Technical support for your first ship",
-              "Lifetime updates"
+              "1,100 Credits",
+              "Up to 275 Images",
+              "Unlimited Image Dimension",
+              "Advanced Image Model",
+              "Fast Response",
+              "Priority Support",
+              "Batch Image Generation",
+              "No Captcha",
+              "Credits Valid for 12 Months"
             ],
             "interval": "one-time",
-            "amount": 19900,
+            "amount": 1600,
             "currency": "USD",
-            "price": "$199",
-            "original_price": "$299",
-            "unit": "",
+            "price": "$16",
             "is_featured": true,
-            "tip": "Pay once. Build unlimited projects!",
             "button": {
-              "title": "Get ShipAny",
-              "url": "/#pricing",
-              "icon": "RiFlashlightFill"
+              "title": "Purchase"
             },
             "product_id": "standard",
-            "product_name": "ShipAny Boilerplate Standard",
-            "credits": 200,
-            "valid_days": 90,
+            "product_name": "Growth",
+            "credits": 1100,
+            "valid_days": 365,
             "group": "one-time"
           },
           {
-            "title": "Premium",
-            "description": "Ship Any AI SaaS Startups.",
-            "features_title": "Everything in Standard, plus",
+            "title": "Power",
+            "description": "Ideal for high-volume creative production.",
+            "features_title": "Includes:",
             "features": [
-              "300 credits, valid for 1 year",
-              "Business Functions with AI",
-              "User Center",
-              "Credits System",
-              "API Sales for your SaaS",
-              "Admin System",
-              "Priority Technical Support"
+              "2,000 Credits",
+              "Up to 500 Images",
+              "Unlimited Image Dimension",
+              "Advanced Image Model",
+              "Fast Response",
+              "Priority Support",
+              "Batch Image Generation",
+              "No Captcha",
+              "Credits Valid for 12 Months"
             ],
             "interval": "one-time",
-            "amount": 29900,
+            "amount": 2500,
             "currency": "USD",
-            "price": "$299",
-            "original_price": "$399",
-            "unit": "",
-            "is_featured": false,
-            "tip": "Pay once. Build unlimited projects!",
+            "price": "$25",
             "button": {
-              "title": "Get ShipAny",
-              "url": "/#pricing",
-              "icon": "RiFlashlightFill"
+              "title": "Purchase"
             },
             "product_id": "premium",
-            "product_name": "ShipAny Boilerplate Premium",
-            "credits": 300,
+            "product_name": "Power",
+            "credits": 2000,
             "valid_days": 365,
             "group": "one-time"
           },
           {
-            "title": "Starter",
-            "description": "Get started with your first SaaS startup.",
-            "features_title": "Includes",
+            "title": "Basic",
+            "description": "Designed for hobbyists seeking creative skills.",
+            "features_title": "Includes:",
+            "crossed_features": ["Priority Support"],
             "features": [
-              "100 credits, valid for 1 month",
-              "NextJS boilerplate",
-              "SEO-friendly structure",
-              "Payment with Stripe",
-              "Data storage with Supabase",
-              "Google Oauth & One-Tap Login",
-              "i18n support"
+              "400 Credits / Month",
+              "Up to 100 Images / Month",
+              "Unlimited Image Dimension",
+              "Advanced Image Model",
+              "Fast Response",
+              "Priority Support",
+              "Batch Image Generation",
+              "No Captcha",
+              "Credits Reset Each Month"
             ],
             "interval": "month",
-            "amount": 8900,
+            "amount": 500,
             "currency": "USD",
-            "price": "$89",
-            "original_price": "$99",
+            "price": "$5",
             "unit": "/ month",
-            "is_featured": false,
-            "tip": "Pay monthly. Build unlimited projects!",
             "button": {
-              "title": "Get ShipAny",
-              "url": "/#pricing",
-              "icon": "RiFlashlightFill"
+              "title": "Purchase"
             },
             "product_id": "starter-monthly",
-            "product_name": "ShipAny Boilerplate Starter Monthly",
-            "credits": 100,
+            "product_name": "Basic Plan Monthly",
+            "credits": 400,
             "valid_days": 30,
             "group": "monthly",
-            "plan_name": "Starter"
+            "plan_name": "Basic"
           },
           {
-            "title": "Standard",
-            "description": "Ship Fast with your SaaS Startups.",
+            "title": "Pro",
+            "description": "Designed for creators seeking advanced tools.",
             "label": "Popular",
-            "features_title": "Everything in Starter, plus",
+            "features_title": "Includes:",
             "features": [
-              "200 credits, valid for 1 month",
-              "Deploy with Vercel or Cloudflare",
-              "Generation of Privacy & Terms",
-              "Google Analytics Integration",
-              "Google Search Console Integration",
-              "Discord community",
-              "Technical support for your first ship",
-              "Lifetime updates"
+              "1,100 Credits / Month",
+              "Up to 275 Images / Month",
+              "Unlimited Image Dimension",
+              "Advanced Image Model",
+              "Fast Response",
+              "Priority Support",
+              "Batch Image Generation",
+              "No Captcha",
+              "Credits Reset Each Month"
             ],
             "interval": "month",
-            "amount": 16900,
+            "amount": 1200,
             "currency": "USD",
-            "price": "$169",
-            "original_price": "$199",
+            "price": "$12",
             "unit": "/ month",
             "is_featured": true,
-            "tip": "Pay monthly. Ship Fast with your SaaS Startups.",
             "button": {
-              "title": "Get ShipAny",
-              "url": "/#pricing",
-              "icon": "RiFlashlightFill"
+              "title": "Purchase"
             },
             "product_id": "standard-monthly",
-            "product_name": "ShipAny Boilerplate Standard Monthly",
-            "credits": 200,
+            "product_name": "Pro Plan Monthly",
+            "credits": 1100,
             "valid_days": 30,
             "group": "monthly",
-            "plan_name": "Standard"
+            "plan_name": "Pro"
           },
           {
-            "title": "Premium",
-            "description": "Ship Any AI SaaS Startups.",
-            "features_title": "Everything in Standard, plus",
+            "title": "Max",
+            "description": "Designed for professionals seeking expert results.",
+            "features_title": "Includes:",
             "features": [
-              "300 credits, valid for 1 month",
-              "Business Functions with AI",
-              "User Center",
-              "Credits System",
-              "API Sales for your SaaS",
-              "Admin System",
-              "Priority Technical Support"
+              "2,000 Credits / Month",
+              "Up to 500 Images / Month",
+              "Unlimited Image Dimension",
+              "Advanced Image Model",
+              "Fast Response",
+              "Priority Support",
+              "Batch Image Generation",
+              "No Captcha",
+              "Credits Reset Each Month"
             ],
             "interval": "month",
-            "amount": 24900,
+            "amount": 2000,
             "currency": "USD",
-            "price": "$249",
-            "original_price": "$299",
+            "price": "$20",
             "unit": "/ month",
-            "is_featured": false,
-            "tip": "Pay monthly. Ship Any AI SaaS Startups.",
             "button": {
-              "title": "Get ShipAny",
-              "url": "/#pricing",
-              "icon": "RiFlashlightFill"
+              "title": "Purchase"
             },
             "product_id": "premium-monthly",
-            "product_name": "ShipAny Boilerplate Premium Monthly",
-            "credits": 300,
+            "product_name": "Max Plan Monthly",
+            "credits": 2000,
             "valid_days": 30,
             "group": "monthly",
-            "plan_name": "Premium"
+            "plan_name": "Max"
           },
           {
-            "title": "Starter",
-            "description": "Get started with your first SaaS startup.",
-            "features_title": "Includes",
+            "title": "Basic",
+            "description": "Designed for hobbyists seeking creative skills.",
+            "features_title": "Includes:",
+            "crossed_features": ["Priority Support"],
             "features": [
-              "100 credits, valid for 1 year",
-              "NextJS boilerplate",
-              "SEO-friendly structure",
-              "Payment with Stripe",
-              "Data storage with Supabase",
-              "Google Oauth & One-Tap Login",
-              "i18n support"
+              "4,800 Credits / Year",
+              "Up to 1,200 Images / Year",
+              "Unlimited Image Dimension",
+              "Advanced Image Model",
+              "Fast Response",
+              "Priority Support",
+              "Batch Image Generation",
+              "No Captcha",
+              "Credits Granted Annually"
             ],
             "interval": "year",
-            "amount": 82800,
+            "amount": 4800,
             "currency": "USD",
-            "price": "$69",
-            "original_price": "$89",
+            "price": "$4",
+            "original_price": "$5",
             "unit": "/ month",
-            "is_featured": false,
-            "tip": "Pay annually. Build unlimited projects!",
             "button": {
-              "title": "Get ShipAny",
-              "url": "/#pricing",
-              "icon": "RiFlashlightFill"
+              "title": "Purchase"
             },
             "product_id": "starter-yearly",
-            "product_name": "ShipAny Boilerplate Starter Annually",
-            "credits": 1200,
+            "product_name": "Basic Plan Yearly",
+            "credits": 4800,
             "valid_days": 365,
             "group": "yearly",
-            "plan_name": "Starter"
+            "plan_name": "Basic"
           },
           {
-            "title": "Standard",
-            "description": "Ship Fast with your SaaS Startups.",
+            "title": "Pro",
+            "description": "Designed for creators seeking advanced tools.",
             "label": "Popular",
-            "features_title": "Everything in Starter, plus",
+            "features_title": "Includes:",
             "features": [
-              "200 credits, valid for 1 year",
-              "Deploy with Vercel or Cloudflare",
-              "Generation of Privacy & Terms",
-              "Google Analytics Integration",
-              "Google Search Console Integration",
-              "Discord community",
-              "Technical support for your first ship",
-              "Lifetime updates"
+              "13,200 Credits / Year",
+              "Up to 3,300 Images / Year",
+              "Unlimited Image Dimension",
+              "Advanced Image Model",
+              "Fast Response",
+              "Priority Support",
+              "Batch Image Generation",
+              "No Captcha",
+              "Credits Granted Annually"
             ],
             "interval": "year",
-            "amount": 154800,
+            "amount": 11520,
             "currency": "USD",
-            "price": "$129",
-            "original_price": "$169",
+            "price": "$9.60",
+            "original_price": "$12",
             "unit": "/ month",
             "is_featured": true,
-            "tip": "Pay annually. Ship Fast with your SaaS Startups.",
             "button": {
-              "title": "Get ShipAny",
-              "url": "/#pricing",
-              "icon": "RiFlashlightFill"
+              "title": "Purchase"
             },
             "product_id": "standard-yearly",
-            "product_name": "ShipAny Boilerplate Standard Annually",
-            "credits": 2400,
+            "product_name": "Pro Plan Yearly",
+            "credits": 13200,
             "valid_days": 365,
             "group": "yearly",
-            "plan_name": "Standard"
+            "plan_name": "Pro"
           },
           {
-            "title": "Premium",
-            "description": "Ship Any AI SaaS Startups.",
-            "features_title": "Everything in Standard, plus",
+            "title": "Max",
+            "description": "Designed for professionals seeking expert results.",
+            "features_title": "Includes:",
             "features": [
-              "300 credits, valid for 1 year",
-              "Business Functions with AI",
-              "User Center",
-              "Credits System",
-              "API Sales for your SaaS",
-              "Admin System",
-              "Priority Technical Support"
+              "24,000 Credits / Year",
+              "Up to 6,000 Images / Year",
+              "Unlimited Image Dimension",
+              "Advanced Image Model",
+              "Fast Response",
+              "Priority Support",
+              "Batch Image Generation",
+              "No Captcha",
+              "Credits Granted Annually"
             ],
             "interval": "year",
-            "amount": 226800,
+            "amount": 19200,
             "currency": "USD",
-            "price": "$189",
-            "original_price": "$249",
+            "price": "$16",
+            "original_price": "$20",
             "unit": "/ month",
-            "is_featured": false,
-            "tip": "Pay annually. Ship Any AI SaaS Startups.",
             "button": {
-              "title": "Get ShipAny",
-              "url": "/#pricing",
-              "icon": "RiFlashlightFill"
+              "title": "Purchase"
             },
             "product_id": "premium-yearly",
-            "product_name": "ShipAny Boilerplate Premium Annually",
-            "credits": 3600,
+            "product_name": "Max Plan Yearly",
+            "credits": 24000,
             "valid_days": 365,
             "group": "yearly",
-            "plan_name": "Premium"
+            "plan_name": "Max"
+          }
+        ]
+      },
+      "faq": {
+        "id": "faq",
+        "block": "faq",
+        "title": "Frequently Asked Questions",
+        "description": "Get answers to common questions and learn more about our paid services.",
+        "items": [
+          {
+            "question": "Why choose a subscription?",
+            "answer": "A subscription is the best fit if you create regularly. It gives you recurring credits and access to paid features such as the Advanced Image Model, faster response, batch image generation, and support without needing to repurchase Credit Packs each time."
+          },
+          {
+            "question": "Can I upgrade or cancel?",
+            "answer": "You can manage or cancel your active subscription from Billing settings at any time, and the pricing page will show your current plan. If you want to change plans, contact support@ai-pfp.com and we can help you choose the best option."
+          },
+          {
+            "question": "Do I get higher-quality images if I subscribe?",
+            "answer": "Paid plans can improve your results because they unlock the Advanced Image Model and other paid features. The exact output still depends on your prompt, settings, and source image, but subscriptions are designed for users who need more consistent, higher-end results."
+          },
+          {
+            "question": "How many credits do Nano Banana models use?",
+            "answer": "Nano Banana uses 4 credits per image. Nano Banana2 uses 5 credits for 1K quality, 10 credits for 2K quality, and 15 credits for 4K quality. Nano Banana Pro uses 10 credits for 1K quality, 15 credits for 2K quality, and 20 credits for 4K quality."
+          },
+          {
+            "question": "Can I get a refund?",
+            "answer": "Paid purchases are generally non-refundable unless required by applicable law or stated otherwise on the purchase page. For a first-time subscription purchase, you may request a refund within 3 calendar days of the subscription start date by contacting support@ai-pfp.com. Renewal charges are generally not eligible for this policy."
+          },
+          {
+            "question": "Can I get help using the product?",
+            "answer": "Yes. If you need help with billing, plans, or using the product, contact us at support@ai-pfp.com and we will assist you."
           }
         ]
       }

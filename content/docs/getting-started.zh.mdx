@@ -1,0 +1,248 @@
+---
+title: 新手指南
+description: 从本地开发到部署上线的完整上手文档（默认 PostgreSQL）。
+---
+
+## 1. 项目概览
+
+本项目是一个基于 `Next.js 15` 的 AI SaaS 模板，包含以下能力：
+
+- 多语言站点与文档（`en` / `zh`）
+- 认证系统（邮箱密码 + 可选 Google / GitHub）
+- 支付系统（Stripe / Creem / PayPal）
+- AI 能力扩展（Kie / Replicate / Fal / Gemini）
+- 后台管理与 RBAC 权限模型
+- Drizzle ORM + 多数据库适配（默认 PostgreSQL）
+
+## 2. 本地开发（默认 PostgreSQL）
+
+### 2.1 前置依赖
+
+- `Node.js 20+`
+- `pnpm 8+`
+- `PostgreSQL 14+`
+
+### 2.2 安装依赖
+
+```bash
+pnpm install
+```
+
+### 2.3 初始化环境变量
+
+macOS / Linux:
+
+```bash
+cp .env.example .env.development
+```
+
+Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env.development
+```
+
+最小可运行配置（必填）：
+
+```bash
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+NEXT_PUBLIC_APP_NAME="Your App Name"
+DATABASE_PROVIDER="postgresql"
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DBNAME"
+AUTH_SECRET="replace-with-a-random-secret"
+```
+
+生成 `AUTH_SECRET`（任选其一）：
+
+```bash
+openssl rand -base64 32
+```
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+```
+
+### 2.4 初始化数据库
+
+```bash
+pnpm db:generate
+pnpm db:migrate
+```
+
+### 2.5 启动开发服务
+
+```bash
+pnpm dev
+```
+
+默认访问地址：
+
+- 首页：`http://localhost:3000/en`
+- 文档：`http://localhost:3000/en/docs`
+- 后台：`http://localhost:3000/en/admin`
+
+## 3. 配置加载规则（很重要）
+
+最终运行配置由三部分合并得到：
+
+1. `src/config/index.ts` 的默认值
+2. 数据库里的配置（后台 `Admin -> Settings` 保存）
+3. 环境变量覆盖（同名 `UPPER_CASE` 优先）
+
+实操建议：
+
+- 代码级基础变量（如 `DATABASE_URL`、`AUTH_SECRET`）放环境变量。
+- 业务能力开关（支付/邮件/AI）优先通过后台设置管理。
+- 生产环境若使用环境变量，会覆盖后台同名配置。
+
+## 4. 首次启动验收清单
+
+完成本地启动后，建议按顺序验收：
+
+1. 打开首页与文档页，无白屏与 500 错误。
+2. 完成注册与登录。
+3. 执行一次数据库迁移并确认成功。
+4. 进入后台设置页：`/{locale}/admin/settings/general`。
+5. 打开 AI 页面（如 `/{locale}/ai-image-generator`）确认基础页面可访问。
+
+## 5. RBAC 初始化与管理员账号
+
+推荐流程：
+
+1. 先注册一个账号。
+2. 初始化默认权限与角色。
+3. 给该账号分配 `super_admin`。
+
+命令如下：
+
+```bash
+pnpm rbac:init
+pnpm rbac:assign --email=you@example.com --role=super_admin
+```
+
+分配成功后重新登录，再访问 `/{locale}/admin`。
+
+## 6. 核心能力接入
+
+### 6.1 认证（邮箱 / Google / GitHub）
+
+后台入口：`Admin -> Settings -> Auth`
+
+- 邮箱登录：`email_auth_enabled`
+- 邮箱验证：`email_verification_enabled`（需先配置邮件服务）
+- Google 登录：填写 `google_client_id` / `google_client_secret`
+- GitHub 登录：填写 `github_client_id` / `github_client_secret`
+
+回调地址需与你部署域名一致（常见问题是 OAuth provider 配置的 callback URL 与 `NEXT_PUBLIC_APP_URL` 不一致）。
+
+### 6.2 邮件（Resend）
+
+后台入口：`Admin -> Settings -> Email`
+
+- `resend_api_key`
+- `resend_sender_email`
+
+邮箱验证功能依赖邮件能力；未配置邮件时，建议先关闭 `email_verification_enabled`。
+
+### 6.3 AI Provider（Kie / Replicate / Fal / Gemini）
+
+后台入口：`Admin -> Settings -> AI`
+
+- Kie：`kie_api_key`
+- Replicate：`replicate_api_token`
+- Fal：`fal_api_key`
+- Gemini：`gemini_api_key`
+
+至少配置一个 provider，AI 生成功能才可用。
+
+### 6.4 支付（Stripe / Creem / PayPal）
+
+后台入口：`Admin -> Settings -> Payment`
+
+- 先设置 `default_payment_provider`
+- 再填对应 provider 的密钥与 webhook 验签字段
+
+Webhook 路由（代码固定）：
+
+- `POST /api/payment/notify/stripe`
+- `POST /api/payment/notify/creem`
+- `POST /api/payment/notify/paypal`
+
+支付成功回调入口（系统使用）：
+
+- `GET /api/payment/callback?order_no=...`
+
+## 7. 部署
+
+### 7.1 Vercel
+
+1. 导入仓库并选择 `pnpm`。
+2. 配置环境变量（至少包括 `NEXT_PUBLIC_APP_URL`、`DATABASE_PROVIDER`、`DATABASE_URL`、`AUTH_SECRET`）。
+3. 若启用支付/邮件/AI，补齐对应密钥。
+4. 首次部署后执行数据库迁移（建议在 CI 或运维流程中执行）。
+
+### 7.2 Cloudflare（OpenNext）
+
+1. 复制 `wrangler.toml.example` 为 `wrangler.toml` 并修改 `name` 等配置。
+2. 根据需要配置 Hyperdrive（PostgreSQL）与 Worker 变量。
+3. 构建预览：
+
+```bash
+pnpm cf:preview
+```
+
+4. 正式部署：
+
+```bash
+pnpm cf:deploy
+```
+
+部署后请再次核对支付 webhook 地址与 OAuth 回调地址。
+
+## 8. 常见问题排查
+
+### `DATABASE_URL is not set`
+
+- 检查 `.env.development` 是否存在。
+- 检查 `DATABASE_URL` 是否可连接（用户、密码、库名、端口）。
+
+### 启动时报认证相关错误
+
+- 检查 `AUTH_SECRET` 是否为空。
+- 检查 `NEXT_PUBLIC_APP_URL` 与实际访问地址是否一致。
+
+### 登录时第三方 OAuth 报 callback mismatch
+
+- provider 后台配置的 callback URL 必须与当前域名一致。
+- 本地调试与生产环境的 callback URL 通常不同，需要分别配置。
+
+### 支付 webhook 收到 500
+
+- 检查对应 provider 的 webhook signing secret 是否正确。
+- 检查 webhook URL 是否指向 `/api/payment/notify/{provider}`。
+
+### 已赋权仍提示无后台权限
+
+- 角色分配后重新登录。
+- 确认赋予的是 `super_admin` 或具备 `admin.access` 权限的角色。
+
+## 9. 常用命令速查
+
+```bash
+pnpm dev
+pnpm build
+pnpm start
+pnpm lint
+
+pnpm db:generate
+pnpm db:migrate
+pnpm db:push
+pnpm db:studio
+
+pnpm auth:generate
+pnpm rbac:init
+pnpm rbac:assign --email=you@example.com --role=super_admin
+
+pnpm cf:preview
+pnpm cf:deploy
+```

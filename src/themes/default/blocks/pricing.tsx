@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Check, Loader2 } from 'lucide-react';
+import { Check, Loader2, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
 import { SmartIcon } from '@/shared/blocks/common';
 import { PaymentModal } from '@/shared/blocks/payment/payment-modal';
+import { TextHighlight } from '@/shared/components/text-highlight';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
 import {
@@ -504,10 +505,14 @@ export function Pricing({
                     <p className="text-sm font-medium">{item.features_title}</p>
                   )}
                   <ul className="list-outside space-y-3 text-sm">
-                    {item.features?.map((item, index) => (
+                    {item.features?.map((feature, index) => (
                       <li key={index} className="flex items-center gap-2">
-                        <Check className="size-3" />
-                        {item}
+                        {item.crossed_features?.includes(feature) ? (
+                          <X className="size-3 text-red-500" />
+                        ) : (
+                          <Check className="size-3" />
+                        )}
+                        <TextHighlight text={feature} />
                       </li>
                     ))}
                   </ul>

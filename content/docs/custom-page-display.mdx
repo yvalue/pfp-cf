@@ -1,0 +1,105 @@
+---
+title: Custom Page Display
+description: How to control structure, order, and block rendering for custom pages.
+---
+
+## 1. Page Display Pipeline
+
+Landing page display goes through:
+
+1. Route entry: `src/app/[locale]/(landing)/*`
+2. Data source: `content/pages/*.mdx` or `src/config/locale/messages/{locale}/pages/*.json`
+3. Dynamic renderer: `src/themes/default/pages/dynamic-page.tsx`
+4. Block components: `src/themes/default/blocks/*.tsx`
+
+This pipeline controls what gets rendered and how it is rendered.
+
+## 2. Three Display Approaches
+
+### 2.1 Config-Driven Display (Recommended)
+
+Best for marketing and product pages.
+
+Add `src/config/locale/messages/en/pages/about.json`:
+
+```json
+{
+  "metadata": {
+    "title": "About",
+    "description": "Our capabilities and value"
+  },
+  "page": {
+    "show_sections": ["hero", "features", "faq", "cta"],
+    "sections": {
+      "hero": {
+        "id": "hero",
+        "title": "Ship AI SaaS faster",
+        "description": "Reduce launch cost with production-ready building blocks."
+      }
+    }
+  }
+}
+```
+
+Register namespace in `src/config/locale/index.ts`:
+
+```ts
+'pages/about';
+```
+
+### 2.2 MDX Static Display
+
+Best for legal/help/story pages.
+
+Create:
+
+1. `content/pages/about.mdx`
+2. `content/pages/about.zh.mdx`
+
+Accessible at `/{locale}/about`.
+
+### 2.3 Custom React Route Display
+
+Best for runtime data and advanced interactions.
+
+Create `src/app/[locale]/(landing)/about/page.tsx`, build `page.sections`, then render with `dynamic-page`.
+
+## 3. Controlling Display Behavior
+
+### 3.1 Show/Hide Sections
+
+1. `page.show_sections`: whitelist visible sections
+2. `section.disabled = true`: disable one section directly
+
+### 3.2 Section Order
+
+`dynamic-page` renders sections by key order in `sections`.
+
+### 3.3 Styling and Layout
+
+Common fields:
+
+1. `section.block`: choose block component (e.g. `features-accordion`)
+2. `section.className`: append styles
+3. `section.image` / `section.items` / `section.buttons`: define display content
+
+### 3.4 Custom Block Extension
+
+If default blocks are not enough:
+
+1. Add `src/themes/default/blocks/feature-grid.tsx`
+2. Use `"block": "feature-grid"` in section config
+
+## 4. Troubleshooting Checklist
+
+1. 404 page: verify slug and file path
+2. Missing content: verify locale file and JSON validity
+3. Section not shown: check `show_sections` and `disabled`
+4. Docs sidebar item missing: verify `meta.json / meta.zh.json` order config
+
+## 5. Recommended Workflow
+
+1. Start with JSON for display structure
+2. Use MDX for long-form static content
+3. Add custom route pages only when logic/data requires it
+

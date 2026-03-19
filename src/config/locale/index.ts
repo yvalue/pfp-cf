@@ -54,4 +54,6 @@ export const localeMessagesPaths = [
   'pages/showcases',
   'pages/blog',
   'pages/updates',
+  'tools',
+  'tools/professional-headshot-generator',
 ];

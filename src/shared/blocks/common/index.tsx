@@ -15,7 +15,6 @@ export * from './built-with';
 
 export * from './page-header';
 export * from './section-header';
-
 export * from './empty';
 export * from './lazy-image';
 export * from './image-uploader';
@@ -27,5 +26,6 @@ export * from './mdx-content';
 export * from '../sign/sign-user';
 
 export * from './audio-player';
+export * from './segmented-tabs';
 
 export * from './error-boundary';
