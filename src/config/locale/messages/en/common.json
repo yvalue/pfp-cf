@@ -52,5 +52,71 @@
   "locale_detector": {
     "title": "We detected your browser language is {locale}. Switch to it?",
     "switch_to": "Switch to {locale}"
+  },
+  "tool_panel": {
+    "tabs": {
+      "upload": "Upload Image",
+      "parameter": "Parameter"
+    },
+    "fields": {
+      "required_badge": "Required",
+      "optional_badge": "Optional",
+      "default_badge": "Default",
+      "upload_label": "Upload Image",
+      "description_label": "Description",
+      "effect_style_label": "Effect Style",
+      "model_label": "Model",
+      "aspect_ratio_label": "Aspect Ratio",
+      "quality_label": "Quality",
+      "count_label": "Count"
+    },
+    "upload": {
+      "title": "Drop files or click to upload",
+      "formats": "PNG, JPG, JPEG or WEBP (max 10MB each)",
+      "supports": "Supports multiple images, {count} left"
+    },
+    "description_placeholder": "Describe how your image should look like...",
+    "description_counter": "0/1000",
+    "selects": {
+      "aspect_ratio": [
+        { "label": "Match Input", "value": "Match Input" },
+        { "label": "9:16", "value": "9:16" },
+        { "label": "16:9", "value": "16:9" },
+        { "label": "1:1", "value": "1:1" }
+      ],
+      "resolution": [
+        { "label": "1K", "value": "1K" },
+        { "label": "2K", "value": "2K" },
+        { "label": "4K", "value": "4K" }
+      ],
+      "batch_size": [
+        { "label": "1", "value": "1" },
+        { "label": "2", "value": "2" },
+        { "label": "3", "value": "3" },
+        { "label": "4", "value": "4" },
+        { "label": "5", "value": "5" }
+      ]
+    },
+    "result": {
+      "example_title": "Example",
+      "before_label": "Before",
+      "after_label": "After",
+      "how_to_use_title": "How to Use",
+      "usage_steps": [
+        "Upload your photo",
+        "Choose a style",
+        "Adjust parameters or description (optional)",
+        "Wait and download"
+      ],
+      "tip_prefix": "Tip:",
+      "tip_text": "Not happy with the presets? Upload a reference image and update the description."
+    },
+    "buttons": {
+      "submit": "Submit",
+      "download": "Download"
+    },
+    "credits": {
+      "submit_cost": 15
+    }
   }
 }

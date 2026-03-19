@@ -1,4 +1,6 @@
-import { getThemeBlock, getThemeLayout } from '@/core/theme';
+import type { ReactNode } from 'react';
+
+import { getThemeBlock } from '@/core/theme';
 import type { ToolPage } from '@/shared/types/blocks/tools';
 
 export default async function ToolPageComponent({
@@ -20,24 +22,21 @@ export default async function ToolPageComponent({
 
       const block = section.block || section.id || sectionKey;
 
-      switch (block) {
-        default:
-          try {
-            if (section.component) {
-              return section.component;
-            }
+      try {
+        if (section.component) {
+          return section.component;
+        }
 
-            const DynamicBlock = await getThemeBlock(block);
-            return (
-              <DynamicBlock
-                key={sectionKey}
-                section={section}
-                {...(data || section.data || {})}
-              />
-            );
-          } catch {
-            return null;
-          }
+        const DynamicBlock = await getThemeBlock(block);
+        return (
+          <DynamicBlock
+            key={sectionKey}
+            section={section}
+            {...(data || section.data || {})}
+          />
+        );
+      } catch {
+        return null;
       }
     })
   );
