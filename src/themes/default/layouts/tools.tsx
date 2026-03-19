@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { getThemeBlockStrict } from '@/core/theme';
+import { getThemeBlock } from '@/core/theme';
 import type {
   ToolSidebarConfig,
   ToolTopbarConfig,
@@ -15,8 +15,8 @@ export default async function ToolsLayout({
   sidebar: ToolSidebarConfig;
   topbar: ToolTopbarConfig;
 }) {
-  const Sidebar = await getThemeBlockStrict('tools-sidebar');
-  const Topbar = await getThemeBlockStrict('tools-topbar');
+  const Sidebar = await getThemeBlock('tools-sidebar');
+  const Topbar = await getThemeBlock('tools-topbar');
 
   return (
     <div

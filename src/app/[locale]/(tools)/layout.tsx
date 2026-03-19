@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { getTranslations } from 'next-intl/server';
 
-import { getThemeLayoutStrict } from '@/core/theme';
+import { getThemeLayout } from '@/core/theme';
 import { LocaleDetector } from '@/shared/blocks/common';
 import type {
   ToolSidebarConfig,
@@ -14,7 +14,7 @@ export default async function ToolsLayout({
   children: ReactNode;
 }) {
   const t = await getTranslations('tools');
-  const Layout = await getThemeLayoutStrict('tools');
+  const Layout = await getThemeLayout('tools');
   const sidebar = t.raw('sidebar') as ToolSidebarConfig;
   const topbar = t.raw('topbar') as ToolTopbarConfig;
 

@@ -1,7 +1,8 @@
-import { getThemeBlockStrict } from '@/core/theme';
+import { getThemeBlock } from '@/core/theme';
+import { ToolPanel } from '@/shared/blocks/generator';
 import type { ToolPage as ToolPageType } from '@/shared/types/blocks/tools';
 
-export async function DynamicPage({
+export default async function ToolsDynamicPage({
   locale,
   page,
   data,
@@ -32,7 +33,17 @@ export async function DynamicPage({
             return section.component;
           }
 
-          const DynamicBlock = await getThemeBlockStrict(block);
+          if (block === 'tool-panel') {
+            return (
+              <ToolPanel
+                key={sectionKey}
+                section={section}
+                {...(data || section.data || {})}
+              />
+            );
+          }
+
+          const DynamicBlock = await getThemeBlock(block);
           return (
             <DynamicBlock
               key={sectionKey}

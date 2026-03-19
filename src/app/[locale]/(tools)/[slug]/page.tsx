@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-import { getThemePageStrict } from '@/core/theme';
+import { getThemePage } from '@/core/theme';
 import { envConfigs } from '@/config';
 import { getToolNavItemFromSlug } from '@/shared/lib/tools';
 import type {
@@ -65,7 +65,7 @@ export default async function ToolPage({
   try {
     const t = await getTranslations({ locale, namespace: `tools.${slug}` });
     const page = t.raw('page') as ToolPageType;
-    const Page = await getThemePageStrict('tool-page');
+    const Page = await getThemePage('tools-dynamic-page');
 
     return <Page locale={locale} page={page} />;
   } catch {
