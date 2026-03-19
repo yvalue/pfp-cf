@@ -2,7 +2,7 @@ import { ScrollAnimation } from '@/shared/components/ui/scroll-animation';
 import { cn } from '@/shared/lib/utils';
 import { Section } from '@/shared/types/blocks/landing';
 
-export function FeaturesGuide({
+export function ToolsOverview({
   section,
   className,
 }: {

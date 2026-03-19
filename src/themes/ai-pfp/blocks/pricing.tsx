@@ -16,7 +16,6 @@ import { Button } from '@/shared/components/ui/button';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/shared/components/ui/card';
@@ -384,14 +383,14 @@ export function Pricing({
         <CardHeader className="p-0">
           <div className="flex items-center justify-between gap-4">
             <CardTitle className="min-w-0 flex-1 font-medium">
-              <h3 className="text-foreground text-lg font-semibold md:text-xl">
+              <h2 className="text-foreground text-lg font-semibold md:text-xl">
                 {displayedFreeCard.title}
-              </h3>
+              </h2>
             </CardTitle>
           </div>
-          <CardDescription className="text-muted-foreground mt-2 min-h-10 text-sm leading-6">
+          <p className="text-muted-foreground mt-2 min-h-10 text-sm leading-6">
             {displayedFreeCard.description}
-          </CardDescription>
+          </p>
 
           <div className="mt-2 flex flex-wrap items-end gap-2">
             <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
@@ -462,12 +461,9 @@ export function Pricing({
     >
       <div className="relative container">
         <div className="mx-auto mb-8 max-w-4xl px-4 text-center md:mb-10">
-          {section.sr_only_title && (
-            <h1 className="sr-only">{section.sr_only_title}</h1>
-          )}
-          <h2 className="text-foreground mx-auto max-w-3xl text-4xl font-semibold tracking-tight text-balance md:text-6xl">
+          <h1 className="text-foreground mx-auto max-w-3xl text-4xl font-semibold tracking-tight text-balance md:text-6xl">
             {section.title}
-          </h2>
+          </h1>
           <p className="text-muted-foreground mx-auto mt-5 max-w-4xl text-base leading-7 text-pretty whitespace-pre-line md:text-lg md:leading-8">
             {section.description}
           </p>
@@ -547,9 +543,9 @@ export function Pricing({
                 <CardHeader className="p-0">
                   <div className="flex items-center justify-between gap-4">
                     <CardTitle className="min-w-0 flex-1 font-medium">
-                      <h3 className="text-foreground text-lg font-semibold md:text-xl">
+                      <h2 className="text-foreground text-lg font-semibold md:text-xl">
                         {item.title}
-                      </h3>
+                      </h2>
                     </CardTitle>
                     {item.label && (
                       <span className="border-primary bg-accent text-primary inline-flex h-7 shrink-0 items-center rounded-xl border px-3 text-xs leading-5 font-semibold tracking-widest">
@@ -557,9 +553,9 @@ export function Pricing({
                       </span>
                     )}
                   </div>
-                  <CardDescription className="text-muted-foreground mt-2 min-h-10 text-sm leading-6">
+                  <p className="text-muted-foreground mt-2 min-h-10 text-sm leading-6">
                     {item.description}
-                  </CardDescription>
+                  </p>
 
                   <div className="mt-2 flex flex-wrap items-end gap-2">
                     <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">

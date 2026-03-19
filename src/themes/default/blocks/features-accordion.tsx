@@ -33,7 +33,6 @@ export function FeaturesAccordion({
   });
 
   return (
-    // overflow-x-hidden to prevent horizontal scroll
     <section
       className={cn(
         'overflow-x-hidden py-16 md:py-24',
@@ -41,7 +40,6 @@ export function FeaturesAccordion({
         className
       )}
     >
-      {/* add overflow-x-hidden to container */}
       <div className="container space-y-8 overflow-x-hidden px-2 sm:px-6 md:space-y-16 lg:space-y-20 dark:[--color-border:color-mix(in_oklab,var(--color-white)_10%,transparent)]">
         <ScrollAnimation>
           <div className="mx-auto max-w-4xl text-center text-balance">
@@ -54,7 +52,6 @@ export function FeaturesAccordion({
           </div>
         </ScrollAnimation>
 
-        {/* grid: clamp min-w-0 and fix px padding/breakpoints */}
         <div className="grid min-w-0 gap-12 sm:px-6 md:grid-cols-2 lg:gap-20 lg:px-0">
           <ScrollAnimation delay={0.1} direction="left">
             <Accordion
@@ -80,7 +77,6 @@ export function FeaturesAccordion({
           </ScrollAnimation>
 
           <ScrollAnimation delay={0.2} direction="right">
-            {/* min-w-0/flex-shrink to prevent overflow */}
             <div className="bg-background relative flex min-w-0 flex-shrink overflow-hidden rounded-3xl border p-2">
               <div className="absolute inset-0 right-0 ml-auto w-15 border-l bg-[repeating-linear-gradient(-45deg,var(--color-border),var(--color-border)_1px,transparent_1px,transparent_8px)]"></div>
               <div className="bg-background relative aspect-76/59 w-full min-w-0 rounded-2xl sm:w-[calc(3/4*100%+3rem)]">

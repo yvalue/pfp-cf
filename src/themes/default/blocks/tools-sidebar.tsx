@@ -43,7 +43,7 @@ function SidebarNavLink({
   );
 }
 
-export function Sidebar({ sidebar }: { sidebar: ToolSidebarConfig }) {
+export function ToolsSidebar({ sidebar }: { sidebar: ToolSidebarConfig }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const isLarge = useMedia('(min-width: 64rem)');
   const pathname = usePathname();

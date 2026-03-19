@@ -14,7 +14,7 @@ import { ScrollAnimation } from '@/shared/components/ui/scroll-animation';
 import { cn } from '@/shared/lib/utils';
 import { Section } from '@/shared/types/blocks/landing';
 
-export function FeaturesAccordion({
+export function ToolsRequirements({
   section,
   className,
 }: {
@@ -38,7 +38,6 @@ export function FeaturesAccordion({
     : images[activeItem];
 
   return (
-    // overflow-x-hidden to prevent horizontal scroll
     <section
       id={section.id || section.name}
       className={cn(
@@ -47,7 +46,6 @@ export function FeaturesAccordion({
         className
       )}
     >
-      {/* add overflow-x-hidden to container */}
       <div className="container grid gap-8 overflow-x-hidden px-2 sm:px-6 md:gap-16 lg:gap-20">
         <ScrollAnimation>
           <div className="mx-auto max-w-4xl text-center text-balance">
@@ -60,7 +58,6 @@ export function FeaturesAccordion({
           </div>
         </ScrollAnimation>
 
-        {/* grid: clamp min-w-0 and fix px padding/breakpoints */}
         <div className="grid min-w-0 items-stretch gap-12 sm:px-6 md:grid-cols-2 lg:gap-20 lg:px-0">
           <ScrollAnimation delay={0.1} direction="left">
             <Accordion
@@ -79,8 +76,10 @@ export function FeaturesAccordion({
                       {item.title}
                     </div>
                   </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground text-base leading-7">
-                    {item.description}
+                  <AccordionContent>
+                    <p className="text-muted-foreground text-base leading-7">
+                      {item.description}
+                    </p>
                   </AccordionContent>
                 </AccordionItem>
               ))}
@@ -88,7 +87,7 @@ export function FeaturesAccordion({
           </ScrollAnimation>
 
           <ScrollAnimation delay={0.2} direction="right" className="md:h-full">
-            <div className="border-border relative w-full min-w-0 overflow-hidden rounded-3xl border shadow-sm aspect-square md:aspect-auto md:h-full">
+            <div className="border-border relative aspect-square w-full min-w-0 overflow-hidden rounded-3xl border shadow-sm md:aspect-auto md:h-full">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={previewImage?.image || `${activeItem}-id`}

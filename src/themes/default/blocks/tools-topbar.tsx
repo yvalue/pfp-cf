@@ -18,7 +18,7 @@ import type {
   ToolTopbarConfig,
 } from '@/shared/types/blocks/tools';
 
-export function Topbar({
+export function ToolsTopbar({
   sidebar,
   topbar,
 }: {

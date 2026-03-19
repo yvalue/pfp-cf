@@ -307,7 +307,7 @@ function FieldHeader({
   return (
     <div className="flex flex-wrap items-center justify-between gap-2">
       <div className="flex flex-wrap items-center gap-2">
-        <h3 className="text-sm leading-6 font-medium">{label}</h3>
+        <label className="text-sm leading-6 font-medium">{label}</label>
         <FieldBadge variant={badgeVariant}>{badge}</FieldBadge>
       </div>
       {trailing ? <div>{trailing}</div> : null}
@@ -1404,9 +1404,9 @@ export function ToolPanel({ section }: ToolPanelProps) {
         <div className={cn(toolPanelPaneClassName, 'grid gap-4 lg:col-span-8')}>
           <div className="grid gap-4">
             <div className="grid gap-2">
-              <h2 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
+              <h1 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
                 {section.title}
-              </h2>
+              </h1>
               <p className="text-muted-foreground text-base leading-7 md:text-lg md:leading-8">
                 {section.description}
               </p>
@@ -1416,12 +1416,12 @@ export function ToolPanel({ section }: ToolPanelProps) {
               <section className={`${panelClassName} bg-background p-6`}>
                 <header className="mb-4 flex items-center justify-between gap-3">
                   <div>
-                    <h3 className="text-foreground text-lg font-semibold md:text-xl">
+                    <div className="text-lg font-semibold text-foreground md:text-xl">
                       {generatorT('generated_images')}
-                    </h3>
-                    <p className="text-muted-foreground text-xs leading-5">
+                    </div>
+                    <div className="text-muted-foreground text-xs leading-5">
                       {generatedImages.length}/{count}
-                    </p>
+                    </div>
                   </div>
                   {isGenerating ? (
                     <span className="text-muted-foreground text-xs leading-5">
@@ -1500,9 +1500,9 @@ export function ToolPanel({ section }: ToolPanelProps) {
               <div className="grid gap-4 lg:grid-cols-2">
                 <section className={`${panelClassName} bg-background p-6`}>
                   <header className="mb-3 text-center">
-                    <h3 className="text-foreground text-lg font-semibold md:text-xl">
+                    <h2 className="text-foreground text-lg font-semibold md:text-xl">
                       {section.result.example_title}
-                    </h3>
+                    </h2>
                   </header>
 
                   <div className="bg-foreground relative overflow-hidden rounded-3xl shadow-sm">
@@ -1544,9 +1544,9 @@ export function ToolPanel({ section }: ToolPanelProps) {
 
                 <section className={`${panelClassName} bg-background p-6`}>
                   <header>
-                    <h3 className="text-foreground text-center text-lg font-semibold md:text-xl">
+                    <h2 className="text-foreground text-center text-lg font-semibold md:text-xl">
                       {section.result.how_to_use_title}
-                    </h3>
+                    </h2>
                   </header>
                   <div className="mt-4 grid gap-3">
                     {section.result.usage_steps.map((step, index) => (
