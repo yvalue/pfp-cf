@@ -15,8 +15,8 @@ export default async function ToolsLayout({
   sidebar: ToolSidebarConfig;
   topbar: ToolTopbarConfig;
 }) {
-  const Sidebar = await getThemeBlockStrict('tools/sidebar');
-  const Topbar = await getThemeBlockStrict('tools/topbar');
+  const Sidebar = await getThemeBlockStrict('tools-sidebar');
+  const Topbar = await getThemeBlockStrict('tools-topbar');
 
   return (
     <div

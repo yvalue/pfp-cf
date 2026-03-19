@@ -1,4 +1,4 @@
-import { getThemeBlockStrict } from '@/core/theme';
+import { getThemeBlock } from '@/core/theme';
 import type { ToolPage as ToolPageType } from '@/shared/types/blocks/tools';
 
 export default async function ToolPage({
@@ -10,7 +10,7 @@ export default async function ToolPage({
   page: ToolPageType;
   data?: Record<string, any>;
 }) {
-  const DynamicPage = await getThemeBlockStrict('tools/dynamic-page');
+  const DynamicPage = await getThemeBlock('tools-dynamic-page');
 
   return <DynamicPage locale={locale} page={page} data={data} />;
 }
