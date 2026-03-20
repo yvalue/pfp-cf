@@ -380,19 +380,19 @@ export function Pricing({
           cardClassName
         )}
       >
-        <CardHeader className="p-0">
+        <CardHeader className="grid gap-4 p-0">
           <div className="flex items-center justify-between gap-4">
             <CardTitle className="min-w-0 flex-1 font-medium">
-              <h2 className="text-foreground text-lg font-semibold md:text-xl">
+              <h2 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
                 {displayedFreeCard.title}
               </h2>
             </CardTitle>
           </div>
-          <p className="text-muted-foreground mt-2 min-h-10 text-sm leading-6">
+          <p className="text-muted-foreground min-h-14 text-base leading-7 md:min-h-16 md:text-lg">
             {displayedFreeCard.description}
           </p>
 
-          <div className="mt-2 flex flex-wrap items-end gap-2">
+          <div className="flex flex-wrap items-end gap-2">
             <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
               <div className="text-foreground text-4xl leading-none font-bold tracking-tight">
                 {displayedFreeCard.price}
@@ -415,7 +415,7 @@ export function Pricing({
           </div>
         </CardHeader>
 
-        <div className="mt-2">
+        <div className="mt-4">
           <Button
             aria-disabled="true"
             className="border-border bg-background text-foreground hover:border-primary hover:bg-accent hover:text-primary h-10 w-full cursor-not-allowed rounded-xl border px-6 text-sm font-medium transition-colors duration-200"
@@ -424,27 +424,29 @@ export function Pricing({
           </Button>
         </div>
 
-        <CardContent className="border-border mt-2 flex flex-1 flex-col border-t p-0 pt-2">
-          {displayedFreeCard.features_title && (
-            <p className="text-muted-foreground mb-4 text-sm leading-6 font-medium">
-              {displayedFreeCard.features_title}
-            </p>
-          )}
+        <CardContent className="border-border mt-4 flex flex-1 flex-col border-t p-0 pt-4">
+          <div className="grid gap-4">
+            {displayedFreeCard.features_title && (
+              <p className="text-muted-foreground text-sm leading-6 font-medium">
+                {displayedFreeCard.features_title}
+              </p>
+            )}
 
-          <ul className="grid gap-3 text-sm leading-6">
-            {displayedFreeCard.features?.map((feature, index) => (
-              <li key={index} className="flex items-start gap-3">
-                {displayedFreeCard.crossed_features?.includes(feature) ? (
-                  <X className="mt-1 size-4 shrink-0 text-red-500" />
-                ) : (
-                  <Check className="text-primary mt-1 size-4 shrink-0" />
-                )}
-                <span className="text-muted-foreground text-sm leading-6">
-                  <TextHighlight text={feature} />
-                </span>
-              </li>
-            ))}
-          </ul>
+            <ul className="grid gap-3 text-sm leading-6">
+              {displayedFreeCard.features?.map((feature, index) => (
+                <li key={index} className="flex items-start gap-3">
+                  {displayedFreeCard.crossed_features?.includes(feature) ? (
+                    <X className="mt-1 size-4 shrink-0 text-red-500" />
+                  ) : (
+                    <Check className="text-primary mt-1 size-4 shrink-0" />
+                  )}
+                  <span className="text-muted-foreground text-sm leading-6">
+                    <TextHighlight text={feature} />
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </CardContent>
       </Card>
     );
@@ -454,23 +456,23 @@ export function Pricing({
     <section
       id={section.id}
       className={cn(
-        'bg-background relative overflow-hidden py-20 md:py-28',
+        'bg-background relative overflow-hidden py-16 md:py-24',
         section.className,
         className
       )}
     >
       <div className="relative container">
-        <div className="mx-auto mb-8 max-w-4xl px-4 text-center md:mb-10">
+        <div className="mx-auto mb-8 grid max-w-4xl gap-4 px-4 text-center">
           <h1 className="text-foreground mx-auto max-w-3xl text-4xl font-semibold tracking-tight text-balance md:text-6xl">
             {section.title}
           </h1>
-          <p className="text-muted-foreground mx-auto mt-5 max-w-4xl text-base leading-7 text-pretty whitespace-pre-line md:text-lg md:leading-8">
+          <p className="text-muted-foreground mx-auto max-w-4xl text-base leading-7 text-pretty whitespace-pre-line md:text-lg">
             {section.description}
           </p>
         </div>
 
         {section.groups && section.groups.length > 0 && (
-          <div className="mx-auto mb-4 flex w-full justify-center overflow-x-auto px-4 md:mb-6">
+          <div className="mx-auto mb-4 flex w-full justify-center overflow-x-auto px-4">
             <Tabs value={group} onValueChange={setGroup} className="max-w-full">
               <TabsList
                 className={cn(
@@ -540,10 +542,10 @@ export function Pricing({
                     : 'border-border bg-background'
                 )}
               >
-                <CardHeader className="p-0">
+                <CardHeader className="grid gap-4 p-0">
                   <div className="flex items-center justify-between gap-4">
                     <CardTitle className="min-w-0 flex-1 font-medium">
-                      <h2 className="text-foreground text-lg font-semibold md:text-xl">
+                      <h2 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
                         {item.title}
                       </h2>
                     </CardTitle>
@@ -553,11 +555,11 @@ export function Pricing({
                       </span>
                     )}
                   </div>
-                  <p className="text-muted-foreground mt-2 min-h-10 text-sm leading-6">
+                  <p className="text-muted-foreground min-h-14 text-base leading-7 md:min-h-16 md:text-lg">
                     {item.description}
                   </p>
 
-                  <div className="mt-2 flex flex-wrap items-end gap-2">
+                  <div className="flex flex-wrap items-end gap-2">
                     <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
                       <div className="text-foreground text-4xl leading-none font-bold tracking-tight">
                         {displayedItem.price}
@@ -607,13 +609,13 @@ export function Pricing({
                   </div>
 
                   {item.tip && (
-                    <p className="text-muted-foreground mt-2.5 text-sm leading-6">
+                    <p className="text-muted-foreground text-base leading-7 md:text-lg">
                       {item.tip}
                     </p>
                   )}
                 </CardHeader>
 
-                <div className="mt-2">
+                <div className="mt-4">
                   {isCurrentPlan ? (
                     <Button
                       variant="outline"
@@ -653,27 +655,29 @@ export function Pricing({
                   )}
                 </div>
 
-                <CardContent className="border-border mt-2 flex flex-1 flex-col border-t p-0 pt-2">
-                  {item.features_title && (
-                    <p className="text-muted-foreground mb-4 text-sm leading-6 font-medium">
-                      {item.features_title}
-                    </p>
-                  )}
+                <CardContent className="border-border mt-4 flex flex-1 flex-col border-t p-0 pt-4">
+                  <div className="grid gap-4">
+                    {item.features_title && (
+                      <p className="text-muted-foreground text-sm leading-6 font-medium">
+                        {item.features_title}
+                      </p>
+                    )}
 
-                  <ul className="grid gap-3 text-sm leading-6">
-                    {item.features?.map((feature, index) => (
-                      <li key={index} className="flex items-start gap-3">
-                        {item.crossed_features?.includes(feature) ? (
-                          <X className="mt-1 size-4 shrink-0 text-red-500" />
-                        ) : (
-                          <Check className="text-primary mt-1 size-4 shrink-0" />
-                        )}
-                        <span className="text-muted-foreground text-sm leading-6">
-                          <TextHighlight text={feature} />
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+                    <ul className="grid gap-3 text-sm leading-6">
+                      {item.features?.map((feature, index) => (
+                        <li key={index} className="flex items-start gap-3">
+                          {item.crossed_features?.includes(feature) ? (
+                            <X className="mt-1 size-4 shrink-0 text-red-500" />
+                          ) : (
+                            <Check className="text-primary mt-1 size-4 shrink-0" />
+                          )}
+                          <span className="text-muted-foreground text-sm leading-6">
+                            <TextHighlight text={feature} />
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </CardContent>
               </Card>
             );

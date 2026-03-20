@@ -27,11 +27,11 @@ export function FeaturesList({
       <div className="container overflow-hidden">
         <div className="mx-auto max-w-7xl">
           <ScrollAnimation>
-            <div className="grid gap-4 pb-12 text-center">
-              <h2 className="text-foreground text-4xl font-semibold tracking-tight text-balance break-words md:text-5xl">
+            <div className="grid gap-4 pb-8 text-center">
+              <h2 className="text-foreground text-3xl font-semibold tracking-tight text-balance break-words md:text-4xl">
                 {section.title}
               </h2>
-              <p className="text-muted-foreground mx-auto max-w-7xl text-lg leading-8 break-words md:text-xl md:leading-9">
+              <p className="text-muted-foreground mx-auto max-w-5xl text-lg leading-7 break-words md:text-xl">
                 {section.description}
               </p>
               {section.buttons && section.buttons.length > 0 && (
@@ -71,7 +71,7 @@ export function FeaturesList({
               delay={0.1}
             >
               <div className="h-full">
-                <div className="h-full w-full overflow-hidden rounded-2xl">
+                <div className="h-full w-full overflow-hidden rounded-3xl">
                   <LazyImage
                     src={section.image?.src ?? ''}
                     alt={section.image?.alt ?? ''}
@@ -93,10 +93,10 @@ export function FeaturesList({
                         </div>
                       )}
                       <div className="grid min-w-0 flex-1 gap-2 p-4">
-                        <h3 className="text-foreground min-w-0 text-lg leading-8 font-semibold break-words md:text-xl">
+                        <h3 className="text-foreground min-w-0 text-xl font-semibold tracking-tight break-words md:text-2xl">
                           {item.title}
                         </h3>
-                        <p className="text-muted-foreground min-w-0 text-base leading-7 break-words">
+                        <p className="text-muted-foreground min-w-0 text-base leading-7 break-words md:text-lg">
                           {item.description ?? ''}
                         </p>
                       </div>

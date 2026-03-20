@@ -12,7 +12,10 @@ Run this pass before finishing.
 
 - Are major cards and panels on `p-6`?
 - Are shell wrappers on `p-3` or `p-4`?
+- Are standard sections on `py-12 md:py-16`, with larger padding reserved for hero-like blocks only?
+- Is the block using the shared `.container` without unnecessary local gutter overrides?
 - Is the main rhythm mostly `gap-4`?
+- Is vertical rhythm handled by parent `gap-*` instead of repeated `mt-*` and `mb-*` on paragraphs and headings?
 - Are buttons, triggers, and compact controls on `h-10`?
 - Are badges on `px-2 py-1`?
 

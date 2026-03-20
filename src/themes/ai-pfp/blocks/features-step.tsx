@@ -22,22 +22,22 @@ export function FeaturesStep({
       <div className="m-4 rounded-3xl">
         <div className="@container relative container">
           <ScrollAnimation>
-            <div className="mx-auto max-w-2xl text-center">
+            <div className="mx-auto grid max-w-2xl gap-4 text-center">
               <span className="text-primary text-sm font-medium">{section.label}</span>
-              <h2 className="text-foreground mt-4 text-3xl font-semibold tracking-tight md:text-4xl">
+              <h2 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
                 {section.title}
               </h2>
-              <p className="text-muted-foreground mt-4 text-base leading-7 text-balance md:text-lg md:leading-8">
+              <p className="text-muted-foreground text-base leading-7 text-balance md:text-lg">
                 {section.description}
               </p>
             </div>
           </ScrollAnimation>
 
           <ScrollAnimation delay={0.2}>
-            <div className="mt-20 grid gap-12 @3xl:grid-cols-4">
+            <div className="mt-16 grid gap-12 @3xl:grid-cols-4">
               {section.items?.map((item, idx) => (
                 <div className="grid gap-6" key={idx}>
-                  <div className="text-center">
+                  <div className="grid gap-4 text-center">
                     <span className="bg-primary text-primary-foreground mx-auto flex size-10 items-center justify-center rounded-full text-sm font-semibold">
                       {idx + 1}
                     </span>
@@ -51,10 +51,10 @@ export function FeaturesStep({
                         <ArrowBigRight className="fill-muted stroke-primary absolute inset-y-0 right-0 my-auto mt-1 hidden translate-x-full @3xl:block" />
                       )}
                     </div>
-                    <h3 className="text-foreground mb-4 text-lg leading-7 font-semibold md:text-xl">
+                    <h3 className="text-foreground text-xl font-semibold tracking-tight md:text-2xl">
                       {item.title}
                     </h3>
-                    <p className="text-muted-foreground text-base leading-7 text-balance">
+                    <p className="text-muted-foreground text-base leading-7 text-balance md:text-lg">
                       {item.description}
                     </p>
                   </div>

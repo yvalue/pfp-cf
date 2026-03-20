@@ -30,7 +30,11 @@ Apply a constrained, repeatable Tailwind style system for the `ai-pfp` theme. Fa
 - Remove numeric opacity variants for UI surfaces in this theme.
 - Keep card chrome simple: `border border-border`, `rounded-3xl`; do not pair borders with shadows by default.
 - Keep controls simple: `h-10`, `rounded-xl`, `text-sm`.
+- Keep typography on a narrow scale; use the shared title, body, and supporting-copy sizes from `design-tokens.md` instead of page-local text scales.
 - Converge spacing onto a small set of tokens instead of preserving page-specific drift.
+- Keep section and container spacing standardized; use the shared section padding and container gutter rules from `spacing-system.md` instead of ad hoc `px-*`, `py-*`, `mt-*`, and `mb-*`.
+- Prefer parent `grid` or `flex` `gap-*` for vertical rhythm; do not rely on browser default paragraph or heading margins.
+- Treat `p-*`, `m-*`, `px-*`, `py-*`, `mt-*`, and `mb-*` as explicit layout decisions; add them only when the parent layout gap cannot express the spacing cleanly.
 - Prefer shared layout blocks over page-local wrappers when structure repeats.
 
 ## References

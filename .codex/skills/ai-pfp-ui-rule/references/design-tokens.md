@@ -40,8 +40,12 @@ Avoid mixing `rounded-full` into card and control surfaces unless the shape is i
 ## Typography
 
 Prefer:
-- body and controls: `text-sm`
-- supporting paragraphs: `text-sm leading-6` or `text-base leading-7`
-- headings: `font-semibold tracking-tight`
+- controls, labels, helper text: `text-sm`
+- section descriptions and body copy: `text-base leading-7`
+- long-form supporting paragraphs on larger sections: `md:text-lg md:leading-8`
+- small block titles: `text-xl font-semibold tracking-tight`
+- section titles: `text-3xl font-semibold tracking-tight md:text-4xl`
+- large hero-only titles: `text-4xl font-semibold tracking-tight md:text-6xl`
 
 Avoid custom tracking values and arbitrary text sizes unless the design clearly depends on them.
+Avoid mixing too many nearby text scales inside one block; keep each block to one title size and one body size unless there is a clear hierarchy need.

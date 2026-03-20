@@ -18,27 +18,27 @@ export function ToolsOverview({
         className
       )}
     >
-      <div className="container !max-w-5xl px-2 sm:px-6">
+      <div className="container !max-w-5xl">
         <ScrollAnimation>
-          <div className="text-center">
-            <h2 className="text-foreground mb-4 text-3xl font-semibold tracking-tight md:text-4xl">
+          <div className="grid gap-4 text-center">
+            <h2 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
               {section.title}
             </h2>
-            <p className="text-muted-foreground text-base leading-7 md:text-lg md:leading-8">
+            <p className="text-muted-foreground text-base leading-7 md:text-lg">
               {section.description}
             </p>
           </div>
         </ScrollAnimation>
 
         {section.items && section.items.length > 0 && (
-          <div className="mt-12 md:mt-16">
+          <div className="mt-8">
             {section.items.map((item, idx) => (
               <ScrollAnimation key={idx} delay={idx * 0.05}>
-                <article className={cn(idx > 0 && 'mt-8 md:mt-10')}>
-                  <h3 className="text-foreground mb-3 text-lg font-semibold md:text-xl">
+                <article className={cn('grid gap-4', idx > 0 && 'mt-8')}>
+                  <h3 className="text-foreground text-xl font-semibold tracking-tight md:text-2xl">
                     {item.title}
                   </h3>
-                  <p className="text-muted-foreground text-base leading-7 md:text-lg md:leading-8">
+                  <p className="text-muted-foreground text-base leading-7 md:text-lg">
                     {item.description}
                   </p>
                 </article>

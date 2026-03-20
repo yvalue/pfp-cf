@@ -675,12 +675,12 @@ export function HeroGenerator({
     <section
       id={section.id}
       className={cn(
-        'pt-16 pb-10 md:pt-24 md:pb-12',
+        'py-16 md:py-24',
         section.className,
         className
       )}
     >
-      <div className="mx-auto max-w-5xl px-4">
+      <div className="container !max-w-5xl">
         {announcementTitle && (
           <Link
             href={announcementUrl}
@@ -692,7 +692,7 @@ export function HeroGenerator({
           </Link>
         )}
 
-        <div className="mx-auto mt-6 max-w-5xl text-center">
+        <div className="mx-auto mt-6 grid max-w-5xl gap-4 text-center">
           <div className="text-foreground text-4xl leading-tight font-semibold tracking-tight md:text-6xl">
             <span className="inline-flex items-center gap-3 md:gap-4">
               {logoSrc ? (
@@ -709,7 +709,7 @@ export function HeroGenerator({
               <span>{logoName}</span>
             </span>
           </div>
-          <h1 className="text-primary mt-3 text-xl leading-tight font-semibold md:text-2xl">
+          <h1 className="text-primary text-2xl font-semibold tracking-tight md:text-3xl">
             {typedHighlightTitle}
             <span
               className={cn(
@@ -722,13 +722,13 @@ export function HeroGenerator({
             </span>
           </h1>
           {description && (
-            <p className="text-muted-foreground mx-auto mt-4 max-w-3xl text-base leading-6 md:text-lg md:leading-8">
+            <p className="text-muted-foreground mx-auto max-w-3xl text-base leading-7 md:text-lg">
               {description}
             </p>
           )}
         </div>
 
-        <div className="border-border bg-background mt-10 overflow-hidden rounded-3xl border">
+        <div className="border-border bg-background mt-8 overflow-hidden rounded-3xl border">
           <div className="relative">
             <Textarea
               value={prompt}

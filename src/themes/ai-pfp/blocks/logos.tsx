@@ -142,13 +142,13 @@ export function Logos({
   return (
     <section
       id={section.id}
-      className={cn('py-12 md:py-20', section.className, className)}
+      className={cn('py-10 md:py-15', section.className, className)}
     >
-      <div className={`mx-auto max-w-5xl px-6`}>
+      <div className="container !max-w-5xl">
         <ScrollAnimation>
           <p
             className={cn(
-              'text-muted-foreground text-center text-sm leading-6 font-medium md:text-base',
+              'text-muted-foreground text-center text-base leading-7 font-medium md:text-lg',
               useDeepNavy && 'text-[#E6ECF5]'
             )}
           >

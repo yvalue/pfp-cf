@@ -32,29 +32,29 @@ export function FeaturesFlow({ section }: { section: Section }) {
   return (
     <section
       id={section.id || section.name}
-      className={cn('py-16 md:py-24', section.className)}
+      className={cn('py-12 md:py-16', section.className)}
     >
       <motion.div
-        className="container mb-12 text-center"
+        className="container mb-8 grid gap-4 text-center"
         {...createFadeInVariant(0)}
       >
         {section.sr_only_title && (
           <h1 className="sr-only">{section.sr_only_title}</h1>
         )}
-        <h2 className="text-foreground mx-auto mb-6 max-w-full text-3xl font-semibold tracking-tight text-pretty md:max-w-5xl md:text-4xl">
+        <h2 className="text-foreground mx-auto max-w-full text-3xl font-semibold tracking-tight text-pretty md:max-w-5xl md:text-4xl">
           {section.title}
         </h2>
-        <p className="text-muted-foreground mx-auto mb-4 max-w-full text-base leading-7 md:max-w-5xl md:text-lg md:leading-8">
+        <p className="text-muted-foreground mx-auto max-w-5xl text-lg leading-7 break-words md:text-xl">
           {section.description}
         </p>
       </motion.div>
-      <div className="container flex flex-col items-center justify-center gap-8 px-6 md:gap-16">
+      <div className="container flex flex-col items-center justify-center gap-4 md:gap-6">
         {section.items.map((item, index) => {
           const isImageRight = item.image_position === 'right';
           return (
             <motion.div
               key={index}
-              className="grid items-center gap-6 py-16 sm:grid-cols-2 md:gap-12 lg:gap-24"
+              className="grid items-center gap-4 py-6 sm:grid-cols-2 md:gap-6 md:py-8 lg:gap-10"
               initial={{
                 opacity: 0,
                 y: 30,
@@ -83,7 +83,8 @@ export function FeaturesFlow({ section }: { section: Section }) {
               >
                 <LazyImage
                   src={item.image?.src ?? ''}
-                  className="rounded-3xl border border-border shadow-sm"
+                  wrapperClassName="mx-auto block w-full max-w-md"
+                  className="w-full rounded-3xl border border-border shadow-sm"
                   alt={item.image?.alt ?? ''}
                 />
               </motion.div>
@@ -99,10 +100,10 @@ export function FeaturesFlow({ section }: { section: Section }) {
                   ease: [0.22, 1, 0.36, 1] as const,
                 }}
               >
-                <h3 className="text-foreground text-base leading-7 font-semibold md:text-lg">
+                <h3 className="text-foreground text-xl font-semibold tracking-tight md:text-2xl">
                   {item.title}
                 </h3>
-                <p className="text-muted-foreground text-base leading-7">
+                <p className="text-muted-foreground text-base leading-7 md:text-lg">
                   {item.description}
                 </p>
               </motion.div>
