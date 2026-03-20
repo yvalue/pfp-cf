@@ -747,7 +747,7 @@ export function HeroGenerator({
               <ImageUploader
                 title="Reference image"
                 titleHint={`${getNanoBananaReferenceImageFormatsLabel()}, up to ${maxReferenceImageSizeMB}MB each`}
-                itemTileClassName="border-primary bg-accent hover:border-primary hover:bg-secondary border border-dashed"
+                itemTileClassName="border-primary bg-accent hover:border-primary hover:bg-secondary border shadow-none"
                 emptyTileClassName="border-primary bg-accent hover:border-primary hover:bg-secondary border border-dashed"
                 emptyIconShellClassName="border-primary bg-background text-primary border-dashed"
                 emptyLabelClassName="text-primary"

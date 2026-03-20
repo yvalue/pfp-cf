@@ -1061,7 +1061,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                               {referenceImageItems.map((item) => (
                                 <div
                                   key={item.id}
-                                  className="border-primary bg-background group relative overflow-hidden rounded-md border border-dashed"
+                                  className="border-primary bg-background group relative overflow-hidden rounded-md border"
                                 >
                                   <img
                                     src={item.preview}
