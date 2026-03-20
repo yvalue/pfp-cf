@@ -172,13 +172,13 @@ interface BackendTask {
 const POLL_INTERVAL = 5000;
 const GENERATION_TIMEOUT = 180000;
 const MAX_PROMPT_LENGTH = 1000;
-const sectionClassName = 'grid gap-3';
+const sectionClassName = 'grid gap-4';
 const selectTriggerClassName = 'h-10 w-full rounded-xl text-sm leading-6';
 const panelClassName = 'rounded-3xl border border-border';
 const comparisonLabelClassName =
   'absolute rounded-xl px-3 py-1 text-xs leading-5 font-semibold uppercase tracking-widest';
 const usageStepClassName =
-  'border-border bg-background flex items-start gap-3 rounded-3xl border px-4 py-4';
+  'border-border bg-background my-1 flex items-center rounded-xl border px-3 py-1';
 const toolPanelPaneClassName =
   'border-border bg-background min-w-0 rounded-3xl border p-5 shadow-sm';
 
@@ -1003,7 +1003,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
             <Tabs
               value={activeTab}
               onValueChange={(value) => setActiveTab(value as ToolPanelTab)}
-              className="flex min-h-0 flex-1 flex-col gap-3"
+              className="flex min-h-0 flex-1 flex-col gap-4"
             >
               <TabsList
                 className={cn(aiPfpSegmentedTabsListClassName, 'grid-cols-2')}
@@ -1161,17 +1161,17 @@ export function ToolPanel({ section }: ToolPanelProps) {
                       }
                     />
 
-                    <div className="border-border bg-background h-32 overflow-hidden rounded-3xl border">
+                    <div className="border-border bg-background h-32 overflow-hidden rounded-2xl border">
                       <textarea
                         value={prompt}
                         onChange={(event) => setPrompt(event.target.value)}
                         placeholder={section.description_placeholder}
-                        className="text-muted-foreground placeholder:text-muted-foreground h-full w-full resize-none border-0 p-4 text-sm leading-5 outline-none"
+                        className="text-foreground placeholder:text-muted-foreground h-full w-full resize-none border-0 p-2 text-sm leading-5 outline-none"
                       />
                     </div>
                   </section>
 
-                  <section className="grid gap-3">
+                  <section className="grid gap-2">
                     <FieldHeader
                       badge={section.fields.optional_badge}
                       label={section.fields.effect_style_label}
@@ -1351,55 +1351,57 @@ export function ToolPanel({ section }: ToolPanelProps) {
               </TabsContent>
             </Tabs>
 
-            {!isMounted ? (
-              <Button className="w-full text-sm leading-6" disabled size="lg">
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {generatorT('loading')}
-              </Button>
-            ) : isCheckSign ? (
-              <Button className="w-full text-sm leading-6" disabled size="lg">
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {generatorT('checking_account')}
-              </Button>
-            ) : user ? (
-              <Button
-                size="lg"
-                className="mt-auto w-full rounded-xl text-sm leading-6"
-                onClick={handleGenerate}
-                disabled={
-                  isGenerating ||
-                  isPromptTooLong ||
-                  isReferenceUploading ||
-                  hasReferenceUploadError ||
-                  referenceImageUrls.length === 0
-                }
-              >
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {generatorT('generating')}
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="mr-2 h-4 w-4" />
-                    {section.buttons.submit}
-                  </>
-                )}
-                <span className="ml-2 inline-flex items-center gap-2 text-sm leading-6">
-                  {totalCost}
-                  <RiVipDiamondFill className="size-4 text-amber-400" />
-                </span>
-              </Button>
-            ) : (
-              <Button
-                size="lg"
-                className="w-full text-sm leading-6"
-                onClick={() => setIsShowSignModal(true)}
-              >
-                <User className="mr-2 h-4 w-4" />
-                {generatorT('sign_in_to_generate')}
-              </Button>
-            )}
+            <div className="mt-auto pt-4">
+              {!isMounted ? (
+                <Button className="w-full text-sm leading-6" disabled size="lg">
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {generatorT('loading')}
+                </Button>
+              ) : isCheckSign ? (
+                <Button className="w-full text-sm leading-6" disabled size="lg">
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {generatorT('checking_account')}
+                </Button>
+              ) : user ? (
+                <Button
+                  size="lg"
+                  className="w-full rounded-xl text-sm leading-6"
+                  onClick={handleGenerate}
+                  disabled={
+                    isGenerating ||
+                    isPromptTooLong ||
+                    isReferenceUploading ||
+                    hasReferenceUploadError ||
+                    referenceImageUrls.length === 0
+                  }
+                >
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {generatorT('generating')}
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="mr-2 h-4 w-4" />
+                      {section.buttons.submit}
+                    </>
+                  )}
+                  <span className="ml-2 inline-flex items-center gap-2 text-sm leading-6">
+                    {totalCost}
+                    <RiVipDiamondFill className="size-4 text-amber-400" />
+                  </span>
+                </Button>
+              ) : (
+                <Button
+                  size="lg"
+                  className="w-full text-sm leading-6"
+                  onClick={() => setIsShowSignModal(true)}
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  {generatorT('sign_in_to_generate')}
+                </Button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -1500,19 +1502,19 @@ export function ToolPanel({ section }: ToolPanelProps) {
               </section>
             ) : (
               <div className="grid gap-3 lg:grid-cols-2">
-                <section className={`${panelClassName} bg-background grid gap-2 p-5`}>
+                <section className={`${panelClassName} bg-background grid gap-1 p-5`}>
                   <header className="grid gap-2 text-center">
                     <h3 className="text-foreground text-lg font-semibold tracking-tight md:text-xl">
                       {section.result.example_title}
                     </h3>
                   </header>
 
-                  <div className="bg-foreground relative overflow-hidden rounded-3xl shadow-sm">
+                  <div className="relative aspect-square w-full overflow-hidden rounded-3xl">
                     <ReactCompareSlider
                       position={50}
                       handle={<ComparisonHandle />}
                       itemOne={
-                        <div className="relative aspect-square w-full">
+                        <div className="relative size-full">
                           <ReactCompareSliderImage
                             alt={section.images.before.alt}
                             src={section.images.before.src}
@@ -1526,7 +1528,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                         </div>
                       }
                       itemTwo={
-                        <div className="relative aspect-square w-full">
+                        <div className="relative size-full">
                           <ReactCompareSliderImage
                             alt={section.images.after.alt}
                             src={section.images.after.src}
@@ -1539,7 +1541,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                           </div>
                         </div>
                       }
-                      className="aspect-square w-full"
+                      className="size-full"
                     />
                   </div>
                 </section>
@@ -1553,10 +1555,10 @@ export function ToolPanel({ section }: ToolPanelProps) {
                   <div className="grid gap-3">
                     {section.result.usage_steps.map((step, index) => (
                       <div key={step} className={usageStepClassName}>
-                        <div className="bg-primary text-primary-foreground flex size-8 shrink-0 items-center justify-center rounded-xl text-sm font-semibold">
-                          {index + 1}
-                        </div>
-                        <p className="text-muted-foreground flex-1 pt-0.5 text-sm leading-7 md:text-base">
+                        <p className="text-muted-foreground text-sm leading-7 md:text-base">
+                          <span className="text-primary font-semibold">
+                            {index + 1}:
+                          </span>{' '}
                           {step}
                         </p>
                       </div>
@@ -1573,7 +1575,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
             )}
 
             {!isGenerating ? (
-              <div className="flex justify-center">
+              <div className="mt-4 flex justify-center">
                 <Button
                   variant="outline"
                   className="text-foreground rounded-xl text-sm leading-6 shadow-none"
