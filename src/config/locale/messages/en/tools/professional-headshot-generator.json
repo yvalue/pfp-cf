@@ -4,7 +4,7 @@
     "description": "Create professional AI headshots with a guided tool dashboard, usage instructions, and practical photo preparation advice."
   },
   "page": {
-    "show_sections": ["generator", "guide", "base_image_guide", "faq"],
+    "show_sections": ["generator", "overview", "requirements", "faq"],
     "sections": {
       "generator": {
         "block": "tool-panel",
@@ -194,7 +194,7 @@
           }
         }
       },
-      "guide": {
+      "overview": {
         "block": "tools-overview",
         "id": "overview",
         "title": "Professional Headshot Full Guide",
@@ -219,7 +219,7 @@
           }
         ]
       },
-      "base_image_guide": {
+      "requirements": {
         "block": "tools-requirements",
         "id": "requirements",
         "title": "How to Create an Upload-Ready Professional Headshot Base Image",

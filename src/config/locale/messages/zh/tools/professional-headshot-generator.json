@@ -4,6 +4,7 @@
     "description": "使用带引导的工具工作台快速生成专业 AI 证件照，并查看使用说明与拍摄准备建议。"
   },
   "page": {
+    "show_sections": ["generator", "overview", "requirements", "faq"],
     "sections": {
       "generator": {
         "id": "generator",
@@ -192,7 +193,7 @@
           }
         }
       },
-      "guide": {
+      "overview": {
         "block": "tools-overview",
         "id": "overview",
         "title": "专业证件照完整指南",
@@ -217,7 +218,7 @@
           }
         ]
       },
-      "base_image_guide": {
+      "requirements": {
         "block": "tools-requirements",
         "id": "requirements",
         "title": "如何拍出适合上传的专业证件照底图",
