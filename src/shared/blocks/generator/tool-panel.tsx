@@ -172,13 +172,7 @@ interface BackendTask {
 const POLL_INTERVAL = 5000;
 const GENERATION_TIMEOUT = 180000;
 const MAX_PROMPT_LENGTH = 1000;
-const sectionClassName = 'grid gap-4';
-const selectTriggerClassName = 'h-10 w-full rounded-xl text-sm leading-6';
 const panelClassName = 'rounded-3xl border border-border';
-const comparisonLabelClassName =
-  'absolute rounded-xl px-3 py-1 text-xs leading-5 font-semibold uppercase tracking-widest';
-const usageStepClassName =
-  'border-border bg-background my-1 flex items-center rounded-xl border px-3 py-1';
 const toolPanelPaneClassName =
   'border-border bg-background min-w-0 rounded-3xl border p-5 shadow-sm';
 
@@ -995,9 +989,8 @@ export function ToolPanel({ section }: ToolPanelProps) {
     <section
       id={section.id || section.name}
       data-slot="generator-tool-panel"
-      className="border-0 px-0 py-3"
     >
-      <div className="grid gap-3 lg:grid-cols-12 xl:grid-cols-12">
+      <div className="grid gap-3 lg:grid-cols-12 xl:grid-cols-12 py-3">
         <div className={cn(toolPanelPaneClassName, 'lg:col-span-4')}>
           <div className="flex h-full flex-col gap-3">
             <Tabs
@@ -1023,7 +1016,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
               </TabsList>
 
               <TabsContent value="upload" className="mt-0 flex-1">
-                <div className={sectionClassName}>
+                <div className="grid gap-4">
                   <section className="grid gap-2">
                     <FieldHeader
                       badge={section.fields.required_badge}
@@ -1247,7 +1240,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
               </TabsContent>
 
               <TabsContent value="parameter" className="mt-0 flex-1">
-                <div className={sectionClassName}>
+                <div className="grid gap-4">
                   <div className="grid min-w-0 gap-2">
                     <FieldHeader
                       badge={section.fields.default_badge}
@@ -1257,7 +1250,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                       value={modelFamilyId}
                       onValueChange={setModelFamilyId}
                     >
-                      <SelectTrigger className={selectTriggerClassName}>
+                      <SelectTrigger className="h-10 w-full rounded-xl text-sm leading-6">
                         <SelectValue
                           placeholder={generatorT('form.select_model')}
                         />
@@ -1282,7 +1275,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                         value={aspectRatio}
                         onValueChange={setAspectRatio}
                       >
-                        <SelectTrigger className={selectTriggerClassName}>
+                        <SelectTrigger className="h-10 w-full rounded-xl text-sm leading-6">
                           <SelectValue aria-label={aspectRatio}>
                             <AspectRatioOption ratio={aspectRatio} selected />
                           </SelectValue>
@@ -1311,7 +1304,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                           setResolution(value as NanoBananaResolution)
                         }
                       >
-                        <SelectTrigger className={selectTriggerClassName}>
+                        <SelectTrigger className="h-10 w-full rounded-xl text-sm leading-6">
                           <SelectValue
                             placeholder={generatorT('form.select_quality')}
                           />
@@ -1332,7 +1325,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                         label={section.fields.count_label}
                       />
                       <Select value={countValue} onValueChange={setCountValue}>
-                        <SelectTrigger className={selectTriggerClassName}>
+                        <SelectTrigger className="h-10 w-full rounded-xl text-sm leading-6">
                           <SelectValue
                             placeholder={section.fields.count_label}
                           />
@@ -1521,7 +1514,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                             className="object-cover"
                           />
                           <div
-                            className={`${comparisonLabelClassName} bg-foreground text-primary-foreground top-4 left-4`}
+                            className="bg-foreground text-primary-foreground absolute top-4 left-4 rounded-xl px-3 py-1 text-xs leading-5 font-semibold uppercase tracking-widest"
                           >
                             {section.result.before_label}
                           </div>
@@ -1535,7 +1528,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                             className="object-cover"
                           />
                           <div
-                            className={`${comparisonLabelClassName} bg-background text-foreground top-4 right-4`}
+                            className="bg-background text-foreground absolute top-4 right-4 rounded-xl px-3 py-1 text-xs leading-5 font-semibold uppercase tracking-widest"
                           >
                             {section.result.after_label}
                           </div>
@@ -1546,15 +1539,18 @@ export function ToolPanel({ section }: ToolPanelProps) {
                   </div>
                 </section>
 
-                <section className={`${panelClassName} bg-background grid gap-2 p-5`}>
-                  <header className="grid gap-2">
-                    <h3 className="text-foreground text-center text-lg font-semibold tracking-tight md:text-xl">
+                <section className={`${panelClassName} bg-background grid gap-0 p-5`}>
+                  <header className="text-center">
+                    <h3 className="text-foreground text-lg font-semibold tracking-tight md:text-xl">
                       {section.result.how_to_use_title}
                     </h3>
                   </header>
-                  <div className="grid gap-3">
+                  <div className="-mt-8 grid gap-4">
                     {section.result.usage_steps.map((step, index) => (
-                      <div key={step} className={usageStepClassName}>
+                      <div
+                        key={step}
+                        className="border-border bg-background flex items-center rounded-xl border px-3 py-1"
+                      >
                         <p className="text-muted-foreground text-sm leading-7 md:text-base">
                           <span className="text-primary font-semibold">
                             {index + 1}:

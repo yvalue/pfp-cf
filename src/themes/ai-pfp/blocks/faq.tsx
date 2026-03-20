@@ -34,7 +34,7 @@ export function Faq({
           </div>
 
           <div className="border-primary/40 bg-background overflow-hidden rounded-3xl border">
-            <div className="px-6 py-6">
+            <div className="px-6">
               <Accordion type="single" collapsible className="w-full">
                 {section.items?.map((item, idx) => (
                   <AccordionItem
@@ -42,7 +42,7 @@ export function Faq({
                     value={item.question || item.title || ''}
                     className="border-primary/40 border-b last:border-b-0"
                   >
-                    <AccordionTrigger className="text-foreground cursor-pointer items-center py-5 text-lg font-semibold tracking-tight hover:no-underline md:text-xl">
+                    <AccordionTrigger className="text-foreground cursor-pointer items-center py-5 text-base font-semibold tracking-tight hover:no-underline md:text-lg">
                       {item.question || item.title || ''}
                     </AccordionTrigger>
                     <AccordionContent className="pb-4">

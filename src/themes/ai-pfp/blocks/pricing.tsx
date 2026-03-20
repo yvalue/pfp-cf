@@ -456,7 +456,7 @@ export function Pricing({
     <section
       id={section.id}
       className={cn(
-        'bg-background relative overflow-hidden pt-16 md:pt-24 pb-4 md:pb-8',
+        'bg-background relative overflow-hidden py-16 md:py-24',
         section.className,
         className
       )}

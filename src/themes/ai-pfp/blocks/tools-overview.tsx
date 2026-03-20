@@ -18,7 +18,7 @@ export function ToolsOverview({
         className
       )}
     >
-      <div className="container !max-w-5xl">
+      <div className="container !max-w-4xl">
         <ScrollAnimation>
           <div className="grid gap-4 text-center">
             <h2 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">

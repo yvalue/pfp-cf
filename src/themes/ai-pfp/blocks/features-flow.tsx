@@ -32,7 +32,7 @@ export function FeaturesFlow({ section }: { section: Section }) {
   return (
     <section
       id={section.id || section.name}
-      className={cn('py-12 md:py-16', section.className)}
+      className={cn('py-16 md:py-24', section.className)}
     >
       <motion.div
         className="container mb-8 grid gap-4 text-center"
