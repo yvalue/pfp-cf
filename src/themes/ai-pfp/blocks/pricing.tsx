@@ -380,15 +380,15 @@ export function Pricing({
           cardClassName
         )}
       >
-        <CardHeader className="grid gap-4 p-0">
+        <CardHeader className="grid gap-2 p-0">
           <div className="flex items-center justify-between gap-4">
             <CardTitle className="min-w-0 flex-1 font-medium">
-              <h2 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
+              <h2 className="text-foreground text-2xl font-semibold tracking-tight md:text-3xl">
                 {displayedFreeCard.title}
               </h2>
             </CardTitle>
           </div>
-          <p className="text-muted-foreground min-h-14 text-base leading-7 md:min-h-16 md:text-lg">
+          <p className="text-muted-foreground min-h-14 text-sm leading-7 md:min-h-16 md:text-base">
             {displayedFreeCard.description}
           </p>
 
@@ -415,7 +415,7 @@ export function Pricing({
           </div>
         </CardHeader>
 
-        <div className="mt-4">
+        <div className="mt-2">
           <Button
             aria-disabled="true"
             className="border-border bg-background text-foreground hover:border-primary hover:bg-accent hover:text-primary h-10 w-full cursor-not-allowed rounded-xl border px-6 text-sm font-medium transition-colors duration-200"
@@ -424,15 +424,15 @@ export function Pricing({
           </Button>
         </div>
 
-        <CardContent className="border-border mt-4 flex flex-1 flex-col border-t p-0 pt-4">
-          <div className="grid gap-4">
+        <CardContent className="border-border mt-2 flex flex-1 flex-col border-t p-0 pt-3">
+          <div className="grid gap-3">
             {displayedFreeCard.features_title && (
               <p className="text-muted-foreground text-sm leading-6 font-medium">
                 {displayedFreeCard.features_title}
               </p>
             )}
 
-            <ul className="grid gap-3 text-sm leading-6">
+            <ul className="grid gap-2 text-sm leading-6">
               {displayedFreeCard.features?.map((feature, index) => (
                 <li key={index} className="flex items-start gap-3">
                   {displayedFreeCard.crossed_features?.includes(feature) ? (
@@ -456,12 +456,12 @@ export function Pricing({
     <section
       id={section.id}
       className={cn(
-        'bg-background relative overflow-hidden py-16 md:py-24',
+        'bg-background relative overflow-hidden pt-16 md:pt-24 pb-4 md:pb-8',
         section.className,
         className
       )}
     >
-      <div className="relative container">
+      <div className="relative container mt-6">
         <div className="mx-auto mb-8 grid max-w-4xl gap-4 px-4 text-center">
           <h1 className="text-foreground mx-auto max-w-3xl text-4xl font-semibold tracking-tight text-balance md:text-6xl">
             {section.title}
@@ -472,7 +472,7 @@ export function Pricing({
         </div>
 
         {section.groups && section.groups.length > 0 && (
-          <div className="mx-auto mb-4 flex w-full justify-center overflow-x-auto px-4">
+          <div className="mx-auto mb-4 flex w-full justify-center overflow-x-auto px-4 py-4">
             <Tabs value={group} onValueChange={setGroup} className="max-w-full">
               <TabsList
                 className={cn(
@@ -509,7 +509,7 @@ export function Pricing({
 
         <div
           className={cn(
-            'mx-auto grid w-full gap-4',
+            'mx-auto grid w-full gap-6',
             pricingGridClassName
           )}
         >
@@ -542,10 +542,10 @@ export function Pricing({
                     : 'border-border bg-background'
                 )}
               >
-                <CardHeader className="grid gap-4 p-0">
+                <CardHeader className="grid gap-2 p-0">
                   <div className="flex items-center justify-between gap-4">
                     <CardTitle className="min-w-0 flex-1 font-medium">
-                      <h2 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
+                      <h2 className="text-foreground text-2xl font-semibold tracking-tight md:text-3xl">
                         {item.title}
                       </h2>
                     </CardTitle>
@@ -555,7 +555,7 @@ export function Pricing({
                       </span>
                     )}
                   </div>
-                  <p className="text-muted-foreground min-h-14 text-base leading-7 md:min-h-16 md:text-lg">
+                  <p className="text-muted-foreground min-h-14 text-sm leading-7 md:min-h-16 md:text-base">
                     {item.description}
                   </p>
 
@@ -609,13 +609,13 @@ export function Pricing({
                   </div>
 
                   {item.tip && (
-                    <p className="text-muted-foreground text-base leading-7 md:text-lg">
+                    <p className="text-muted-foreground text-sm leading-7 md:text-base">
                       {item.tip}
                     </p>
                   )}
                 </CardHeader>
 
-                <div className="mt-4">
+                <div className="mt-2">
                   {isCurrentPlan ? (
                     <Button
                       variant="outline"
@@ -655,15 +655,15 @@ export function Pricing({
                   )}
                 </div>
 
-                <CardContent className="border-border mt-4 flex flex-1 flex-col border-t p-0 pt-4">
-                  <div className="grid gap-4">
+                <CardContent className="border-border mt-2 flex flex-1 flex-col border-t p-0 pt-3">
+                  <div className="grid gap-3">
                     {item.features_title && (
                       <p className="text-muted-foreground text-sm leading-6 font-medium">
                         {item.features_title}
                       </p>
                     )}
 
-                    <ul className="grid gap-3 text-sm leading-6">
+                    <ul className="grid gap-2 text-sm leading-6">
                       {item.features?.map((feature, index) => (
                         <li key={index} className="flex items-start gap-3">
                           {item.crossed_features?.includes(feature) ? (

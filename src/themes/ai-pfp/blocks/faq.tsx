@@ -24,7 +24,7 @@ export function Faq({
         <ScrollAnimation>
           <div className="px-6 py-6 text-center md:px-6 md:py-6">
             <div className="mx-auto grid max-w-3xl gap-4">
-              <h2 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
+              <h2 className="text-foreground text-2xl font-semibold tracking-tight md:text-3xl">
                 {section.title}
               </h2>
               <p className="text-muted-foreground text-base leading-7 md:text-lg">
@@ -42,7 +42,7 @@ export function Faq({
                     value={item.question || item.title || ''}
                     className="border-primary/40 border-b last:border-b-0"
                   >
-                    <AccordionTrigger className="text-foreground cursor-pointer items-center py-5 text-xl font-semibold tracking-tight hover:no-underline md:text-2xl">
+                    <AccordionTrigger className="text-foreground cursor-pointer items-center py-5 text-lg font-semibold tracking-tight hover:no-underline md:text-xl">
                       {item.question || item.title || ''}
                     </AccordionTrigger>
                     <AccordionContent className="pb-4">

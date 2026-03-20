@@ -36,25 +36,27 @@ export function FeaturesStep({
           <ScrollAnimation delay={0.2}>
             <div className="mt-16 grid gap-12 @3xl:grid-cols-4">
               {section.items?.map((item, idx) => (
-                <div className="grid gap-6" key={idx}>
-                  <div className="grid gap-4 text-center">
+                <div className="grid gap-4" key={idx}>
+                  <div className="grid gap-2 text-center">
                     <span className="bg-primary text-primary-foreground mx-auto flex size-10 items-center justify-center rounded-full text-sm font-semibold">
                       {idx + 1}
                     </span>
                     <div className="relative">
-                      <div className="mx-auto my-6 w-fit">
+                      <div className="mx-auto my-3 w-fit">
                         {item.icon && (
                           <SmartIcon name={item.icon as string} size={24} />
                         )}
                       </div>
+                    </div>
+                    <div className="relative">
+                      <h3 className="text-foreground text-lg font-semibold tracking-tight md:text-xl">
+                        {item.title}
+                      </h3>
                       {idx < (section.items?.length ?? 0) - 1 && (
-                        <ArrowBigRight className="fill-muted stroke-primary absolute inset-y-0 right-0 my-auto mt-1 hidden translate-x-full @3xl:block" />
+                        <ArrowBigRight className="fill-muted stroke-primary absolute top-1/2 right-0 hidden -translate-y-1/2 translate-x-full @3xl:block" />
                       )}
                     </div>
-                    <h3 className="text-foreground text-xl font-semibold tracking-tight md:text-2xl">
-                      {item.title}
-                    </h3>
-                    <p className="text-muted-foreground text-base leading-7 text-balance md:text-lg">
+                    <p className="text-muted-foreground text-sm leading-7 text-balance md:text-base">
                       {item.description}
                     </p>
                   </div>

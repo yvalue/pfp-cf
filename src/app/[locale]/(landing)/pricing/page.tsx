@@ -41,12 +41,14 @@ export default async function PricingPage({
     sections: {
       pricing: {
         ...t.raw('page.sections.pricing'),
+        className: '!bg-slate-50 dark:!bg-slate-950',
         data: {
           currentSubscription,
         },
       },
       faq: {
         ...t.raw('page.sections.faq'),
+        className: 'bg-slate-50 dark:bg-slate-950',
       },
     },
   };
@@ -54,5 +56,9 @@ export default async function PricingPage({
   // load page component
   const Page = await getThemePage('dynamic-page');
 
-  return <Page locale={locale} page={page} />;
+  return (
+    <div className="bg-slate-50 dark:bg-slate-950">
+      <Page locale={locale} page={page} />
+    </div>
+  );
 }

@@ -172,15 +172,15 @@ interface BackendTask {
 const POLL_INTERVAL = 5000;
 const GENERATION_TIMEOUT = 180000;
 const MAX_PROMPT_LENGTH = 1000;
-const sectionClassName = 'grid gap-4';
+const sectionClassName = 'grid gap-3';
 const selectTriggerClassName = 'h-10 w-full rounded-xl text-sm leading-6';
 const panelClassName = 'rounded-3xl border border-border';
 const comparisonLabelClassName =
   'absolute rounded-xl px-3 py-1 text-xs leading-5 font-semibold uppercase tracking-widest';
 const usageStepClassName =
-  'border-border bg-background flex items-center gap-3 rounded-3xl border p-6';
+  'border-border bg-background flex items-start gap-3 rounded-3xl border px-4 py-4';
 const toolPanelPaneClassName =
-  'border-border bg-background min-w-0 rounded-3xl border p-6 shadow-sm';
+  'border-border bg-background min-w-0 rounded-3xl border p-5 shadow-sm';
 
 async function uploadImageFile(file: File) {
   const formData = new FormData();
@@ -995,15 +995,15 @@ export function ToolPanel({ section }: ToolPanelProps) {
     <section
       id={section.id || section.name}
       data-slot="generator-tool-panel"
-      className="border-0 px-0 py-4"
+      className="border-0 px-0 py-3"
     >
-      <div className="grid gap-4 lg:grid-cols-12 xl:grid-cols-12">
+      <div className="grid gap-3 lg:grid-cols-12 xl:grid-cols-12">
         <div className={cn(toolPanelPaneClassName, 'lg:col-span-4')}>
-          <div className="flex h-full flex-col gap-4">
+          <div className="flex h-full flex-col gap-3">
             <Tabs
               value={activeTab}
               onValueChange={(value) => setActiveTab(value as ToolPanelTab)}
-              className="flex min-h-0 flex-1 flex-col gap-4"
+              className="flex min-h-0 flex-1 flex-col gap-3"
             >
               <TabsList
                 className={cn(aiPfpSegmentedTabsListClassName, 'grid-cols-2')}
@@ -1171,7 +1171,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                     </div>
                   </section>
 
-                  <section className="grid gap-4">
+                  <section className="grid gap-3">
                     <FieldHeader
                       badge={section.fields.optional_badge}
                       label={section.fields.effect_style_label}
@@ -1272,7 +1272,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                     </Select>
                   </div>
 
-                  <div className="grid gap-4">
+                  <div className="grid gap-3">
                     <div className="grid min-w-0 gap-2">
                       <FieldHeader
                         badge={section.fields.default_badge}
@@ -1403,22 +1403,22 @@ export function ToolPanel({ section }: ToolPanelProps) {
           </div>
         </div>
 
-        <div className={cn(toolPanelPaneClassName, 'grid gap-4 lg:col-span-8')}>
-            <div className="grid gap-4">
-              <div className="grid gap-4">
-                <h1 className="text-foreground text-4xl font-semibold tracking-tight md:text-6xl">
-                  {section.title}
-                </h1>
-              <p className="text-muted-foreground text-base leading-7 md:text-lg">
+        <div className={cn(toolPanelPaneClassName, 'grid gap-3 lg:col-span-8')}>
+          <div className="grid gap-3">
+            <div className="grid gap-3">
+              <h1 className="text-foreground text-lg font-semibold tracking-tight md:text-2xl">
+                {section.title}
+              </h1>
+              <p className="text-muted-foreground text-sm leading-7 md:text-base">
                 {section.description}
               </p>
             </div>
 
             {isGenerating || generatedImages.length > 0 ? (
-              <section className={`${panelClassName} bg-background p-6`}>
-                <header className="mb-4 flex items-center justify-between gap-3">
+              <section className={`${panelClassName} bg-background p-5`}>
+                <header className="mb-3 flex items-center justify-between gap-3">
                   <div>
-                    <h3 className="text-foreground text-xl font-semibold tracking-tight md:text-2xl">
+                    <h3 className="text-foreground text-lg font-semibold tracking-tight md:text-xl">
                       {generatorT('generated_images')}
                     </h3>
                     <div className="text-muted-foreground text-xs leading-5">
@@ -1433,7 +1433,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                 </header>
 
                 {(isGenerating || progress > 0) && (
-                  <div className="border-border bg-muted mb-4 grid gap-2 rounded-3xl border p-6">
+                  <div className="border-border bg-muted mb-3 grid gap-2 rounded-3xl border p-5">
                     <div className="flex items-center justify-between text-sm leading-6">
                       <span>{generatorT('progress')}</span>
                       <span>{progress}%</span>
@@ -1446,8 +1446,8 @@ export function ToolPanel({ section }: ToolPanelProps) {
                   <div
                     className={
                       generatedImages.length === 1
-                        ? 'grid grid-cols-1 gap-4'
-                        : 'grid gap-4 sm:grid-cols-2'
+                        ? 'grid grid-cols-1 gap-3'
+                        : 'grid gap-3 sm:grid-cols-2'
                     }
                   >
                     {generatedImages.map((image) => (
@@ -1492,17 +1492,17 @@ export function ToolPanel({ section }: ToolPanelProps) {
                   </div>
                 ) : (
                   <div className="border-border bg-muted flex min-h-52 items-center justify-center rounded-3xl border border-dashed p-6 text-center">
-                    <p className="text-muted-foreground text-base leading-7 md:text-lg">
+                    <p className="text-muted-foreground text-sm leading-7 md:text-base">
                       {generatorT('ready_for_generating')}
                     </p>
                   </div>
                 )}
               </section>
             ) : (
-              <div className="grid gap-4 lg:grid-cols-2">
-                <section className={`${panelClassName} bg-background grid gap-4 p-6`}>
-                  <header className="text-center">
-                    <h3 className="text-foreground text-xl font-semibold tracking-tight md:text-2xl">
+              <div className="grid gap-3 lg:grid-cols-2">
+                <section className={`${panelClassName} bg-background grid gap-2 p-5`}>
+                  <header className="grid gap-2 text-center">
+                    <h3 className="text-foreground text-lg font-semibold tracking-tight md:text-xl">
                       {section.result.example_title}
                     </h3>
                   </header>
@@ -1544,19 +1544,19 @@ export function ToolPanel({ section }: ToolPanelProps) {
                   </div>
                 </section>
 
-                <section className={`${panelClassName} bg-background grid gap-4 p-6`}>
-                  <header>
-                    <h3 className="text-foreground text-center text-xl font-semibold tracking-tight md:text-2xl">
+                <section className={`${panelClassName} bg-background grid gap-2 p-5`}>
+                  <header className="grid gap-2">
+                    <h3 className="text-foreground text-center text-lg font-semibold tracking-tight md:text-xl">
                       {section.result.how_to_use_title}
                     </h3>
                   </header>
                   <div className="grid gap-3">
                     {section.result.usage_steps.map((step, index) => (
                       <div key={step} className={usageStepClassName}>
-                        <div className="bg-primary text-primary-foreground flex size-7 items-center justify-center rounded-xl text-sm font-semibold shadow-sm">
+                        <div className="bg-primary text-primary-foreground flex size-8 shrink-0 items-center justify-center rounded-xl text-sm font-semibold">
                           {index + 1}
                         </div>
-                        <p className="text-muted-foreground text-base leading-7 md:text-lg">
+                        <p className="text-muted-foreground flex-1 pt-0.5 text-sm leading-7 md:text-base">
                           {step}
                         </p>
                       </div>
