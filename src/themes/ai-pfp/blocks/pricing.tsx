@@ -456,9 +456,10 @@ export function Pricing({
     <section
       id={section.id}
       className={cn(
-        'bg-background relative overflow-hidden py-16 md:py-24',
+        'relative overflow-hidden py-16 md:py-24',
         section.className,
-        className
+        className,
+        'bg-[linear-gradient(180deg,#f4efff_0%,#f7f4ff_42%,#ffffff_100%)]'
       )}
     >
       <div className="relative container mt-6">

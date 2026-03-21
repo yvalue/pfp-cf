@@ -41,7 +41,7 @@ export function FeaturesFlow({ section }: { section: Section }) {
         {section.sr_only_title && (
           <h1 className="sr-only">{section.sr_only_title}</h1>
         )}
-        <h2 className="text-foreground mx-auto max-w-full text-3xl font-semibold tracking-tight text-pretty md:max-w-5xl md:text-4xl">
+        <h2 className="text-foreground mx-auto max-w-full text-4xl font-semibold tracking-tight text-pretty md:max-w-5xl md:text-6xl">
           {section.title}
         </h2>
         <p className="text-muted-foreground mx-auto max-w-5xl text-lg leading-7 break-words md:text-xl">
@@ -54,7 +54,7 @@ export function FeaturesFlow({ section }: { section: Section }) {
           return (
             <motion.div
               key={index}
-              className="grid items-center gap-4 rounded-3xl bg-[#fcf3fd] p-6 sm:grid-cols-2 md:gap-6 md:p-8 lg:gap-10"
+              className="grid items-center gap-4 rounded-3xl p-6 sm:grid-cols-2 md:gap-6 md:p-8 lg:gap-10"
               initial={{
                 opacity: 0,
                 y: 30,

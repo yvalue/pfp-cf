@@ -151,7 +151,7 @@
         "id": "introduce",
         "title": "What is AI-PFP",
         "label": "Introduce",
-        "description": "AI-PFP uses advanced image models to create unique portraits in seconds for social platforms, virtual worlds, and online games. Whether you want to express your personality or improve online interaction, this ai pfp tool helps you build a vivid and memorable digital identity.",
+        "description": "",
         "image": {
           "src": "/imgs/features/features-list-landing-page.png",
           "alt": "introduce"
@@ -201,7 +201,7 @@
         "id": "benefits",
         "title": "Why Choose AI-PFP",
         "label": "Benefits",
-        "description": "In the age of endless feeds, your profile photo has only 0.5 seconds to stop the scroll. AI-PFP is more than a filter: it uses top-tier AI to craft a visual calling card tailored to you. From a polished LinkedIn presence to a high-recognition TikTok style, it can transform everyday photos into photographer-level portraits in seconds.",
+        "description": "",
         "items": [
           {
             "title": "Realism and Authenticity to Showcase the Best Version of You",
@@ -249,7 +249,7 @@
         "block": "features-step",
         "id": "usage",
         "title": "How to Create with AI-PFP",
-        "description": "Generate and refine your perfect AI profile picture in four steps:",
+        "description": "",
         "image": {
           "src": "/imgs/features/1.png",
           "alt": "usage"

@@ -28,8 +28,8 @@ export function FeaturesList({
       <div className="container overflow-hidden bg-white">
         <div className="mx-auto max-w-7xl bg-white">
           <ScrollAnimation>
-            <div className="grid gap-4 rounded-3xl bg-gray-100 p-6 text-center lg:p-8">
-              <h2 className="mx-auto max-w-3xl text-3xl font-semibold tracking-tight break-words text-balance text- text-foreground md:text-4xl">
+            <div className="grid gap-4 rounded-3xl p-6 text-center lg:p-8">
+              <h2 className="mx-auto max-w-3xl text-4xl font-semibold tracking-tight break-words text-balance text- text-foreground md:text-6xl">
                 {section.title}
               </h2>
               <p className="mx-auto max-w-4xl break-words text-base leading-7 text-foreground md:text-lg md:leading-8">
