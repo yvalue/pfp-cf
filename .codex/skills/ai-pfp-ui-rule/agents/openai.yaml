@@ -1,4 +1,0 @@
-interface:
-  display_name: "AI PFP UI Rule"
-  short_description: "Enforce shared Tailwind UI rules for the ai-pfp theme."
-  default_prompt: "Use $ai-pfp-ui-rule to normalize ai-pfp Tailwind UI styles and review layout consistency."
