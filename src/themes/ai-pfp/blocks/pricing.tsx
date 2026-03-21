@@ -376,7 +376,7 @@ export function Pricing({
     return (
       <Card
         className={cn(
-          'border-border bg-white relative flex h-full flex-col rounded-3xl border p-6 shadow-none transition-all duration-200 hover:scale-[1.02] hover:shadow-md',
+          'border-border bg-white relative flex h-full flex-col rounded-3xl border p-6 shadow-none transition-all duration-200 hover:scale-[1.02] hover:shadow-md dark:bg-card',
           cardClassName
         )}
       >
@@ -459,7 +459,7 @@ export function Pricing({
         'relative overflow-hidden py-16 md:py-24',
         section.className,
         className,
-        'bg-[linear-gradient(180deg,#f4efff_0%,#f7f4ff_42%,#ffffff_100%)]'
+        'bg-[linear-gradient(180deg,#f4efff_0%,#f7f4ff_42%,#ffffff_100%)] dark:bg-[linear-gradient(180deg,#0f1324_0%,#161a31_42%,#0d101d_100%)]'
       )}
     >
       <div className="relative container mt-6">

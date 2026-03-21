@@ -22,11 +22,11 @@ export function FeaturesList({
         'overflow-hidden py-12 md:py-16',
         section.className,
         className,
-        'bg-white'
+        'bg-white dark:bg-background'
       )}
     >
-      <div className="container overflow-hidden bg-white">
-        <div className="mx-auto max-w-7xl bg-white">
+      <div className="container overflow-hidden bg-white dark:bg-background">
+        <div className="mx-auto max-w-7xl bg-white dark:bg-background">
           <ScrollAnimation>
             <div className="grid gap-4 rounded-3xl p-6 text-center lg:p-8">
               <h2 className="mx-auto max-w-3xl text-4xl font-semibold tracking-tight break-words text-balance text- text-foreground md:text-6xl">
@@ -72,7 +72,7 @@ export function FeaturesList({
                 direction={idx % 2 === 0 ? 'left' : 'right'}
                 delay={0.1 + idx * 0.05}
               >
-                <article className="flex h-full min-w-0 items-start gap-4 rounded-3xl border border-sky-100 bg-sky-50 px-8 py-6">
+                <article className="flex h-full min-w-0 items-start gap-4 rounded-3xl border border-sky-100 bg-sky-50 px-8 py-6 dark:border-border dark:bg-card">
                   {item.icon && (
                     <div className="text-primary shrink-0">
                       <SmartIcon name={item.icon as string} size={42} />

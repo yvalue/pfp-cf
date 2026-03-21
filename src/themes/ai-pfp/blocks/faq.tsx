@@ -19,7 +19,10 @@ export function Faq({
   className?: string;
 }) {
   return (
-    <section id={section.id} className={cn('bg-white py-16 md:py-24', className)}>
+    <section
+      id={section.id}
+      className={cn('bg-white py-16 md:py-24 dark:bg-background', className)}
+    >
       <div className="container !max-w-4xl">
         <ScrollAnimation>
           <div className="px-6 py-6 text-center md:px-6 md:py-6">
@@ -33,14 +36,14 @@ export function Faq({
             </div>
           </div>
 
-          <div className="bg-background overflow-hidden rounded-3xl border border-gray-300">
+          <div className="bg-background overflow-hidden rounded-3xl border border-primary/40 dark:bg-card">
             <div className="px-6">
               <Accordion type="single" collapsible className="w-full">
                 {section.items?.map((item, idx) => (
                   <AccordionItem
                     key={idx}
                     value={item.question || item.title || ''}
-                    className="border-b border-gray-300 last:border-b-0"
+                    className="border-b border-primary/40 last:border-b-0"
                   >
                     <AccordionTrigger className="text-foreground cursor-pointer items-center py-5 text-base font-semibold tracking-tight hover:no-underline md:text-lg">
                       {item.question || item.title || ''}
