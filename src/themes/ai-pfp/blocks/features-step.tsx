@@ -17,9 +17,9 @@ export function FeaturesStep({
   return (
     <section
       id={section.id}
-      className={cn('py-16 md:py-24', section.className, className)}
+      className={cn('py-16 md:py-24', section.className, className, 'bg-white')}
     >
-      <div className="m-4 rounded-3xl">
+      <div className="m-4 rounded-3xl bg-white">
         <div className="@container relative container">
           <ScrollAnimation>
             <div className="mx-auto grid max-w-2xl gap-4 text-center">

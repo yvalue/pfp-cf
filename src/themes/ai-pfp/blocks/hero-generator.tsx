@@ -677,7 +677,8 @@ export function HeroGenerator({
       className={cn(
         'py-16 md:py-24',
         section.className,
-        className
+        className,
+        'bg-[linear-gradient(180deg,#f4efff_0%,#f7f4ff_42%,#ffffff_100%)]'
       )}
     >
       <div className="container !max-w-5xl">

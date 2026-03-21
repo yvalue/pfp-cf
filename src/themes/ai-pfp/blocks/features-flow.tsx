@@ -32,7 +32,7 @@ export function FeaturesFlow({ section }: { section: Section }) {
   return (
     <section
       id={section.id || section.name}
-      className={cn('py-16 md:py-24', section.className)}
+      className={cn('py-16 md:py-24', section.className, 'bg-white')}
     >
       <motion.div
         className="container mb-8 grid gap-4 text-center"
@@ -48,13 +48,13 @@ export function FeaturesFlow({ section }: { section: Section }) {
           {section.description}
         </p>
       </motion.div>
-      <div className="container flex flex-col items-center justify-center gap-4 md:gap-6">
+      <div className="container flex flex-col items-center justify-center gap-8 md:gap-12">
         {section.items.map((item, index) => {
           const isImageRight = item.image_position === 'right';
           return (
             <motion.div
               key={index}
-              className="grid items-center gap-4 py-6 sm:grid-cols-2 md:gap-6 md:py-8 lg:gap-10"
+              className="grid items-center gap-4 rounded-3xl bg-[#fcf3fd] p-6 sm:grid-cols-2 md:gap-6 md:p-8 lg:gap-10"
               initial={{
                 opacity: 0,
                 y: 30,
@@ -83,8 +83,8 @@ export function FeaturesFlow({ section }: { section: Section }) {
               >
                 <LazyImage
                   src={item.image?.src ?? ''}
-                  wrapperClassName="mx-auto block w-full max-w-md"
-                  className="w-full rounded-3xl border border-border shadow-sm"
+                  wrapperClassName="mx-auto block w-full max-w-xl"
+                  className="w-full rounded-3xl"
                   alt={item.image?.alt ?? ''}
                 />
               </motion.div>

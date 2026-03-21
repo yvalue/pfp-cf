@@ -1,7 +1,7 @@
 'use client';
 
 import { Link } from '@/core/i18n/navigation';
-import { LazyImage, SmartIcon } from '@/shared/blocks/common';
+import { SmartIcon } from '@/shared/blocks/common';
 import { Button } from '@/shared/components/ui/button';
 import { ScrollAnimation } from '@/shared/components/ui/scroll-animation';
 import { cn } from '@/shared/lib/utils';
@@ -19,19 +19,20 @@ export function FeaturesList({
     <section
       id={section.id || section.name}
       className={cn(
-        'overflow-hidden py-16 md:py-24',
+        'overflow-hidden py-12 md:py-16',
         section.className,
-        className
+        className,
+        'bg-white'
       )}
     >
-      <div className="container overflow-hidden">
-        <div className="mx-auto max-w-7xl">
+      <div className="container overflow-hidden bg-white">
+        <div className="mx-auto max-w-7xl bg-white">
           <ScrollAnimation>
-            <div className="grid gap-4 pb-8 text-center">
-              <h2 className="text-foreground text-3xl font-semibold tracking-tight text-balance break-words md:text-4xl">
+            <div className="grid gap-4 rounded-3xl bg-gray-100 p-6 text-center lg:p-8">
+              <h2 className="mx-auto max-w-3xl text-3xl font-semibold tracking-tight break-words text-balance text- text-foreground md:text-4xl">
                 {section.title}
               </h2>
-              <p className="text-muted-foreground mx-auto max-w-5xl text-lg leading-7 break-words md:text-xl">
+              <p className="mx-auto max-w-4xl break-words text-base leading-7 text-foreground md:text-lg md:leading-8">
                 {section.description}
               </p>
               {section.buttons && section.buttons.length > 0 && (
@@ -47,9 +48,8 @@ export function FeaturesList({
                         href={button.url ?? ''}
                         target={button.target ?? '_self'}
                         className={cn(
-                          'focus-visible:ring-ring inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
-                          'h-10 px-4',
-                          'text-foreground hover:bg-muted duration-200'
+                          'focus-visible:ring-ring inline-flex h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-medium whitespace-nowrap transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
+                          'text-white hover:bg-neutral-900 duration-200'
                         )}
                       >
                         {button.icon && (
@@ -64,47 +64,31 @@ export function FeaturesList({
             </div>
           </ScrollAnimation>
 
-          <div className="grid items-stretch gap-4 lg:grid-cols-2">
-            <ScrollAnimation
-              className="h-full lg:pr-10"
-              direction="left"
-              delay={0.1}
-            >
-              <div className="h-full">
-                <div className="h-full w-full overflow-hidden rounded-3xl">
-                  <LazyImage
-                    src={section.image?.src ?? ''}
-                    alt={section.image?.alt ?? ''}
-                    wrapperClassName="block h-full w-full"
-                    className="h-full w-full object-cover object-center lg:object-contain"
-                  />
-                </div>
-              </div>
-            </ScrollAnimation>
-
-            <ScrollAnimation className="h-full" delay={0.15}>
-              <div className="grid h-full gap-4 lg:grid-rows-4">
-                {section.items?.map((item, idx) => (
-                  <div className="h-full overflow-hidden" key={idx}>
-                    <div className="flex h-full min-w-0 items-start gap-4">
-                      {item.icon && (
-                        <div className="text-primary shrink-0 pt-4">
-                          <SmartIcon name={item.icon as string} size={38} />
-                        </div>
-                      )}
-                      <div className="grid min-w-0 flex-1 gap-2 p-4">
-                        <h3 className="text-foreground min-w-0 text-xl font-semibold tracking-tight break-words md:text-2xl">
-                          {item.title}
-                        </h3>
-                        <p className="text-muted-foreground min-w-0 text-base leading-7 break-words md:text-lg">
-                          {item.description ?? ''}
-                        </p>
-                      </div>
+          <div className="grid items-stretch gap-6 pt-8 md:grid-cols-2">
+            {section.items?.map((item, idx) => (
+              <ScrollAnimation
+                className="h-full"
+                key={idx}
+                direction={idx % 2 === 0 ? 'left' : 'right'}
+                delay={0.1 + idx * 0.05}
+              >
+                <article className="flex h-full min-w-0 items-start gap-4 rounded-3xl border border-sky-100 bg-sky-50 px-8 py-6">
+                  {item.icon && (
+                    <div className="text-primary shrink-0">
+                      <SmartIcon name={item.icon as string} size={42} />
                     </div>
+                  )}
+                  <div className="grid min-w-0 flex-1 gap-2">
+                    <h3 className="text-foreground min-w-0 text-xl font-semibold tracking-tight break-words md:text-2xl">
+                      {item.title}
+                    </h3>
+                    <p className="text-muted-foreground min-w-0 text-base leading-7 break-words md:text-lg">
+                      {item.description ?? ''}
+                    </p>
                   </div>
-                ))}
-              </div>
-            </ScrollAnimation>
+                </article>
+              </ScrollAnimation>
+            ))}
           </div>
         </div>
       </div>

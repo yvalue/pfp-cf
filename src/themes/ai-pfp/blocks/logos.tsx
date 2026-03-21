@@ -42,7 +42,7 @@ const SOCIAL_ICON_MAP: Record<
   },
   x: {
     icon: FaXTwitter,
-    baseClassName: 'text-white',
+    baseClassName: 'text-black',
   },
   pinterest: {
     icon: FaPinterestP,
@@ -58,7 +58,7 @@ const SOCIAL_ICON_MAP: Record<
   },
   threads: {
     icon: FaThreads,
-    baseClassName: 'text-white',
+    baseClassName: 'text-black',
   },
   tiktok: {
     icon: FaTiktok,
@@ -86,7 +86,7 @@ const SOCIAL_ICON_MAP: Record<
   },
   github: {
     icon: FaGithub,
-    baseClassName: 'text-white',
+    baseClassName: 'text-black',
   },
   dribbble: {
     icon: FaDribbble,
@@ -132,26 +132,14 @@ export function Logos({
   section: Section;
   className?: string;
 }) {
-  const useDeepNavy =
-    section.className?.includes('bg-[#162033]') ||
-    section.className?.includes('bg-slate-950');
-  const edgeFadeClass = useDeepNavy
-    ? 'from-[#162033] via-[#162033]/90'
-    : 'from-background via-background/90 dark:from-background dark:via-background/90';
-
   return (
     <section
       id={section.id}
-      className={cn('py-10 md:py-15', section.className, className)}
+      className={cn('py-10 md:py-15', section.className, className, 'bg-white')}
     >
       <div className="container !max-w-5xl">
         <ScrollAnimation>
-          <p
-            className={cn(
-              'text-muted-foreground text-center text-base leading-7 font-medium md:text-lg',
-              useDeepNavy && 'text-[#E6ECF5]'
-            )}
-          >
+          <p className="text-muted-foreground text-center text-base leading-7 font-medium md:text-lg">
             {section.title}
           </p>
         </ScrollAnimation>
@@ -159,17 +147,11 @@ export function Logos({
           <div className="relative mx-auto mt-8 max-w-5xl">
             <div
               aria-hidden
-              className={cn(
-                'pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r to-transparent md:w-24',
-                edgeFadeClass
-              )}
+              className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-white via-white to-transparent md:w-24"
             />
             <div
               aria-hidden
-              className={cn(
-                'pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l to-transparent md:w-24',
-                edgeFadeClass
-              )}
+              className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white via-white to-transparent md:w-24"
             />
             <Marquee
               pauseOnHover
@@ -178,44 +160,28 @@ export function Logos({
               {section.items?.map((item, idx) => {
                 const lightSrc = item.image?.src ?? '';
                 const lightAlt = item.image?.alt ?? item.title ?? '';
-                const darkSrc = item.image_invert?.src ?? '';
-                const darkAlt = item.image_invert?.alt ?? lightAlt;
                 const iconKey = resolveIconKey(item);
                 const iconEntry = SOCIAL_ICON_MAP[iconKey];
 
                 return (
                   <div
                     key={`${item.title ?? iconKey}-${idx}`}
-                    className="group/item flex h-14 min-w-16 shrink-0 items-center justify-center opacity-90 transition-all duration-300 hover:-translate-y-0.5 hover:opacity-100"
+                    className="flex h-14 min-w-16 shrink-0 items-center justify-center"
                     title={item.title}
                     aria-label={item.title}
                   >
-                    {iconEntry ? (
-                      <iconEntry.icon
-                        className={cn(
-                          'size-9 transition-all duration-300',
-                          iconEntry.baseClassName
-                        )}
-                      />
-                    ) : darkSrc ? (
-                      <>
-                        <LazyImage
-                          className="h-8 w-fit dark:hidden"
-                          src={lightSrc}
-                          alt={lightAlt}
-                        />
-                        <LazyImage
-                          className="hidden h-8 w-fit dark:block"
-                          src={darkSrc}
-                          alt={darkAlt}
-                        />
-                      </>
-                    ) : (
+                    {lightSrc ? (
                       <LazyImage
                         className="h-8 w-fit"
                         src={lightSrc}
                         alt={lightAlt}
                       />
+                    ) : iconEntry ? (
+                      <iconEntry.icon
+                        className={cn('size-9', iconEntry.baseClassName)}
+                      />
+                    ) : (
+                      <span className="sr-only">{lightAlt}</span>
                     )}
                   </div>
                 );

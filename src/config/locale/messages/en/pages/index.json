@@ -209,7 +209,7 @@
             "image_position": "left",
             "icon": "RiFocus3Line",
             "image": {
-              "src": "/imgs/features/realism.jpg",
+              "src": "/imgs/features/flow1.png",
               "alt": "benefits"
             }
           },
@@ -219,7 +219,7 @@
             "image_position": "right",
             "icon": "RiMagicLine",
             "image": {
-              "src": "/imgs/features/freedom.jpg",
+              "src": "/imgs/features/flow2.png",
               "alt": "benefits"
             }
           },
@@ -229,7 +229,7 @@
             "image_position": "left",
             "icon": "RiFlashlightLine",
             "image": {
-              "src": "/imgs/features/avatar.jpg",
+              "src": "/imgs/features/flow3.png",
               "alt": "benefits"
             }
           },
@@ -239,7 +239,7 @@
             "image_position": "right",
             "icon": "RiShieldUserLine",
             "image": {
-              "src": "/imgs/features/doppelganger.jpg",
+              "src": "/imgs/features/flow4.png",
               "alt": "benefits"
             }
           }
