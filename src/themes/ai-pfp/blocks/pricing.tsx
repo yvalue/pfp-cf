@@ -376,7 +376,7 @@ export function Pricing({
     return (
       <Card
         className={cn(
-          'border-border bg-background relative flex h-full flex-col rounded-3xl border p-6 shadow-none transition-all duration-200 hover:scale-[1.02] hover:shadow-md',
+          'border-border bg-white relative flex h-full flex-col rounded-3xl border p-6 shadow-none transition-all duration-200 hover:scale-[1.02] hover:shadow-md',
           cardClassName
         )}
       >
@@ -418,7 +418,7 @@ export function Pricing({
         <div className="mt-2">
           <Button
             aria-disabled="true"
-            className="border-border bg-background text-foreground hover:border-primary hover:bg-accent hover:text-primary h-10 w-full cursor-not-allowed rounded-xl border px-6 text-sm font-medium transition-colors duration-200"
+            className="border-border bg-accent text-primary hover:border-primary hover:bg-primary/30 hover:text-primary h-10 w-full cursor-not-allowed rounded-xl border px-6 text-sm font-medium transition-colors duration-200"
           >
             <span>{displayedFreeCard.button?.title}</span>
           </Button>
@@ -539,7 +539,7 @@ export function Pricing({
                 className={cn(
                   'relative flex h-full flex-col rounded-3xl border p-6 shadow-none transition-all duration-200 hover:scale-[1.02] hover:shadow-md',
                   isFeatured
-                    ? 'border-primary/40 bg-accent'
+                    ? 'border-primary/40 bg-background'
                     : 'border-border bg-background'
                 )}
               >
@@ -590,7 +590,7 @@ export function Pricing({
                       >
                         <SelectTrigger
                           size="sm"
-                          className="border-border bg-background text-foreground hover:border-primary hover:bg-accent hover:text-primary ml-auto h-10 min-w-24 rounded-xl px-4 text-xs leading-5 font-semibold tracking-widest uppercase shadow-none transition-colors duration-200"
+                          className="border-border bg-accent text-primary hover:border-primary hover:bg-primary/30 hover:text-primary ml-auto h-10 min-w-24 rounded-xl px-4 text-xs leading-5 font-semibold tracking-widest uppercase shadow-none transition-colors duration-200"
                         >
                           <SelectValue placeholder="Currency" />
                         </SelectTrigger>
@@ -621,7 +621,7 @@ export function Pricing({
                     <Button
                       variant="outline"
                       aria-disabled="true"
-                      className="border-border bg-background text-foreground hover:border-primary hover:bg-accent hover:text-primary h-10 w-full cursor-not-allowed rounded-xl px-6 text-sm leading-6 font-medium shadow-none transition-colors duration-200"
+                      className="border-border bg-accent text-primary hover:border-primary hover:bg-primary/30 hover:text-primary h-10 w-full cursor-not-allowed rounded-xl px-6 text-sm leading-6 font-medium shadow-none transition-colors duration-200"
                     >
                       <span>{t('current_plan')}</span>
                     </Button>
@@ -632,8 +632,8 @@ export function Pricing({
                       className={cn(
                         'focus-visible:ring-ring inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl px-6 text-sm leading-6 font-medium whitespace-nowrap transition-colors duration-200 focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none',
                         isFeatured
-                          ? 'border-border bg-primary text-primary-foreground hover:border-primary hover:bg-primary/90 border'
-                          : 'border-border bg-background text-foreground hover:border-primary hover:bg-accent hover:text-primary border'
+                          ? 'border-border bg-primary text-primary-foreground hover:border-primary hover:bg-primary/80 border'
+                          : 'border-border bg-accent text-primary hover:border-primary hover:bg-primary/30 hover:text-primary border'
                       )}
                     >
                       {isLoading && item.product_id === loadingProductId ? (

@@ -3,15 +3,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import {
-  Download,
-  ImagePlus,
-  Loader2,
-  Settings2,
-  Sparkles,
-} from 'lucide-react';
-import {
+  RiDownloadLine,
   RiFlashlightFill,
+  RiImageAddLine,
   RiInformationLine,
+  RiLoader4Line,
+  RiSettings3Line,
+  RiSparkling2Line,
   RiVipCrown2Fill,
   RiVipDiamondFill,
 } from 'react-icons/ri';
@@ -730,7 +728,7 @@ export function HeroGenerator({
         </div>
 
         <div className="border-border bg-background mt-8 overflow-hidden rounded-3xl border">
-          <div className="relative">
+          <div className="border-border bg-background relative border-b">
             <Textarea
               value={prompt}
               onChange={(event) => setPrompt(event.target.value)}
@@ -738,13 +736,13 @@ export function HeroGenerator({
                 section.placeholder ||
                 'Describe the PFP you want to generate...'
               }
-              className="min-h-40 resize-none border-0 p-6 text-base leading-7 focus-visible:ring-0"
+              className="min-h-40 resize-none border-0 p-6 text-base leading-7 focus-visible:ring-0 focus-visible:ring-offset-0"
             />
-            <Sparkles className="text-primary absolute right-5 bottom-5 size-5" />
+            <RiSparkling2Line className="text-primary absolute right-5 bottom-5 size-5" />
           </div>
 
           {mode === 'image-to-image' && (
-            <div className="border-border border-t p-3">
+            <div className="border-border bg-background border-t p-3">
               <ImageUploader
                 title="Reference image"
                 titleHint={`${getNanoBananaReferenceImageFormatsLabel()}, up to ${maxReferenceImageSizeMB}MB each`}
@@ -761,7 +759,7 @@ export function HeroGenerator({
             </div>
           )}
 
-          <div className="border-border border-t p-3">
+          <div className="bg-background p-3">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-wrap items-center gap-2">
                 <Select value={modelFamilyId} onValueChange={setModelFamilyId}>
@@ -792,7 +790,7 @@ export function HeroGenerator({
                     }
                     title="Switch between text-to-image and image-to-image"
                   >
-                    <ImagePlus className="size-4" />
+                    <RiImageAddLine className="size-4" />
                   </Button>
                 )}
 
@@ -858,11 +856,11 @@ export function HeroGenerator({
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="text-muted-foreground size-10 rounded-xl"
+                className="text-foreground size-10 rounded-xl"
                 disabled
                 aria-label="Settings"
               >
-                <Settings2 className="size-4" />
+                <RiSettings3Line className="size-5" />
               </Button>
             </div>
           </div>
@@ -902,17 +900,17 @@ export function HeroGenerator({
           >
             {!isMounted ? (
               <>
-                <Loader2 className="mr-2 size-4 animate-spin" />
+                <RiLoader4Line className="mr-2 size-4 animate-spin" />
                 Loading...
               </>
             ) : isCheckSign ? (
               <>
-                <Loader2 className="mr-2 size-4 animate-spin" />
+                <RiLoader4Line className="mr-2 size-4 animate-spin" />
                 Checking account...
               </>
             ) : isGenerating ? (
               <>
-                <Loader2 className="mr-2 size-4 animate-spin" />
+                <RiLoader4Line className="mr-2 size-4 animate-spin" />
                 Generating...
               </>
             ) : (
@@ -933,7 +931,7 @@ export function HeroGenerator({
               <div className="mb-6 grid gap-3">
                 <div className="flex items-center justify-between gap-3 text-sm leading-6">
                   <div className="flex items-center gap-2">
-                    <Loader2 className="text-primary size-4 animate-spin" />
+                    <RiLoader4Line className="text-primary size-4 animate-spin" />
                     <span>{statusText || 'Generating image...'}</span>
                   </div>
                   <span>{progress}%</span>
@@ -968,9 +966,9 @@ export function HeroGenerator({
                         disabled={downloadingImageId === image.id}
                       >
                         {downloadingImageId === image.id ? (
-                          <Loader2 className="size-4 animate-spin" />
+                          <RiLoader4Line className="size-4 animate-spin" />
                         ) : (
-                          <Download className="size-4" />
+                          <RiDownloadLine className="size-4" />
                         )}
                       </Button>
                     </div>

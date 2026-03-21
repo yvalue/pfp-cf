@@ -255,7 +255,7 @@
         ]
       },
       "faq": {
-        "block": "faq",
+        "block": "tools-faq",
         "id": "faq",
         "title": "Professional headshot questions",
         "description": "Common questions about uploading, generating, and using your professional headshot.",

@@ -256,6 +256,7 @@
         ]
       },
       "faq": {
+        "block": "tools-faq",
         "id": "faq",
         "title": "专业证件照常见问题",
         "description": "关于上传、生成与使用专业证件照的一些常见问题。",
