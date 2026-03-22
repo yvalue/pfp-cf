@@ -57,7 +57,7 @@ export function FeaturesFlow({ section }: { section: Section }) {
           return (
             <motion.div
               key={index}
-              className="grid items-center gap-4 rounded-3xl p-6 sm:grid-cols-2 md:gap-6 md:p-8 lg:gap-10"
+              className="grid items-center gap-4 rounded-3xl bg-violet-50 p-6 sm:grid-cols-2 md:gap-6 md:p-8 lg:gap-10"
               initial={{
                 opacity: 0,
                 y: 30,
