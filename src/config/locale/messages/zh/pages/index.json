@@ -1,6 +1,13 @@
 {
   "page": {
-    "show_sections": ["hero", "logos", "introduce", "benefits", "usage", "faq"],
+    "show_sections": [
+      "hero",
+      "benefits",
+      "introduce",
+      "logos",
+      "usage",
+      "faq"
+    ],
     "sections": {
       "hero": {
         "id": "hero",
@@ -13,7 +20,10 @@
         "highlight_title": "在几秒钟内创建令人惊叹的 AI 头像",
         "placeholder": "描述你想生成的头像，例如：商务证件照、赛博朋克风、日系插画风",
         "fast_mode_label": "极速模式",
-        "modes": ["text-to-image", "image-to-image"],
+        "modes": [
+          "text-to-image",
+          "image-to-image"
+        ],
         "default_mode": "text-to-image",
         "description": "一张自拍即可生成职业形象照、生活风格照与创意头像，自由更换穿搭、背景和场景。",
         "announcement": {
@@ -39,6 +49,105 @@
           "src": "/imgs/bg/tree.jpg",
           "alt": "hero"
         }
+      },
+      "benefits": {
+        "block": "features-flow",
+        "id": "benefits",
+        "title": "为什么选择 AI-PFP",
+        "label": "产品优势",
+        "description": "在信息流刷屏的时代，你的头像只有 0.5 秒的机会留住别人。AI-PFP 不是简单的滤镜，而是用顶尖人工智能为你量身定制的视觉名片。无论是想要领英上的精英商务感，还是 TikTok 上的高辨识度网红风，AI 都能在几秒钟内把你的普通生活照变成摄影师级别的视觉大片。",
+        "items": [
+          {
+            "title": "真实质感，呈现你最好的版本",
+            "description": "目前流行的是“真实的美”。为了拒绝假面，我们的 AI 技术告别了廉价的塑料感，能精准保留你的面部特征与眼神神韵。生成的头像像你，但更完美的你，拥有自然质感的皮肤纹理和光影效果，经得起高清放大。",
+            "image_position": "left",
+            "icon": "RiFocus3Line",
+            "image": {
+              "src": "/imgs/features/realism.jpg",
+              "alt": "benefits"
+            }
+          },
+          {
+            "title": "风格自由切换，轻松驾驭潮流造型",
+            "description": "想要今天变身诗人风（Poetcore）的忧郁少年，明天尝试极简主义（Minimalist）的职场精英？AI-PFP 让你无需换装、无需约拍，一键解锁潮流风格，完美适配 YouTube、TikTok、Instagram 等不同平台。",
+            "image_position": "right",
+            "icon": "RiMagicLine",
+            "image": {
+              "src": "/imgs/features/freedom.jpg",
+              "alt": "benefits"
+            }
+          },
+          {
+            "title": "高质量头像，快速且高性价比",
+            "description": "告别线下影楼昂贵的预约和漫长的修图等待。只需上传 1 张日常照，Nano Banana 等顶尖 AI 引擎即可在几秒内为你生成多张方案。用一杯咖啡的价格，换取一整年的高清头像库存。",
+            "image_position": "left",
+            "icon": "RiFlashlightLine",
+            "image": {
+              "src": "/imgs/features/avatar.jpg",
+              "alt": "benefits"
+            }
+          },
+          {
+            "title": "虚拟分身隐私保护，守护你的身份安全",
+            "description": "在数字时代，保护真脸隐私至关重要。AI-PFP 能为你生成一个“神似”的虚拟分身。它既能在社交圈展示你的个人魅力和审美，又能有效防止真人照片被非法抓取，是你最时尚的数字护盾。",
+            "image_position": "right",
+            "icon": "RiShieldUserLine",
+            "image": {
+              "src": "/imgs/features/doppelganger.jpg",
+              "alt": "benefits"
+            }
+          }
+        ]
+      },
+      "introduce": {
+        "block": "features-list",
+        "id": "introduce",
+        "title": "什么是 AI-PFP",
+        "label": "产品简介",
+        "description": "AI-PFP 利用先进的图像模型，在几秒内为社交平台、虚拟世界和在线游戏生成独特肖像。无论你想表达个性，还是提升在线互动体验，这款 ai pfp 工具都能帮助你打造鲜明且易记的数字身份。",
+        "image": {
+          "src": "/imgs/features/features-list-landing-page.png",
+          "alt": "introduce"
+        },
+        "items": [
+          {
+            "title": "快速 AI 头像生成",
+            "description": "通过 AI 快速生成个性化 headshot，同时保留你的独特视觉特征。",
+            "icon": "RiCameraLensLine",
+            "image": {
+              "src": "",
+              "alt": "introduce"
+            }
+          },
+          {
+            "title": "个性化数字身份",
+            "description": "为社交媒体、在线游戏和虚拟社区打造更具辨识度的个人形象。",
+            "icon": "RiUserStarLine",
+            "image": {
+              "src": "",
+              "alt": "introduce"
+            }
+          },
+          {
+            "title": "创意风格头像设计",
+            "description": "探索丰富的创意风格与模板，让你的 profile photo 或 avatar 一眼被记住。",
+            "icon": "RiPaletteLine",
+            "image": {
+              "src": "",
+              "alt": "introduce"
+            }
+          },
+          {
+            "title": "沉浸式虚拟社交形象",
+            "description": "提升在线互动效果，让你的社交形象更清晰、更吸引人、也更容易识别。",
+            "icon": "RiCommunityLine",
+            "image": {
+              "src": "",
+              "alt": "introduce"
+            }
+          }
+        ],
+        "className": "bg-muted"
       },
       "logos": {
         "id": "logos",
@@ -145,105 +254,6 @@
           }
         ]
       },
-      "introduce": {
-        "block": "features-list",
-        "id": "introduce",
-        "title": "什么是 AI-PFP",
-        "label": "产品简介",
-        "description": "AI-PFP 利用先进的图像模型，在几秒内为社交平台、虚拟世界和在线游戏生成独特肖像。无论你想表达个性，还是提升在线互动体验，这款 ai pfp 工具都能帮助你打造鲜明且易记的数字身份。",
-        "image": {
-          "src": "/imgs/features/features-list-landing-page.png",
-          "alt": "introduce"
-        },
-        "items": [
-          {
-            "title": "快速 AI 头像生成",
-            "description": "通过 AI 快速生成个性化 headshot，同时保留你的独特视觉特征。",
-            "icon": "RiCameraLensLine",
-            "image": {
-              "src": "",
-              "alt": "introduce"
-            }
-          },
-          {
-            "title": "个性化数字身份",
-            "description": "为社交媒体、在线游戏和虚拟社区打造更具辨识度的个人形象。",
-            "icon": "RiUserStarLine",
-            "image": {
-              "src": "",
-              "alt": "introduce"
-            }
-          },
-          {
-            "title": "创意风格头像设计",
-            "description": "探索丰富的创意风格与模板，让你的 profile photo 或 avatar 一眼被记住。",
-            "icon": "RiPaletteLine",
-            "image": {
-              "src": "",
-              "alt": "introduce"
-            }
-          },
-          {
-            "title": "沉浸式虚拟社交形象",
-            "description": "提升在线互动效果，让你的社交形象更清晰、更吸引人、也更容易识别。",
-            "icon": "RiCommunityLine",
-            "image": {
-              "src": "",
-              "alt": "introduce"
-            }
-          }
-        ],
-        "className": "bg-muted"
-      },
-      "benefits": {
-        "block": "features-flow",
-        "id": "benefits",
-        "title": "为什么选择 AI-PFP",
-        "label": "产品优势",
-        "description": "在信息流刷屏的时代，你的头像只有 0.5 秒的机会留住别人。AI-PFP 不是简单的滤镜，而是用顶尖人工智能为你量身定制的视觉名片。无论是想要领英上的精英商务感，还是 TikTok 上的高辨识度网红风，AI 都能在几秒钟内把你的普通生活照变成摄影师级别的视觉大片。",
-        "items": [
-          {
-            "title": "真实质感，呈现你最好的版本",
-            "description": "目前流行的是“真实的美”。为了拒绝假面，我们的 AI 技术告别了廉价的塑料感，能精准保留你的面部特征与眼神神韵。生成的头像像你，但更完美的你，拥有自然质感的皮肤纹理和光影效果，经得起高清放大。",
-            "image_position": "left",
-            "icon": "RiFocus3Line",
-            "image": {
-              "src": "/imgs/features/realism.jpg",
-              "alt": "benefits"
-            }
-          },
-          {
-            "title": "风格自由切换，轻松驾驭潮流造型",
-            "description": "想要今天变身诗人风（Poetcore）的忧郁少年，明天尝试极简主义（Minimalist）的职场精英？AI-PFP 让你无需换装、无需约拍，一键解锁潮流风格，完美适配 YouTube、TikTok、Instagram 等不同平台。",
-            "image_position": "right",
-            "icon": "RiMagicLine",
-            "image": {
-              "src": "/imgs/features/freedom.jpg",
-              "alt": "benefits"
-            }
-          },
-          {
-            "title": "高质量头像，快速且高性价比",
-            "description": "告别线下影楼昂贵的预约和漫长的修图等待。只需上传 1 张日常照，Nano Banana 等顶尖 AI 引擎即可在几秒内为你生成多张方案。用一杯咖啡的价格，换取一整年的高清头像库存。",
-            "image_position": "left",
-            "icon": "RiFlashlightLine",
-            "image": {
-              "src": "/imgs/features/avatar.jpg",
-              "alt": "benefits"
-            }
-          },
-          {
-            "title": "虚拟分身隐私保护，守护你的身份安全",
-            "description": "在数字时代，保护真脸隐私至关重要。AI-PFP 能为你生成一个“神似”的虚拟分身。它既能在社交圈展示你的个人魅力和审美，又能有效防止真人照片被非法抓取，是你最时尚的数字护盾。",
-            "image_position": "right",
-            "icon": "RiShieldUserLine",
-            "image": {
-              "src": "/imgs/features/doppelganger.jpg",
-              "alt": "benefits"
-            }
-          }
-        ]
-      },
       "usage": {
         "block": "features-step",
         "id": "usage",
@@ -290,6 +300,41 @@
           }
         ],
         "className": "bg-muted"
+      },
+      "faq": {
+        "id": "faq",
+        "title": "关于 AI-PFP 的常见问题",
+        "description": "了解 AI-PFP 这款 AI 头像生成器的核心问题，包括 AI 证件照、风格定制、免费试用、隐私安全和商用场景。",
+        "items": [
+          {
+            "question": "AI-PFP 是什么？可以生成哪些头像？",
+            "answer": "AI-PFP 是一款 AI 头像生成器和 AI 证件照工具，可把自拍快速生成专业头像。适用于 LinkedIn、TikTok、Instagram、X、Discord、游戏账号和个人品牌展示。"
+          },
+          {
+            "question": "怎样生成更好看的 AI 头像？",
+            "answer": "建议上传清晰的正脸照片，保证光线充足、画面不模糊。提示词尽量具体，比如商务证件照、电影感、动漫风、赛博朋克等，可显著提升 AI 头像质量。"
+          },
+          {
+            "question": "AI-PFP 可以生成 LinkedIn 商务头像和社媒头像吗？",
+            "answer": "可以。AI-PFP 支持生成商务形象照、创作者风格头像和多平台社交头像，在切换风格时依然能保留你的核心面部特征与辨识度。"
+          },
+          {
+            "question": "AI-PFP 可以免费试用吗？",
+            "answer": "可以。新用户登录后可获得免费积分进行体验；如果你需要更多生成次数、更高分辨率或更多风格版本，可按使用需求升级套餐。"
+          },
+          {
+            "question": "Nano Banana 系列模型分别消耗多少积分？",
+            "answer": "Nano Banana 每张图片固定消耗 4 积分。Nano Banana 2 的 1K 画质消耗 5 积分，2K 画质消耗 10 积分，4K 画质消耗 15 积分。Nano Banana Pro 的 1K 画质消耗 10 积分，2K 画质消耗 15 积分，4K 画质消耗 20 积分。"
+          },
+          {
+            "question": "上传照片安全吗？隐私如何保障？",
+            "answer": "AI-PFP 会处理你上传的图片以生成头像结果。关于数据存储、保留策略和账号控制，请在正式使用前查看隐私政策与服务条款。"
+          },
+          {
+            "question": "生成的 AI 头像可以用于商业用途吗？",
+            "answer": "通常可用于个人品牌、创作者主页、简历形象和营销素材。涉及商业发布时，建议结合当地法规及目标平台政策确认最终使用权限。"
+          }
+        ]
       },
       "stats": {
         "id": "stats",
@@ -369,41 +414,6 @@
               "src": "/imgs/avatars/6.png",
               "alt": "anna"
             }
-          }
-        ]
-      },
-      "faq": {
-        "id": "faq",
-        "title": "关于 AI-PFP 的常见问题",
-        "description": "了解 AI-PFP 这款 AI 头像生成器的核心问题，包括 AI 证件照、风格定制、免费试用、隐私安全和商用场景。",
-        "items": [
-          {
-            "question": "AI-PFP 是什么？可以生成哪些头像？",
-            "answer": "AI-PFP 是一款 AI 头像生成器和 AI 证件照工具，可把自拍快速生成专业头像。适用于 LinkedIn、TikTok、Instagram、X、Discord、游戏账号和个人品牌展示。"
-          },
-          {
-            "question": "怎样生成更好看的 AI 头像？",
-            "answer": "建议上传清晰的正脸照片，保证光线充足、画面不模糊。提示词尽量具体，比如商务证件照、电影感、动漫风、赛博朋克等，可显著提升 AI 头像质量。"
-          },
-          {
-            "question": "AI-PFP 可以生成 LinkedIn 商务头像和社媒头像吗？",
-            "answer": "可以。AI-PFP 支持生成商务形象照、创作者风格头像和多平台社交头像，在切换风格时依然能保留你的核心面部特征与辨识度。"
-          },
-          {
-            "question": "AI-PFP 可以免费试用吗？",
-            "answer": "可以。新用户登录后可获得免费积分进行体验；如果你需要更多生成次数、更高分辨率或更多风格版本，可按使用需求升级套餐。"
-          },
-          {
-            "question": "Nano Banana 系列模型分别消耗多少积分？",
-            "answer": "Nano Banana 每张图片固定消耗 4 积分。Nano Banana 2 的 1K 画质消耗 5 积分，2K 画质消耗 10 积分，4K 画质消耗 15 积分。Nano Banana Pro 的 1K 画质消耗 10 积分，2K 画质消耗 15 积分，4K 画质消耗 20 积分。"
-          },
-          {
-            "question": "上传照片安全吗？隐私如何保障？",
-            "answer": "AI-PFP 会处理你上传的图片以生成头像结果。关于数据存储、保留策略和账号控制，请在正式使用前查看隐私政策与服务条款。"
-          },
-          {
-            "question": "生成的 AI 头像可以用于商业用途吗？",
-            "answer": "通常可用于个人品牌、创作者主页、简历形象和营销素材。涉及商业发布时，建议结合当地法规及目标平台政策确认最终使用权限。"
           }
         ]
       },

@@ -1,6 +1,13 @@
 {
   "page": {
-    "show_sections": ["hero", "logos", "introduce", "benefits", "usage", "faq"],
+    "show_sections": [
+      "hero",
+      "benefits",
+      "introduce",
+      "logos",
+      "usage",
+      "faq"
+    ],
     "sections": {
       "hero": {
         "id": "hero",
@@ -13,7 +20,10 @@
         "highlight_title": "Create Studio-Quality AI Profile Pictures in Seconds",
         "placeholder": "Describe the PFP you want to generate...",
         "fast_mode_label": "Fast Mode",
-        "modes": ["text-to-image", "image-to-image"],
+        "modes": [
+          "text-to-image",
+          "image-to-image"
+        ],
         "default_mode": "text-to-image",
         "description": "Generate realistic AI profile photos from just one selfie—from business headshots to lifestyle portraits. Change your look, swap backgrounds, and create standout PFPs for LinkedIn, Instagram, TikTok, WhatsApp, and your virtual social identity！",
         "announcement": {
@@ -39,6 +49,105 @@
           "src": "/imgs/bg/tree.jpg",
           "alt": "hero"
         }
+      },
+      "benefits": {
+        "block": "features-flow",
+        "id": "benefits",
+        "title": "Why Choose AI-PFP",
+        "label": "Benefits",
+        "description": "",
+        "items": [
+          {
+            "title": "Realism and Authenticity to Showcase the Best Version of You",
+            "description": "Real beauty is the trend. Our AI avoids the cheap plastic look and preserves your facial features and eye expression with precision. The result looks like you, only better, with natural skin texture and lighting that still holds up in high-resolution closeups.",
+            "image_position": "left",
+            "icon": "RiFocus3Line",
+            "image": {
+              "src": "/imgs/features/flow1.png",
+              "alt": "benefits"
+            }
+          },
+          {
+            "title": "Style Freedom to Effortlessly Switch Between Trendy Looks",
+            "description": "Want a Poetcore vibe today and a minimalist professional look tomorrow? AI-PFP lets you unlock trend-forward styles in one click without outfit changes or studio bookings, while adapting perfectly to YouTube, TikTok, and Instagram.",
+            "image_position": "right",
+            "icon": "RiMagicLine",
+            "image": {
+              "src": "/imgs/features/flow2.png",
+              "alt": "benefits"
+            }
+          },
+          {
+            "title": "Fast and Affordable High-Quality Avatars at an Accessible Price",
+            "description": "Skip expensive studio appointments and long retouching waits. Upload one daily photo and top AI engines like Nano Banana can generate multiple high-quality options in seconds, for about the price of a coffee.",
+            "image_position": "left",
+            "icon": "RiFlashlightLine",
+            "image": {
+              "src": "/imgs/features/flow3.png",
+              "alt": "benefits"
+            }
+          },
+          {
+            "title": "Privacy Protection with a Virtual Doppelganger to Safeguard Your Identity",
+            "description": "In the digital era, protecting your real face matters. AI-PFP creates a highly similar virtual twin that shows your style while reducing the risk of illegal scraping of real photos.",
+            "image_position": "right",
+            "icon": "RiShieldUserLine",
+            "image": {
+              "src": "/imgs/features/flow4.png",
+              "alt": "benefits"
+            }
+          }
+        ]
+      },
+      "introduce": {
+        "block": "features-list",
+        "id": "introduce",
+        "title": "What is AI-PFP",
+        "label": "Introduce",
+        "description": "",
+        "image": {
+          "src": "/imgs/features/features-list-landing-page.png",
+          "alt": "introduce"
+        },
+        "items": [
+          {
+            "title": "Fast AI Headshot Creation",
+            "description": "Generate personalized headshots quickly with AI while preserving your unique visual traits.",
+            "icon": "RiCameraLensLine",
+            "image": {
+              "src": "",
+              "alt": "introduce"
+            }
+          },
+          {
+            "title": "Personalized Digital Identity",
+            "description": "Build a distinctive profile image for social media, online games, and virtual communities.",
+            "icon": "RiUserStarLine",
+            "image": {
+              "src": "",
+              "alt": "introduce"
+            }
+          },
+          {
+            "title": "Creative Profile Style Design",
+            "description": "Explore rich creative styles and templates so your profile photo or avatar stands out at first glance.",
+            "icon": "RiPaletteLine",
+            "image": {
+              "src": "",
+              "alt": "introduce"
+            }
+          },
+          {
+            "title": "Immersive Virtual Social Presence",
+            "description": "Improve online engagement with a clearer, more attractive, and more recognizable profile presence.",
+            "icon": "RiCommunityLine",
+            "image": {
+              "src": "",
+              "alt": "introduce"
+            }
+          }
+        ],
+        "className": "bg-muted"
       },
       "logos": {
         "id": "logos",
@@ -145,105 +254,6 @@
           }
         ]
       },
-      "introduce": {
-        "block": "features-list",
-        "id": "introduce",
-        "title": "What is AI-PFP",
-        "label": "Introduce",
-        "description": "",
-        "image": {
-          "src": "/imgs/features/features-list-landing-page.png",
-          "alt": "introduce"
-        },
-        "items": [
-          {
-            "title": "Fast AI Headshot Creation",
-            "description": "Generate personalized headshots quickly with AI while preserving your unique visual traits.",
-            "icon": "RiCameraLensLine",
-            "image": {
-              "src": "",
-              "alt": "introduce"
-            }
-          },
-          {
-            "title": "Personalized Digital Identity",
-            "description": "Build a distinctive profile image for social media, online games, and virtual communities.",
-            "icon": "RiUserStarLine",
-            "image": {
-              "src": "",
-              "alt": "introduce"
-            }
-          },
-          {
-            "title": "Creative Profile Style Design",
-            "description": "Explore rich creative styles and templates so your profile photo or avatar stands out at first glance.",
-            "icon": "RiPaletteLine",
-            "image": {
-              "src": "",
-              "alt": "introduce"
-            }
-          },
-          {
-            "title": "Immersive Virtual Social Presence",
-            "description": "Improve online engagement with a clearer, more attractive, and more recognizable profile presence.",
-            "icon": "RiCommunityLine",
-            "image": {
-              "src": "",
-              "alt": "introduce"
-            }
-          }
-        ],
-        "className": "bg-muted"
-      },
-      "benefits": {
-        "block": "features-flow",
-        "id": "benefits",
-        "title": "Why Choose AI-PFP",
-        "label": "Benefits",
-        "description": "",
-        "items": [
-          {
-            "title": "Realism and Authenticity to Showcase the Best Version of You",
-            "description": "Real beauty is the trend. Our AI avoids the cheap plastic look and preserves your facial features and eye expression with precision. The result looks like you, only better, with natural skin texture and lighting that still holds up in high-resolution closeups.",
-            "image_position": "left",
-            "icon": "RiFocus3Line",
-            "image": {
-              "src": "/imgs/features/flow1.png",
-              "alt": "benefits"
-            }
-          },
-          {
-            "title": "Style Freedom to Effortlessly Switch Between Trendy Looks",
-            "description": "Want a Poetcore vibe today and a minimalist professional look tomorrow? AI-PFP lets you unlock trend-forward styles in one click without outfit changes or studio bookings, while adapting perfectly to YouTube, TikTok, and Instagram.",
-            "image_position": "right",
-            "icon": "RiMagicLine",
-            "image": {
-              "src": "/imgs/features/flow2.png",
-              "alt": "benefits"
-            }
-          },
-          {
-            "title": "Fast and Affordable High-Quality Avatars at an Accessible Price",
-            "description": "Skip expensive studio appointments and long retouching waits. Upload one daily photo and top AI engines like Nano Banana can generate multiple high-quality options in seconds, for about the price of a coffee.",
-            "image_position": "left",
-            "icon": "RiFlashlightLine",
-            "image": {
-              "src": "/imgs/features/flow3.png",
-              "alt": "benefits"
-            }
-          },
-          {
-            "title": "Privacy Protection with a Virtual Doppelganger to Safeguard Your Identity",
-            "description": "In the digital era, protecting your real face matters. AI-PFP creates a highly similar virtual twin that shows your style while reducing the risk of illegal scraping of real photos.",
-            "image_position": "right",
-            "icon": "RiShieldUserLine",
-            "image": {
-              "src": "/imgs/features/flow4.png",
-              "alt": "benefits"
-            }
-          }
-        ]
-      },
       "usage": {
         "block": "features-step",
         "id": "usage",
@@ -290,6 +300,41 @@
           }
         ],
         "className": "bg-muted"
+      },
+      "faq": {
+        "id": "faq",
+        "title": "Frequently Asked Questions About AI-PFP",
+        "description": "Learn how the AI-PFP AI profile picture generator works, including AI headshots, avatar styles, free credits, privacy, and commercial usage.",
+        "items": [
+          {
+            "question": "What is AI-PFP and what can I create with it?",
+            "answer": "AI-PFP is an AI profile picture generator and AI headshot tool that turns a selfie into studio-style portraits. You can create profile photos for LinkedIn, TikTok, Instagram, X, Discord, gaming, and personal branding."
+          },
+          {
+            "question": "How can I get the best AI profile picture results?",
+            "answer": "Use a clear front-facing photo with good lighting and minimal blur. Then write a specific prompt with style keywords like professional headshot, cinematic, anime, or cyberpunk. Clear inputs produce better AI avatar quality."
+          },
+          {
+            "question": "Can AI-PFP generate LinkedIn headshots and social media avatars?",
+            "answer": "Yes. AI-PFP can generate business headshots, creator-style portraits, and social media profile pictures for multiple platforms. You can quickly switch styles while keeping your core facial identity recognizable."
+          },
+          {
+            "question": "Is AI-PFP free to try?",
+            "answer": "Yes. New users can start with free credits after signing in. If you need more generations, higher resolution, or more style variations, you can upgrade to a paid plan based on your usage."
+          },
+          {
+            "question": "How many credits do Nano Banana models use?",
+            "answer": "Nano Banana uses 4 credits per image. Nano Banana2 uses 5 credits for 1K quality, 10 credits for 2K quality, and 15 credits for 4K quality. Nano Banana Pro uses 10 credits for 1K quality, 15 credits for 2K quality, and 20 credits for 4K quality."
+          },
+          {
+            "question": "Is my uploaded photo private and secure?",
+            "answer": "AI-PFP processes your uploaded image to generate your avatar results. For full details about data storage, retention, and account controls, please review the Privacy Policy and Terms before production use."
+          },
+          {
+            "question": "Can I use AI-PFP images for personal branding or commercial work?",
+            "answer": "In most cases, yes. AI-PFP images can be used for personal brands, creator profiles, resumes, and marketing assets. Please confirm final usage rights with your local regulations and the platform terms that apply to your project."
+          }
+        ]
       },
       "stats": {
         "id": "stats",
@@ -369,41 +414,6 @@
               "src": "/imgs/avatars/6.png",
               "alt": "anna"
             }
-          }
-        ]
-      },
-      "faq": {
-        "id": "faq",
-        "title": "Frequently Asked Questions About AI-PFP",
-        "description": "Learn how the AI-PFP AI profile picture generator works, including AI headshots, avatar styles, free credits, privacy, and commercial usage.",
-        "items": [
-          {
-            "question": "What is AI-PFP and what can I create with it?",
-            "answer": "AI-PFP is an AI profile picture generator and AI headshot tool that turns a selfie into studio-style portraits. You can create profile photos for LinkedIn, TikTok, Instagram, X, Discord, gaming, and personal branding."
-          },
-          {
-            "question": "How can I get the best AI profile picture results?",
-            "answer": "Use a clear front-facing photo with good lighting and minimal blur. Then write a specific prompt with style keywords like professional headshot, cinematic, anime, or cyberpunk. Clear inputs produce better AI avatar quality."
-          },
-          {
-            "question": "Can AI-PFP generate LinkedIn headshots and social media avatars?",
-            "answer": "Yes. AI-PFP can generate business headshots, creator-style portraits, and social media profile pictures for multiple platforms. You can quickly switch styles while keeping your core facial identity recognizable."
-          },
-          {
-            "question": "Is AI-PFP free to try?",
-            "answer": "Yes. New users can start with free credits after signing in. If you need more generations, higher resolution, or more style variations, you can upgrade to a paid plan based on your usage."
-          },
-          {
-            "question": "How many credits do Nano Banana models use?",
-            "answer": "Nano Banana uses 4 credits per image. Nano Banana2 uses 5 credits for 1K quality, 10 credits for 2K quality, and 15 credits for 4K quality. Nano Banana Pro uses 10 credits for 1K quality, 15 credits for 2K quality, and 20 credits for 4K quality."
-          },
-          {
-            "question": "Is my uploaded photo private and secure?",
-            "answer": "AI-PFP processes your uploaded image to generate your avatar results. For full details about data storage, retention, and account controls, please review the Privacy Policy and Terms before production use."
-          },
-          {
-            "question": "Can I use AI-PFP images for personal branding or commercial work?",
-            "answer": "In most cases, yes. AI-PFP images can be used for personal brands, creator profiles, resumes, and marketing assets. Please confirm final usage rights with your local regulations and the platform terms that apply to your project."
           }
         ]
       },
