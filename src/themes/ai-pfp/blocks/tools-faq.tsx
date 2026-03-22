@@ -22,14 +22,14 @@ export function ToolsFaq({
     <section
       id={section.id}
       className={cn(
-        'bg-muted overflow-x-hidden py-16 md:py-24',
+        'bg-[#f4efff] overflow-x-hidden py-16 md:py-24 dark:bg-background',
         className
       )}
     >
       <div className="container !max-w-4xl">
         <ScrollAnimation>
           <div className="mx-auto grid max-w-3xl gap-4 text-center rounded-3xl">
-            <h2 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
+            <h2 className="text-foreground text-2xl font-semibold tracking-normal md:text-3xl">
               {section.title}
             </h2>
             <p className="text-muted-foreground text-base leading-7 md:text-lg">
@@ -37,7 +37,7 @@ export function ToolsFaq({
             </p>
           </div>
 
-          <div className="mt-8 overflow-hidden rounded-3xl border border-border bg-background">
+          <div className="mt-8 overflow-hidden rounded-3xl border border-border bg-background dark:bg-card">
             <div className="px-6">
               <Accordion type="single" collapsible className="w-full">
                 {section.items?.map((item, idx) => (
@@ -46,7 +46,7 @@ export function ToolsFaq({
                     value={item.question || item.title || ''}
                     className="border-border last:border-b-0"
                   >
-                    <AccordionTrigger className="text-foreground cursor-pointer items-center py-5 text-base font-semibold tracking-tight hover:no-underline md:text-lg">
+                    <AccordionTrigger className="text-foreground cursor-pointer items-center py-5 text-base font-semibold tracking-normal hover:no-underline md:text-lg">
                       {item.question || item.title || ''}
                     </AccordionTrigger>
                     <AccordionContent className="pb-5">

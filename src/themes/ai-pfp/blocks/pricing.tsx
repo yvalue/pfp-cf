@@ -383,7 +383,7 @@ export function Pricing({
         <CardHeader className="grid gap-2 p-0">
           <div className="flex items-center justify-between gap-4">
             <CardTitle className="min-w-0 flex-1 font-medium">
-              <h2 className="text-foreground text-2xl font-semibold tracking-tight md:text-3xl">
+              <h2 className="text-foreground text-2xl font-semibold tracking-normal md:text-3xl">
                 {displayedFreeCard.title}
               </h2>
             </CardTitle>
@@ -394,7 +394,7 @@ export function Pricing({
 
           <div className="flex flex-wrap items-end gap-2">
             <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-              <div className="text-foreground text-4xl leading-none font-bold tracking-tight">
+              <div className="text-foreground text-4xl leading-none font-bold tracking-normal">
                 {displayedFreeCard.price}
               </div>
               {(displayedFreeCard.original_price || displayedFreeCard.unit) && (
@@ -464,7 +464,7 @@ export function Pricing({
     >
       <div className="relative container mt-6">
         <div className="mx-auto mb-8 grid max-w-4xl gap-4 px-4 text-center">
-          <h1 className="text-foreground mx-auto max-w-3xl text-4xl font-semibold tracking-tight text-balance md:text-6xl">
+          <h1 className="text-foreground mx-auto max-w-3xl text-4xl font-semibold tracking-normal text-balance md:text-6xl">
             {section.title}
           </h1>
           <p className="text-muted-foreground mx-auto max-w-4xl text-base leading-7 text-pretty whitespace-pre-line md:text-lg">
@@ -546,7 +546,7 @@ export function Pricing({
                 <CardHeader className="grid gap-2 p-0">
                   <div className="flex items-center justify-between gap-4">
                     <CardTitle className="min-w-0 flex-1 font-medium">
-                      <h2 className="text-foreground text-2xl font-semibold tracking-tight md:text-3xl">
+                      <h2 className="text-foreground text-2xl font-semibold tracking-normal md:text-3xl">
                         {item.title}
                       </h2>
                     </CardTitle>
@@ -562,7 +562,7 @@ export function Pricing({
 
                   <div className="flex flex-wrap items-end gap-2">
                     <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                      <div className="text-foreground text-4xl leading-none font-bold tracking-tight">
+                      <div className="text-foreground text-4xl leading-none font-bold tracking-normal">
                         {displayedItem.price}
                       </div>
                       {(displayedItem.original_price || displayedItem.unit) && (

@@ -23,10 +23,10 @@ export function FeaturesStep({
         <ScrollAnimation>
           <div className="mx-auto grid max-w-2xl gap-4 text-center">
             <span className="text-primary text-sm font-medium">{section.label}</span>
-            <h2 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
+            <h2 className="text-foreground mx-auto max-w-full text-4xl font-semibold tracking-normal text-pretty md:max-w-5xl md:text-6xl">
               {section.title}
             </h2>
-            <p className="text-muted-foreground text-base leading-7 text-balance md:text-lg">
+            <p className="text-muted-foreground text-lg leading-7 text-balance md:text-xl">
               {section.description}
             </p>
           </div>
@@ -48,14 +48,14 @@ export function FeaturesStep({
                     </div>
                   </div>
                   <div className="relative">
-                    <h3 className="text-foreground text-lg font-semibold tracking-tight md:text-xl">
+                    <h3 className="text-foreground text-xl font-semibold tracking-normal md:text-2xl">
                       {item.title}
                     </h3>
                     {idx < (section.items?.length ?? 0) - 1 && (
                       <ArrowBigRight className="fill-muted stroke-primary absolute top-1/2 right-0 hidden -translate-y-1/2 translate-x-full @3xl:block" />
                     )}
                   </div>
-                  <p className="text-muted-foreground text-sm leading-7 text-balance md:text-base">
+                  <p className="text-muted-foreground text-lg leading-7 text-balance md:text-xl">
                     {item.description}
                   </p>
                 </div>

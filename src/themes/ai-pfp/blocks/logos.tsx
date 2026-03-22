@@ -147,7 +147,7 @@ export function Logos({
     >
       <div className="container !max-w-5xl">
         <ScrollAnimation>
-          <p className="text-muted-foreground text-center text-lg leading-7 font-medium md:text-xl dark:text-white/70">
+          <p className="text-muted-foreground text-center text-3xl leading-7 font-medium md:text-2xl dark:text-white/70">
             {section.title}
           </p>
         </ScrollAnimation>

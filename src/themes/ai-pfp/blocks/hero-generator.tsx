@@ -691,7 +691,7 @@ export function HeroGenerator({
           </Link>
         )}
 
-        <div className="mx-auto mt-6 grid max-w-5xl gap-4 text-center">
+        <div className="mx-auto mt-6 grid gap-4 text-center">
           <div className="text-foreground text-4xl leading-tight font-semibold tracking-tight md:text-6xl">
             <span className="inline-flex items-center gap-3 md:gap-4">
               {logoSrc ? (
@@ -708,7 +708,7 @@ export function HeroGenerator({
               <span>{logoName}</span>
             </span>
           </div>
-          <h1 className="text-primary text-2xl font-semibold tracking-tight md:text-3xl">
+          <h1 className="text-primary text-2xl font-semibold md:text-3xl">
             {typedHighlightTitle}
             <span
               className={cn(
@@ -721,7 +721,7 @@ export function HeroGenerator({
             </span>
           </h1>
           {description && (
-            <p className="text-muted-foreground mx-auto max-w-3xl text-base leading-7 md:text-lg">
+            <p className="text-muted-foreground mx-auto max-w-3xl text-lg leading-7 md:text-xl">
               {description}
             </p>
           )}
@@ -736,7 +736,7 @@ export function HeroGenerator({
                 section.placeholder ||
                 'Describe the PFP you want to generate...'
               }
-              className="min-h-40 resize-none border-0 p-6 text-base leading-7 focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="min-h-40 resize-none border-0 p-6 text-lg md:text-base leading-7 focus-visible:ring-0 focus-visible:ring-offset-0"
             />
             <RiSparkling2Line className="text-primary absolute right-5 bottom-5 size-5" />
           </div>

@@ -49,10 +49,10 @@ export function ToolsRequirements({
       <div className="container grid gap-8 overflow-x-hidden md:gap-16 lg:gap-20">
         <ScrollAnimation>
           <div className="mx-auto grid max-w-4xl gap-4 text-center text-balance">
-            <h2 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
+            <h2 className="text-foreground text-3xl font-semibold tracking-normal md:text-4xl">
               {section.title}
             </h2>
-            <p className="text-muted-foreground text-base leading-7 md:text-lg">
+            <p className="text-muted-foreground text-lg leading-7 md:text-xl">
               {section.description}
             </p>
           </div>
@@ -69,7 +69,7 @@ export function ToolsRequirements({
               {section.items?.map((item, idx) => (
                 <AccordionItem value={`item-${idx + 1}`} key={idx}>
                   <AccordionTrigger>
-                    <div className="text-foreground flex items-center gap-2 text-xl font-semibold tracking-tight md:text-2xl">
+                    <div className="text-foreground flex items-center gap-2 text-lg font-semibold tracking-normal md:text-xl">
                       {item.icon && (
                         <SmartIcon name={item.icon as string} size={24} />
                       )}
@@ -77,7 +77,7 @@ export function ToolsRequirements({
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
-                    <p className="text-muted-foreground text-base leading-7 md:text-lg">
+                    <p className="text-muted-foreground text-lg leading-7 md:text-xl">
                       {item.description}
                     </p>
                   </AccordionContent>

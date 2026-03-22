@@ -1401,7 +1401,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
         <div className={cn(toolPanelPaneClassName, 'grid gap-3 lg:col-span-8')}>
           <div className="grid gap-3">
             <div className="grid gap-3">
-              <h1 className="text-foreground text-lg font-semibold tracking-tight md:text-2xl">
+              <h1 className="text-foreground text-lg font-semibold tracking-normal md:text-2xl">
                 {section.title}
               </h1>
               <p className="text-muted-foreground text-sm leading-7 md:text-base">
@@ -1413,7 +1413,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
               <section className={`${panelClassName} bg-background p-5`}>
                 <header className="mb-3 flex items-center justify-between gap-3">
                   <div>
-                    <h3 className="text-foreground text-lg font-semibold tracking-tight md:text-xl">
+                    <h3 className="text-foreground text-lg font-semibold tracking-normal md:text-xl">
                       {generatorT('generated_images')}
                     </h3>
                     <div className="text-muted-foreground text-xs leading-5">
@@ -1497,7 +1497,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
               <div className="grid gap-3 lg:grid-cols-2">
                 <section className={`${panelClassName} bg-background grid gap-1 p-5`}>
                   <header className="grid gap-2 text-center">
-                    <h3 className="text-foreground text-lg font-semibold tracking-tight md:text-xl">
+                    <h3 className="text-foreground text-lg font-semibold tracking-normal md:text-xl">
                       {section.result.example_title}
                     </h3>
                   </header>
@@ -1541,7 +1541,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
 
                 <section className={`${panelClassName} bg-background grid gap-0 p-5`}>
                   <header className="text-center">
-                    <h3 className="text-foreground text-lg font-semibold tracking-tight md:text-xl">
+                    <h3 className="text-foreground text-lg font-semibold tracking-normal md:text-xl">
                       {section.result.how_to_use_title}
                     </h3>
                   </header>

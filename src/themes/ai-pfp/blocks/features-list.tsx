@@ -29,10 +29,10 @@ export function FeaturesList({
         <div className="mx-auto max-w-7xl bg-white dark:bg-background">
           <ScrollAnimation>
             <div className="grid gap-4 rounded-3xl p-6 text-center lg:p-8">
-              <h2 className="mx-auto max-w-3xl text-4xl font-semibold tracking-tight break-words text-balance text- text-foreground md:text-6xl">
+              <h2 className="text-foreground mx-auto max-w-full text-4xl font-semibold tracking-normal text-pretty md:max-w-5xl md:text-6xl">
                 {section.title}
               </h2>
-              <p className="mx-auto max-w-4xl break-words text-base leading-7 text-foreground md:text-lg md:leading-8">
+              <p className="text-muted-foreground mx-auto max-w-4xl break-words text-lg leading-7 md:text-xl">
                 {section.description}
               </p>
               {section.buttons && section.buttons.length > 0 && (
@@ -79,10 +79,10 @@ export function FeaturesList({
                     </div>
                   )}
                   <div className="grid min-w-0 flex-1 gap-2">
-                    <h3 className="text-foreground min-w-0 text-xl font-semibold tracking-tight break-words md:text-2xl">
+                    <h3 className="text-foreground min-w-0 text-xl font-semibold tracking-normal break-words md:text-2xl">
                       {item.title}
                     </h3>
-                    <p className="text-muted-foreground min-w-0 text-base leading-7 break-words md:text-lg">
+                    <p className="text-muted-foreground min-w-0 text-lg leading-7 break-words md:text-xl">
                       {item.description ?? ''}
                     </p>
                   </div>

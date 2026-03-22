@@ -44,7 +44,7 @@ export function FeaturesFlow({ section }: { section: Section }) {
         {section.sr_only_title && (
           <h1 className="sr-only">{section.sr_only_title}</h1>
         )}
-        <h2 className="text-foreground mx-auto max-w-full text-4xl font-semibold tracking-tight text-pretty md:max-w-5xl md:text-6xl">
+        <h2 className="text-foreground mx-auto max-w-full text-4xl font-semibold tracking-normal text-pretty md:max-w-5xl md:text-6xl">
           {section.title}
         </h2>
         <p className="text-muted-foreground mx-auto max-w-5xl text-lg leading-7 break-words md:text-xl">
@@ -103,10 +103,10 @@ export function FeaturesFlow({ section }: { section: Section }) {
                   ease: [0.22, 1, 0.36, 1] as const,
                 }}
               >
-                <h3 className="text-foreground text-xl font-semibold tracking-tight md:text-2xl">
+                <h3 className="text-foreground text-xl font-semibold tracking-normal md:text-2xl">
                   {item.title}
                 </h3>
-                <p className="text-muted-foreground text-base leading-7 md:text-lg">
+                <p className="text-muted-foreground text-lg leading-7 md:text-xl">
                   {item.description}
                 </p>
               </motion.div>
