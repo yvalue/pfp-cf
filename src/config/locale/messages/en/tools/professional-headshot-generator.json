@@ -92,7 +92,7 @@
           "usage_steps": [
             "Upload your photo",
             "Choose a style",
-            "Adjust parameters or description (optional)",
+            "Adjust description",
             "Wait and download"
           ],
           "tip_prefix": "Tip:",

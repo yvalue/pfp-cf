@@ -520,26 +520,10 @@ export function ImageUploader({
 
   return (
     <div
-      className={cn(
-        'relative focus:outline-none',
-        isDragActive &&
-          'ring-primary ring-offset-background ring-2 ring-offset-2',
-        className
-      )}
+      className={cn('focus:outline-none', className)}
       tabIndex={0}
       onPaste={handlePaste}
-      onDragEnter={handleDragEnter}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
     >
-      {isDragActive && (
-        <div className="bg-background pointer-events-none absolute inset-0 z-30 flex items-center justify-center backdrop-blur-sm">
-          <div className="bg-background text-foreground rounded-full px-4 py-2 text-sm font-medium shadow-sm">
-            {t('drop_overlay')}
-          </div>
-        </div>
-      )}
       <input
         ref={inputRef}
         type="file"
@@ -572,154 +556,177 @@ export function ImageUploader({
 
       <div
         className={cn(
-          'gap-4',
-          showLargeEmptyState ? 'block' : 'flex',
-          title && 'mt-3',
-          !showLargeEmptyState && (allowMultiple ? 'flex-wrap' : 'flex-nowrap')
+          'relative',
+          isDragActive &&
+            'ring-primary ring-offset-background ring-2 ring-offset-2',
+          isPanelVariant &&
+            'border-primary rounded-3xl border-2 border-dashed p-3',
+          title && 'mt-3'
         )}
+        onDragEnter={handleDragEnter}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
       >
-        {items.map((item) => (
-          <div
-            key={item.id}
-            className={cn(
-              'group border-border bg-muted hover:border-border hover:bg-muted relative overflow-hidden border shadow-sm transition',
-              itemTileClassName,
-              panelTileRadiusClass
-            )}
-          >
-            <div
-              className={cn('relative overflow-hidden', panelInnerRadiusClass)}
-            >
-              <img
-                src={item.preview}
-                alt={t('reference_alt')}
-                className={cn(
-                  panelThumbSizeClass,
-                  panelInnerRadiusClass,
-                  'object-cover'
-                )}
-              />
-              {item.size && (
-                <span className="bg-background text-muted-foreground absolute bottom-2 left-2 rounded-md px-2 py-1 text-xs font-medium">
-                  {formatBytes(item.size)}
-                </span>
-              )}
-              {item.status !== 'uploading' && (
-                <div className="bg-foreground absolute inset-0 z-10 flex items-center justify-center opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
-                  <Button
-                    type="button"
-                    size="icon"
-                    variant="secondary"
-                    className={cn(
-                      'bg-background text-foreground hover:bg-background focus-visible:ring-ring rounded-full shadow-sm backdrop-blur focus-visible:ring-2',
-                      panelOverlayButtonClass
-                     )}
-                     onClick={() => openReplacePicker(item.id)}
-                     aria-label={t('replace_image')}
-                   >
-                     <IconRefresh className={panelOverlayIconClass} />
-                   </Button>
-                </div>
-              )}
-              {item.status === 'uploading' && (
-                <div className="bg-foreground/60 text-background absolute inset-0 z-10 flex items-center justify-center text-xs font-medium">
-                  {t('uploading')}
-                </div>
-              )}
-              {item.status === 'error' && (
-                <div className="bg-destructive text-destructive-foreground absolute inset-0 z-10 flex items-center justify-center text-xs font-medium">
-                  {t('failed')}
-                </div>
-              )}
-              <Button
-                size="icon"
-                variant="destructive"
-                className={cn('absolute z-20', panelRemoveButtonClass)}
-                onClick={() => handleRemove(item.id)}
-                aria-label={t('remove_image')}
-              >
-                <IconX className={panelRemoveIconClass} />
-              </Button>
+        {isDragActive && (
+          <div className="bg-background pointer-events-none absolute inset-0 z-30 flex items-center justify-center backdrop-blur-sm">
+            <div className="bg-background text-foreground rounded-full px-4 py-2 text-sm font-medium shadow-sm">
+              {t('drop_overlay')}
             </div>
           </div>
-        ))}
-
-        {items.length < maxCount &&
-          (showLargeEmptyState ? (
+        )}
+        <div
+          className={cn(
+            'gap-2',
+            showLargeEmptyState ? 'block' : 'flex',
+            !showLargeEmptyState &&
+              (allowMultiple
+                ? 'flex-wrap content-start items-start'
+                : 'flex-nowrap items-start'),
+            isPanelVariant && 'min-h-[160px]'
+          )}
+        >
+          {items.map((item) => (
             <div
+              key={item.id}
               className={cn(
-                'border-primary rounded-3xl border-2 border-dashed p-3',
-                emptyTileClassName
+                'group border-border bg-muted hover:border-border hover:bg-muted relative overflow-hidden border shadow-sm transition',
+                itemTileClassName,
+                panelTileRadiusClass
               )}
             >
-              <button
-                type="button"
-                onClick={openFilePicker}
-                className="flex w-full flex-col items-center justify-center gap-3 text-center"
+              <div
+                className={cn(
+                  'relative overflow-hidden',
+                  panelInnerRadiusClass
+                )}
               >
-                <RiImageAddLine className="text-foreground/28 text-primary size-12" />
-                <div className="text-foreground text-lg leading-5 font-medium">
-                  {emptyTitle || t('empty_title')}
-                </div>
-                {emptyDescription ? (
-                  <div
-                    className={cn(
-                      'text-muted-foreground max-w-xl text-sm leading-5',
-                      emptyMetaClassName
-                    )}
-                  >
-                    {emptyDescription}
-                  </div>
-                ) : null}
-                {emptyFooter ? (
-                  <div
-                    className={cn(
-                      'text-muted-foreground max-w-xl text-sm leading-5',
-                      emptyMetaClassName
-                    )}
-                  >
-                    {emptyFooter}
-                  </div>
-                ) : null}
-                {!emptyDescription && !emptyFooter ? (
-                  <div
-                    className={cn(
-                      'text-muted-foreground max-w-2xl text-sm leading-7 sm:text-base',
-                      emptyMetaClassName
-                    )}
-                  >
-                    {emptyHint || t('max_size', { maxSizeMB })}
-                  </div>
-                ) : null}
-              </button>
-            </div>
-          ) : (
-            <div
-              className={cn(
-                'group border-border bg-muted hover:border-border hover:bg-muted relative overflow-hidden rounded-xl border border-dashed shadow-sm transition',
-                emptyTileClassName,
-                isPanelVariant && 'rounded-lg'
-              )}
-            >
-              <div className="relative overflow-hidden rounded-lg">
-                <button
-                  type="button"
+                <img
+                  src={item.preview}
+                  alt={t('reference_alt')}
                   className={cn(
-                    'flex flex-col items-center justify-center gap-2',
-                    panelThumbSizeClass
+                    panelThumbSizeClass,
+                    panelInnerRadiusClass,
+                    'object-cover'
                   )}
-                  onClick={openFilePicker}
-                >
-                  <RiImageAddLine className="h-8 w-8 text-gray-400" />
-                  <span
-                    className={cn('text-primary text-xs', emptyMetaClassName)}
-                  >
-                    {t('max_size', { maxSizeMB })}
+                />
+                {item.size && (
+                  <span className="bg-background text-muted-foreground absolute bottom-2 left-2 rounded-md px-2 py-1 text-xs font-medium">
+                    {formatBytes(item.size)}
                   </span>
-                </button>
+                )}
+                {item.status !== 'uploading' && (
+                  <div className="bg-foreground absolute inset-0 z-10 flex items-center justify-center opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="secondary"
+                      className={cn(
+                        'bg-background text-foreground hover:bg-background focus-visible:ring-ring rounded-full shadow-sm backdrop-blur focus-visible:ring-2',
+                        panelOverlayButtonClass
+                      )}
+                      onClick={() => openReplacePicker(item.id)}
+                      aria-label={t('replace_image')}
+                    >
+                      <IconRefresh className={panelOverlayIconClass} />
+                    </Button>
+                  </div>
+                )}
+                {item.status === 'uploading' && (
+                  <div className="bg-foreground/60 text-background absolute inset-0 z-10 flex items-center justify-center text-xs font-medium">
+                    {t('uploading')}
+                  </div>
+                )}
+                {item.status === 'error' && (
+                  <div className="bg-destructive text-destructive-foreground absolute inset-0 z-10 flex items-center justify-center text-xs font-medium">
+                    {t('failed')}
+                  </div>
+                )}
+                <Button
+                  size="icon"
+                  variant="destructive"
+                  className={cn('absolute z-20', panelRemoveButtonClass)}
+                  onClick={() => handleRemove(item.id)}
+                  aria-label={t('remove_image')}
+                >
+                  <IconX className={panelRemoveIconClass} />
+                </Button>
               </div>
             </div>
           ))}
+
+          {items.length < maxCount &&
+            (showLargeEmptyState ? (
+              <div className={cn('h-full', emptyTileClassName)}>
+                <button
+                  type="button"
+                  onClick={openFilePicker}
+                  className="flex min-h-[160px] w-full flex-col items-center justify-center gap-3 text-center"
+                >
+                  <RiImageAddLine className="text-foreground/28 text-primary size-12" />
+                  <div className="text-foreground text-xl leading-5 font-medium">
+                    {emptyTitle || t('empty_title')}
+                  </div>
+                  {emptyDescription ? (
+                    <div
+                      className={cn(
+                        'text-muted-foreground max-w-xl text-sm leading-5',
+                        emptyMetaClassName
+                      )}
+                    >
+                      {emptyDescription}
+                    </div>
+                  ) : null}
+                  {emptyFooter ? (
+                    <div
+                      className={cn(
+                        'text-muted-foreground max-w-xl text-sm leading-5',
+                        emptyMetaClassName
+                      )}
+                    >
+                      {emptyFooter}
+                    </div>
+                  ) : null}
+                  {!emptyDescription && !emptyFooter ? (
+                    <div
+                      className={cn(
+                        'text-muted-foreground max-w-2xl text-sm leading-7 sm:text-base',
+                        emptyMetaClassName
+                      )}
+                    >
+                      {emptyHint || t('max_size', { maxSizeMB })}
+                    </div>
+                  ) : null}
+                </button>
+              </div>
+            ) : (
+              <div
+                className={cn(
+                  'group border-border bg-muted hover:border-border hover:bg-muted relative overflow-hidden rounded-xl border border-dashed shadow-sm transition',
+                  emptyTileClassName,
+                  isPanelVariant && 'rounded-lg'
+                )}
+              >
+                <div className="relative overflow-hidden rounded-lg">
+                  <button
+                    type="button"
+                    className={cn(
+                      'flex flex-col items-center justify-center gap-2',
+                      panelThumbSizeClass
+                    )}
+                    onClick={openFilePicker}
+                  >
+                    <RiImageAddLine className="h-8 w-8 text-gray-400" />
+                    <span
+                      className={cn('text-primary text-xs', emptyMetaClassName)}
+                    >
+                      {t('max_size', { maxSizeMB })}
+                    </span>
+                  </button>
+                </div>
+              </div>
+            ))}
+        </div>
       </div>
 
       {!title && (

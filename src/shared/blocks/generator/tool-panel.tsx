@@ -259,8 +259,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
     setIsMounted(true);
   }, []);
 
-  const promptLength = prompt.trim().length;
-  const isPromptTooLong = promptLength > MAX_PROMPT_LENGTH;
+  const isPromptTooLong = prompt.trim().length > MAX_PROMPT_LENGTH;
   const remainingCredits = user?.credits?.remainingCredits ?? 0;
 
   const selectedEffect =
@@ -733,9 +732,9 @@ export function ToolPanel({ section }: ToolPanelProps) {
   return (
     <section id={section.id || section.name} data-slot="generator-tool-panel">
       <div className="grid gap-3 py-3 lg:grid-cols-12 xl:grid-cols-12">
-        <div className={cn(toolPanelPaneClassName, 'self-start lg:col-span-4')}>
+        <div className={cn(toolPanelPaneClassName, 'lg:col-span-4')}>
           <div className="flex flex-col gap-3">
-            <Tabs defaultValue="upload" className="flex flex-col gap-4">
+            <Tabs defaultValue="upload" className="flex flex-col gap-6">
               <TabsList
                 className={cn(aiPfpSegmentedTabsListClassName, 'grid-cols-2')}
               >
@@ -754,7 +753,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
               </TabsList>
 
               <TabsContent value="upload" className="mt-0">
-                <div className="grid gap-4">
+                <div className="grid gap-6">
                   <section className="space-y-2">
                   <ImageUploader
                       variant="panel"
@@ -773,7 +772,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                     />
                   </section>
 
-                  <section className="space-y-2">
+                  <section>
                     <div className="flex flex-wrap items-center gap-2">
                       <Label htmlFor="tool-panel-prompt">
                         {t('labels.description')}
@@ -782,27 +781,25 @@ export function ToolPanel({ section }: ToolPanelProps) {
                         {t('badges.optional')}
                       </span>
                     </div>
-                    <Textarea
-                      id="tool-panel-prompt"
-                      value={prompt}
-                      onChange={(event) => setPrompt(event.target.value)}
-                      placeholder={t('placeholders.description')}
-                      className="min-h-32 rounded-2xl text-sm leading-5"
-                    />
-                    <div className="text-muted-foreground flex items-center justify-between text-xs leading-5">
-                      <span className="inline-flex items-center gap-2">
-                        <Sparkles className="size-3.5" />
-                        {promptLength}/{MAX_PROMPT_LENGTH}
-                      </span>
-                      {isPromptTooLong ? (
+                    <div className="border-border bg-background focus-within:border-primary focus-within:ring-primary/15 mt-3 overflow-hidden rounded-2xl border focus-within:ring-1">
+                      <Textarea
+                        id="tool-panel-prompt"
+                        value={prompt}
+                        onChange={(event) => setPrompt(event.target.value)}
+                        placeholder={t('placeholders.description')}
+                        className="min-h-32 resize-none border-0 rounded-none text-sm leading-5 focus-visible:ring-0 focus-visible:ring-offset-0"
+                      />
+                    </div>
+                    {isPromptTooLong ? (
+                      <div className="text-xs leading-5">
                         <span className="text-destructive">
                           {t('messages.prompt_too_long')}
                         </span>
-                      ) : null}
-                    </div>
+                      </div>
+                    ) : null}
                   </section>
 
-                  <section className="space-y-2">
+                  <section>
                     <div className="flex flex-wrap items-center gap-2">
                       <Label>{section.effect_style_label}</Label>
                       <span className="bg-muted text-muted-foreground inline-flex items-center rounded-xl px-2 text-xs leading-5 font-medium">
@@ -817,7 +814,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                       <button
                         type="button"
                         onClick={() => setIsEffectDialogOpen(true)}
-                        className="border-border bg-background hover:border-border flex h-10 w-full min-w-0 items-center gap-3 rounded-xl border px-3 text-left text-sm leading-6 transition-colors outline-none"
+                        className="border-border bg-background hover:border-border mt-3 flex h-10 w-full min-w-0 items-center gap-3 rounded-xl border px-3 text-left text-sm leading-6 transition-colors outline-none"
                       >
                         {selectedEffect ? (
                           <EffectThumbnail

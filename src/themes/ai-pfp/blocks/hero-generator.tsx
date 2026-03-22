@@ -816,7 +816,7 @@ export function HeroGenerator({
           )}
         </div>
 
-        <div className="border-border bg-background mt-8 overflow-hidden rounded-3xl border">
+        <div className="border-border bg-background focus-within:border-primary focus-within:ring-primary/15 mt-8 overflow-hidden rounded-3xl border focus-within:ring-1">
           <div className="border-border bg-background relative border-b">
             <Textarea
               value={prompt}

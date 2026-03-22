@@ -75,7 +75,7 @@ export function ToolsSidebar({ sidebar }: { sidebar: ToolSidebarConfig }) {
   );
 
   const footer = primaryAction ? (
-    <div className="border-border bg-background grid gap-2 rounded-3xl border p-3">
+    <div className="grid gap-2 p-3">
       {primaryAction.url ? (
         <Button asChild className="w-full justify-center" size="sm">
           <Link href={primaryAction.url}>{primaryAction.title}</Link>
@@ -146,7 +146,7 @@ export function ToolsSidebar({ sidebar }: { sidebar: ToolSidebarConfig }) {
         className="border-border bg-card fixed inset-y-0 left-0 z-40 hidden h-screen w-[240px] border-r lg:block"
       >
         <div className="flex h-screen flex-col">
-          <div className="border-border border-b px-6 py-3">
+          <div className="border-border border-b px-3 py-2 flex justify-center">
             <BrandLogo
               brand={{
                 url: '/',
@@ -161,12 +161,12 @@ export function ToolsSidebar({ sidebar }: { sidebar: ToolSidebarConfig }) {
             />
           </div>
 
-          <nav className="min-h-0 flex-1 overflow-y-auto px-3 py-3">
+          <nav className="min-h-0 flex-1 overflow-y-auto px-3 py-2">
             {navigation}
           </nav>
 
           {footer ? (
-            <div className="border-border border-t px-3 py-2">{footer}</div>
+            <div className="border-border border-t px-3 py-1">{footer}</div>
           ) : null}
         </div>
       </aside>
