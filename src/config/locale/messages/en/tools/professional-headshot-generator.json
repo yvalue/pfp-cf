@@ -33,7 +33,6 @@
           "supports": "Supports multiple images"
         },
         "description_placeholder": "Describe how your image should look like...",
-        "description_counter": "0/1000",
         "effects": [
           {
             "id": "linkedin-headshot",

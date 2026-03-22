@@ -32,7 +32,6 @@
           "supports": "支持上传多张图片"
         },
         "description_placeholder": "描述你想要的证件照效果...",
-        "description_counter": "0/1000",
         "effects": [
           {
             "id": "linkedin-headshot",

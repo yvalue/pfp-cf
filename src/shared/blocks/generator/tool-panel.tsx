@@ -11,7 +11,6 @@ import {
   type ReactNode,
 } from 'react';
 import {
-  Check,
   ChevronsUpDown,
   Download,
   Loader2,
@@ -71,7 +70,6 @@ import {
 import { cn } from '@/shared/lib/utils';
 
 type FieldBadgeVariant = 'required' | 'muted';
-type ToolPanelTab = 'upload' | 'parameter';
 
 type ToolPanelSelectOption = {
   label: string;
@@ -118,7 +116,6 @@ export type ToolPanelSection = {
     supports: string;
   };
   description_placeholder: string;
-  description_counter?: string;
   effects: ToolPanelEffectOption[];
   selects: {
     aspect_ratio: ToolPanelSelectOption[];
@@ -362,7 +359,6 @@ function ComparisonHandle() {
 export function ToolPanel({ section }: ToolPanelProps) {
   const locale = useLocale();
   const generatorT = useTranslations('ai.image.generator');
-  const [activeTab, setActiveTab] = useState<ToolPanelTab>('upload');
   const [selectedEffectId, setSelectedEffectId] = useState(
     section.effects[0]?.id ?? ''
   );
@@ -985,11 +981,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
       <div className="grid gap-3 py-3 lg:grid-cols-12 xl:grid-cols-12">
         <div className={cn(toolPanelPaneClassName, 'self-start lg:col-span-4')}>
           <div className="flex flex-col gap-3">
-            <Tabs
-              value={activeTab}
-              onValueChange={(value) => setActiveTab(value as ToolPanelTab)}
-              className="flex flex-col gap-4"
-            >
+            <Tabs defaultValue="upload" className="flex flex-col gap-4">
               <TabsList
                 className={cn(aiPfpSegmentedTabsListClassName, 'grid-cols-2')}
               >
@@ -1560,33 +1552,6 @@ export function ToolPanel({ section }: ToolPanelProps) {
                 </section>
               </div>
             )}
-
-            {!isGenerating ? (
-              <div className="mt-4 flex justify-center">
-                <Button
-                  variant="outline"
-                  className="text-foreground rounded-xl text-sm leading-6 shadow-none"
-                  onClick={() => {
-                    if (generatedImages[0]) {
-                      void handleDownloadImage(generatedImages[0]);
-                    }
-                  }}
-                  disabled={
-                    generatedImages.length === 0 ||
-                    downloadingImageId === generatedImages[0]?.id
-                  }
-                >
-                  {downloadingImageId === generatedImages[0]?.id ? (
-                    <Loader2 className="size-4 animate-spin" />
-                  ) : (
-                    <>
-                      <Download className="size-4" />
-                      {section.buttons.download}
-                    </>
-                  )}
-                </Button>
-              </div>
-            ) : null}
           </div>
         </div>
       </div>
