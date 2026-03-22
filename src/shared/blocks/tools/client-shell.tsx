@@ -3,7 +3,10 @@
 import { ReactNode } from 'react';
 
 import { usePathname } from '@/core/i18n/navigation';
-import { Header as DashboardHeader } from '@/shared/blocks/dashboard/header';
+import {
+  Header as DashboardHeader,
+  DashboardHeaderDefaultsProvider,
+} from '@/shared/blocks/dashboard/header';
 import { Sidebar } from '@/shared/blocks/dashboard/sidebar';
 import { SidebarInset, SidebarProvider } from '@/shared/components/ui/sidebar';
 import {
@@ -34,18 +37,16 @@ function ToolsHeader({
     throw new Error(`No tool navigation item matches pathname "${pathname}".`);
   }
 
-  return (
-    <DashboardHeader
-      {...header}
-      crumbs={[
-        ...(header.crumbs ?? []),
-        {
-          title: currentItem.title,
-          is_active: true,
-        },
-      ]}
-    />
-  );
+  // Preserve header-configured crumbs like "Home", then append the current tool.
+  const crumbs = [
+    ...(header.crumbs ?? []),
+    {
+      title: currentItem.title,
+      is_active: true,
+    },
+  ];
+
+  return <DashboardHeader crumbs={crumbs} />;
 }
 
 export function ToolsClientShell({
@@ -79,13 +80,15 @@ export function ToolsClientShell({
     >
       <Sidebar sidebar={sidebar} />
       <SidebarInset className="flex min-h-screen flex-col">
-        <div className="flex min-h-screen flex-col">
-          <ToolsHeader sidebar={sidebar} header={header} />
-          <div className="mx-auto flex w-full max-w-[1440px] flex-1 flex-col px-4 py-6 md:px-6 lg:px-8">
-            {children}
+        <DashboardHeaderDefaultsProvider value={header}>
+          <div className="flex min-h-screen flex-col">
+            <ToolsHeader sidebar={sidebar} header={header} />
+            <div className="mx-auto flex w-full max-w-[1440px] flex-1 flex-col px-4 py-6 md:px-6 lg:px-8">
+              {children}
+            </div>
+            {footer}
           </div>
-          {footer}
-        </div>
+        </DashboardHeaderDefaultsProvider>
       </SidebarInset>
     </SidebarProvider>
   );

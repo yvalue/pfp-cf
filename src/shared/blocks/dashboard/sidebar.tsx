@@ -21,6 +21,8 @@ export function Sidebar({
 }: React.ComponentProps<typeof SidebarComponent> & {
   sidebar: SidebarType;
 }) {
+  const hasFooterContent = Boolean(sidebar.user || sidebar.footer);
+
   return (
     <SidebarComponent collapsible={sidebar.collapsible || 'icon'} {...props}>
       {sidebar.header && <SidebarHeader header={sidebar.header} />}
@@ -31,17 +33,16 @@ export function Sidebar({
         {sidebar.bottom_nav && (
           <Nav nav={sidebar.bottom_nav} className="mt-auto" />
         )}
-        {sidebar.buttons && (
-          <SidebarButtons
-            buttons={sidebar.buttons}
-            className="mt-auto border-t px-3 py-3"
-          />
-        )}
       </SidebarContent>
-      <SidebarFooterComponent>
-        {sidebar.user && <SidebarUser user={sidebar.user} />}
-        {sidebar.footer && <SidebarFooter footer={sidebar.footer} />}
-      </SidebarFooterComponent>
+      {sidebar.buttons && (
+        <SidebarButtons buttons={sidebar.buttons} className="border-t" />
+      )}
+      {hasFooterContent && (
+        <SidebarFooterComponent className="gap-0 py-0">
+          {sidebar.user && <SidebarUser user={sidebar.user} />}
+          {sidebar.footer && <SidebarFooter footer={sidebar.footer} />}
+        </SidebarFooterComponent>
+      )}
     </SidebarComponent>
   );
 }
