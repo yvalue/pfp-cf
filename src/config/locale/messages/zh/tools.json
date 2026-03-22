@@ -1,20 +1,46 @@
 {
   "sidebar": {
-    "nav": {
-      "items": [
-        {
-          "url": "/professional-headshot-generator",
-          "title": "专业证件照",
-          "icon": "User"
+    "variant": "sidebar",
+    "collapsible": "icon",
+    "header": {
+      "brand": {
+        "url": "/",
+        "title": "AI-PFP",
+        "logo": {
+          "src": "/logo.png",
+          "alt": "AI-PFP",
+          "width": 100,
+          "height": 100
         }
-      ]
+      },
+      "show_trigger": false
     },
-    "primary_action": {
-      "title": "升级"
-    }
+    "main_navs": [
+      {
+        "items": [
+          {
+            "url": "/professional-headshot-generator",
+            "title": "专业证件照",
+            "icon": "User"
+          }
+        ]
+      }
+    ],
+    "buttons": [
+      {
+        "title": "升级",
+        "variant": "default",
+        "size": "sm"
+      }
+    ]
   },
-  "topbar": {
-    "breadcrumb_home": "首页",
+  "header": {
+    "crumbs": [
+      {
+        "title": "首页",
+        "url": "/"
+      }
+    ],
     "show_theme": true,
     "show_locale": true,
     "show_sign": true,

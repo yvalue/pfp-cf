@@ -3,18 +3,19 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { getThemePage } from '@/core/theme';
 import { envConfigs } from '@/config';
-import { getToolNavItemFromSlug } from '@/shared/lib/tools';
-import type {
-  ToolPage as ToolPageType,
-  ToolSidebarConfig,
-} from '@/shared/types/blocks/tools';
+import {
+  getToolNavItemFromSlug,
+  getToolSidebarItems,
+} from '@/shared/lib/tools';
+import type { Sidebar as DashboardSidebar } from '@/shared/types/blocks/dashboard';
+import type { ToolPage as ToolPageType } from '@/shared/types/blocks/tools';
 
 export const revalidate = 3600;
 
 async function getRegisteredTool(locale: string, slug: string) {
   const t = await getTranslations({ locale, namespace: 'tools' });
-  const sidebar = t.raw('sidebar') as ToolSidebarConfig;
-  const items = sidebar.nav?.items ?? [];
+  const sidebar = t.raw('sidebar') as DashboardSidebar;
+  const items = getToolSidebarItems(sidebar);
 
   if (!items.length) {
     throw new Error('Tools sidebar items are required.');

@@ -62,6 +62,11 @@ export async function getThemePageStrict(pageName: string, theme?: string) {
  * load theme layout
  */
 export async function getThemeLayout(layoutName: string, theme?: string) {
+  if (layoutName === 'tools') {
+    const module = await import('@/shared/blocks/tools/layout');
+    return module.default;
+  }
+
   const loadTheme = theme || getActiveTheme();
 
   try {
@@ -86,6 +91,11 @@ export async function getThemeLayout(layoutName: string, theme?: string) {
 }
 
 export async function getThemeLayoutStrict(layoutName: string, theme?: string) {
+  if (layoutName === 'tools') {
+    const module = await import('@/shared/blocks/tools/layout');
+    return module.default;
+  }
+
   const loadTheme = theme || getActiveTheme();
   const module = await import(`@/themes/${loadTheme}/layouts/${layoutName}`);
   return module.default;

@@ -25,12 +25,17 @@ export function Sidebar({
     <SidebarComponent collapsible={sidebar.collapsible || 'icon'} {...props}>
       {sidebar.header && <SidebarHeader header={sidebar.header} />}
       <SidebarContent>
-        {sidebar.buttons && <SidebarButtons buttons={sidebar.buttons} />}
         {sidebar.main_navs &&
           sidebar.main_navs.map((nav, idx) => <Nav key={idx} nav={nav} />)}
         {sidebar.library}
         {sidebar.bottom_nav && (
           <Nav nav={sidebar.bottom_nav} className="mt-auto" />
+        )}
+        {sidebar.buttons && (
+          <SidebarButtons
+            buttons={sidebar.buttons}
+            className="mt-auto border-t px-3 py-3"
+          />
         )}
       </SidebarContent>
       <SidebarFooterComponent>

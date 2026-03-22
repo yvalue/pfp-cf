@@ -1,9 +1,19 @@
 import { ReactNode } from 'react';
 
-import { Brand, Button, Nav } from './common';
+import { Brand, Button, Crumb, Nav, UserNav } from './common';
 
 export interface Dashboard {
   sidebar?: Sidebar;
+}
+
+export interface Header {
+  title?: string;
+  crumbs?: Crumb[];
+  buttons?: Button[];
+  show_locale?: boolean;
+  show_theme?: boolean;
+  show_sign?: boolean;
+  user_nav?: UserNav;
 }
 
 export interface SidebarHeader {

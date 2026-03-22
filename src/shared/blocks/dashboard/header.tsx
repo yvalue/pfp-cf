@@ -3,6 +3,7 @@ import { Fragment } from 'react';
 import { Link } from '@/core/i18n/navigation';
 import {
   LocaleSelector,
+  SignUser,
   SmartIcon,
   ThemeToggler,
 } from '@/shared/blocks/common';
@@ -17,7 +18,7 @@ import {
 import { Button } from '@/shared/components/ui/button';
 import { Separator } from '@/shared/components/ui/separator';
 import { SidebarTrigger } from '@/shared/components/ui/sidebar';
-import { Button as ButtonType, Crumb } from '@/shared/types/blocks/common';
+import { Header as HeaderType } from '@/shared/types/blocks/dashboard';
 
 export function Header({
   title,
@@ -25,13 +26,9 @@ export function Header({
   buttons,
   show_locale,
   show_theme,
-}: {
-  title?: string;
-  crumbs?: Crumb[];
-  buttons?: ButtonType[];
-  show_locale?: boolean;
-  show_theme?: boolean;
-}) {
+  show_sign,
+  user_nav,
+}: HeaderType) {
   return (
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
       <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
@@ -84,7 +81,8 @@ export function Header({
             </div>
           )}
           {show_theme && <ThemeToggler />}
-          {show_locale !== false && <LocaleSelector type="button" />}
+          {show_locale !== false && <LocaleSelector />}
+          {show_sign ? <SignUser userNav={user_nav} /> : null}
         </div>
       </div>
     </header>

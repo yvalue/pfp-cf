@@ -7,12 +7,18 @@ import { useSidebar } from '@/shared/components/ui/sidebar';
 import { cn } from '@/shared/lib/utils';
 import { Button as ButtonType } from '@/shared/types/blocks/common';
 
-export function SidebarButtons({ buttons }: { buttons: ButtonType[] }) {
+export function SidebarButtons({
+  buttons,
+  className,
+}: {
+  buttons: ButtonType[];
+  className?: string;
+}) {
   const { state } = useSidebar();
   const isCollapsed = state === 'collapsed';
 
   return (
-    <div className="flex flex-col gap-2 px-3 py-3">
+    <div className={cn('flex flex-col gap-2 px-3 py-3', className)}>
       {buttons.map((button, idx) => (
         <Button
           key={idx}
@@ -31,12 +37,16 @@ export function SidebarButtons({ buttons }: { buttons: ButtonType[] }) {
             aria-label={button.title || undefined}
             title={button.title || undefined}
           >
-            {button.icon && (
+            {button.icon ? (
               <SmartIcon
                 name={button.icon as string}
                 className="size-4 shrink-0"
               />
-            )}
+            ) : isCollapsed && button.title ? (
+              <span className="text-xs font-semibold">
+                {button.title.trim().charAt(0).toUpperCase()}
+              </span>
+            ) : null}
             {button.title && !isCollapsed && (
               <span className="whitespace-nowrap">{button.title}</span>
             )}

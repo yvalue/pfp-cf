@@ -1,5 +1,6 @@
 import { locales } from '@/config/locale';
-import type { ToolNavItem } from '@/shared/types/blocks/tools';
+import type { Nav, NavItem } from '@/shared/types/blocks/common';
+import type { Sidebar } from '@/shared/types/blocks/dashboard';
 
 export function normalizeToolUrl(url: string): string {
   const trimmed = url.trim();
@@ -28,18 +29,20 @@ export function getToolSlugFromPathname(pathname: string): string | null {
 }
 
 export function getToolNavItemFromSlug(
-  items: ToolNavItem[],
+  items: NavItem[],
   slug: string
-): ToolNavItem | null {
+): NavItem | null {
   const targetUrl = normalizeToolUrl(slug);
 
-  return items.find((item) => normalizeToolUrl(item.url) === targetUrl) ?? null;
+  return (
+    items.find((item) => normalizeToolUrl(item.url || '') === targetUrl) ?? null
+  );
 }
 
 export function getToolNavItemFromPathname(
-  items: ToolNavItem[],
+  items: NavItem[],
   pathname: string
-): ToolNavItem | null {
+): NavItem | null {
   const slug = getToolSlugFromPathname(pathname);
 
   if (!slug) {
@@ -49,10 +52,11 @@ export function getToolNavItemFromPathname(
   return getToolNavItemFromSlug(items, slug);
 }
 
-export function isToolNavItemActive(
-  item: ToolNavItem,
-  pathname: string
-): boolean {
+export function isToolNavItemActive(item: NavItem, pathname: string): boolean {
   const currentItem = getToolNavItemFromPathname([item], pathname);
   return currentItem !== null;
+}
+
+export function getToolSidebarItems(sidebar: Sidebar): NavItem[] {
+  return sidebar.main_navs?.flatMap((nav: Nav) => nav.items ?? []) ?? [];
 }
