@@ -30,7 +30,8 @@
         "upload": {
           "title": "Drop files or click to upload",
           "formats": "PNG, JPG, JPEG or WEBP (max 10MB each)",
-          "supports": "Supports multiple images"
+          "supports": "Supports multiple images",
+          "remaining": "{count} left"
         },
         "description_placeholder": "Describe how your image should look like...",
         "effects": [

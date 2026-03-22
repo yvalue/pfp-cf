@@ -18,7 +18,7 @@ import {
   User,
   X,
 } from 'lucide-react';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import {
   ReactCompareSlider,
   ReactCompareSliderImage,
@@ -114,6 +114,7 @@ export type ToolPanelSection = {
     title: string;
     formats: string;
     supports: string;
+    remaining: string;
   };
   description_placeholder: string;
   effects: ToolPanelEffectOption[];
@@ -170,6 +171,7 @@ const POLL_INTERVAL = 5000;
 const GENERATION_TIMEOUT = 180000;
 const MAX_PROMPT_LENGTH = 2000;
 const panelClassName = 'rounded-3xl border border-border';
+const selectTriggerClassName = 'h-10 w-full rounded-xl text-sm leading-6';
 const toolPanelPaneClassName =
   'border-border bg-background min-w-0 rounded-3xl border p-5 shadow-sm';
 
@@ -306,6 +308,23 @@ function FieldHeader({
   );
 }
 
+function SelectField({
+  badge,
+  label,
+  children,
+}: {
+  badge: string;
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="grid min-w-0 gap-2">
+      <FieldHeader badge={badge} label={label} />
+      {children}
+    </div>
+  );
+}
+
 function EffectThumbnail({
   accentClassName,
   cardClassName,
@@ -357,7 +376,6 @@ function ComparisonHandle() {
 }
 
 export function ToolPanel({ section }: ToolPanelProps) {
-  const locale = useLocale();
   const generatorT = useTranslations('ai.image.generator');
   const [selectedEffectId, setSelectedEffectId] = useState(
     section.effects[0]?.id ?? ''
@@ -465,17 +483,11 @@ export function ToolPanel({ section }: ToolPanelProps) {
     0,
     maxReferenceImages - referenceImageItems.length
   );
-  const remainingUploadSlotsText = useMemo(
-    () =>
-      locale.startsWith('zh')
-        ? `剩余 ${remainingUploadSlots} 张`
-        : `${remainingUploadSlots} left`,
-    [locale, remainingUploadSlots]
+  const remainingUploadSlotsText = section.upload.remaining.replace(
+    '{count}',
+    String(remainingUploadSlots)
   );
-  const uploadFormatsText = useMemo(() => {
-    const formatsLabel = getNanoBananaReferenceImageFormatsLabel();
-    return `${formatsLabel} (max ${maxReferenceImageSizeMB}MB each)`;
-  }, [maxReferenceImageSizeMB]);
+  const uploadFormatsText = `${getNanoBananaReferenceImageFormatsLabel()} (max ${maxReferenceImageSizeMB}MB each)`;
 
   const referenceImageUrls = useMemo(
     () =>
@@ -485,25 +497,19 @@ export function ToolPanel({ section }: ToolPanelProps) {
     [referenceImageItems]
   );
 
-  const isReferenceUploading = useMemo(
-    () => referenceImageItems.some((item) => item.status === 'uploading'),
-    [referenceImageItems]
+  const isReferenceUploading = referenceImageItems.some(
+    (item) => item.status === 'uploading'
   );
 
-  const hasReferenceUploadError = useMemo(
-    () => referenceImageItems.some((item) => item.status === 'error'),
-    [referenceImageItems]
+  const hasReferenceUploadError = referenceImageItems.some(
+    (item) => item.status === 'error'
   );
 
-  const taskStatusText = useMemo(
-    () =>
-      getTaskStatusText({
-        status: taskStatus,
-        currentTaskNumber,
-        totalTasks: count,
-      }),
-    [count, currentTaskNumber, taskStatus]
-  );
+  const taskStatusText = getTaskStatusText({
+    status: taskStatus,
+    currentTaskNumber,
+    totalTasks: count,
+  });
 
   useEffect(() => {
     if (!selectedModelFamily) {
@@ -544,7 +550,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
     }
   }, [countOptions, countValue]);
 
-  const handleRemoveReferenceImage = useCallback((id: string) => {
+  function handleRemoveReferenceImage(id: string) {
     setReferenceImageItems((prev) => {
       const target = prev.find((item) => item.id === id);
       if (target?.preview.startsWith('blob:')) {
@@ -552,7 +558,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
       }
       return prev.filter((item) => item.id !== id);
     });
-  }, []);
+  }
 
   const handleUploadFiles = useCallback(
     async (selectedFiles: File[]) => {
@@ -649,9 +655,9 @@ export function ToolPanel({ section }: ToolPanelProps) {
     [handleUploadFiles]
   );
 
-  const openUploadPicker = useCallback(() => {
+  function openUploadPicker() {
     uploadInputRef.current?.click();
-  }, []);
+  }
 
   const handleUploadDrop = useCallback(
     async (event: DragEvent<HTMLDivElement>) => {
@@ -1224,16 +1230,15 @@ export function ToolPanel({ section }: ToolPanelProps) {
 
               <TabsContent value="parameter" className="mt-0">
                 <div className="grid gap-4">
-                  <div className="grid min-w-0 gap-2">
-                    <FieldHeader
-                      badge={section.fields.default_badge}
-                      label={section.fields.model_label}
-                    />
+                  <SelectField
+                    badge={section.fields.default_badge}
+                    label={section.fields.model_label}
+                  >
                     <Select
                       value={modelFamilyId}
                       onValueChange={setModelFamilyId}
                     >
-                      <SelectTrigger className="h-10 w-full rounded-xl text-sm leading-6">
+                      <SelectTrigger className={selectTriggerClassName}>
                         <SelectValue
                           placeholder={generatorT('form.select_model')}
                         />
@@ -1246,19 +1251,18 @@ export function ToolPanel({ section }: ToolPanelProps) {
                         ))}
                       </SelectContent>
                     </Select>
-                  </div>
+                  </SelectField>
 
                   <div className="grid gap-3">
-                    <div className="grid min-w-0 gap-2">
-                      <FieldHeader
-                        badge={section.fields.default_badge}
-                        label={section.fields.aspect_ratio_label}
-                      />
+                    <SelectField
+                      badge={section.fields.default_badge}
+                      label={section.fields.aspect_ratio_label}
+                    >
                       <Select
                         value={aspectRatio}
                         onValueChange={setAspectRatio}
                       >
-                        <SelectTrigger className="h-10 w-full rounded-xl text-sm leading-6">
+                        <SelectTrigger className={selectTriggerClassName}>
                           <SelectValue aria-label={aspectRatio}>
                             <AspectRatioOption ratio={aspectRatio} selected />
                           </SelectValue>
@@ -1274,20 +1278,19 @@ export function ToolPanel({ section }: ToolPanelProps) {
                           ))}
                         </SelectContent>
                       </Select>
-                    </div>
+                    </SelectField>
 
-                    <div className="grid min-w-0 gap-2">
-                      <FieldHeader
-                        badge={section.fields.default_badge}
-                        label={section.fields.quality_label}
-                      />
+                    <SelectField
+                      badge={section.fields.default_badge}
+                      label={section.fields.quality_label}
+                    >
                       <Select
                         value={resolution}
                         onValueChange={(value) =>
                           setResolution(value as NanoBananaResolution)
                         }
                       >
-                        <SelectTrigger className="h-10 w-full rounded-xl text-sm leading-6">
+                        <SelectTrigger className={selectTriggerClassName}>
                           <SelectValue
                             placeholder={generatorT('form.select_quality')}
                           />
@@ -1300,15 +1303,14 @@ export function ToolPanel({ section }: ToolPanelProps) {
                           ))}
                         </SelectContent>
                       </Select>
-                    </div>
+                    </SelectField>
 
-                    <div className="grid min-w-0 gap-2">
-                      <FieldHeader
-                        badge={section.fields.default_badge}
-                        label={section.fields.count_label}
-                      />
+                    <SelectField
+                      badge={section.fields.default_badge}
+                      label={section.fields.count_label}
+                    >
                       <Select value={countValue} onValueChange={setCountValue}>
-                        <SelectTrigger className="h-10 w-full rounded-xl text-sm leading-6">
+                        <SelectTrigger className={selectTriggerClassName}>
                           <SelectValue
                             placeholder={section.fields.count_label}
                           />
@@ -1321,7 +1323,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                           ))}
                         </SelectContent>
                       </Select>
-                    </div>
+                    </SelectField>
                   </div>
                 </div>
               </TabsContent>
