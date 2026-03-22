@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
+import { motion } from 'motion/react';
 
 import { LazyImage, SmartIcon } from '@/shared/blocks/common';
 import {
@@ -23,19 +23,13 @@ export function ToolsRequirements({
 }) {
   const [activeItem, setActiveItem] = useState<string>('item-1');
 
-  const images: any = {};
-  section.items?.forEach((item, idx) => {
-    images[`item-${idx + 1}`] = {
-      image: item.image?.src ?? '',
-      alt: item.image?.alt || item.title || '',
-    };
-  });
-  const previewImage = section.image
+  // This block uses one shared section image; individual accordion items do not control the preview.
+  const sectionImage = section.image
     ? {
         image: section.image.src ?? '',
         alt: section.image.alt || section.title || '',
       }
-    : images[activeItem];
+    : undefined;
 
   return (
     <section
@@ -58,7 +52,7 @@ export function ToolsRequirements({
           </div>
         </ScrollAnimation>
 
-        <div className="grid min-w-0 items-stretch gap-12 sm:px-6 md:grid-cols-2 lg:gap-20 lg:px-0">
+        <div className="grid min-w-0 items-start gap-12 sm:px-6 md:grid-cols-2 lg:gap-20 lg:px-0">
           <ScrollAnimation delay={0.1} direction="left">
             <Accordion
               type="single"
@@ -86,27 +80,25 @@ export function ToolsRequirements({
             </Accordion>
           </ScrollAnimation>
 
-          <ScrollAnimation delay={0.2} direction="right" className="md:h-full">
-            <div className="border-border relative aspect-square w-full min-w-0 overflow-hidden rounded-3xl border shadow-sm md:aspect-auto md:h-full">
-              <AnimatePresence mode="wait">
+          {sectionImage && (
+            <ScrollAnimation delay={0.2} direction="right" className="self-start">
+              <div className="border-border relative aspect-square w-full min-w-0 overflow-hidden rounded-3xl border shadow-sm">
                 <motion.div
-                  key={previewImage?.image || `${activeItem}-id`}
                   initial={{ opacity: 0, y: 6, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 6, scale: 0.98 }}
                   transition={{ duration: 0.2 }}
                   className="absolute inset-0 overflow-hidden rounded-3xl"
                 >
                   <LazyImage
-                    src={previewImage?.image || ''}
+                    src={sectionImage.image}
                     className="size-full object-cover object-center dark:mix-blend-lighten"
                     wrapperClassName="block size-full"
-                    alt={previewImage?.alt || ''}
+                    alt={sectionImage.alt}
                   />
                 </motion.div>
-              </AnimatePresence>
-            </div>
-          </ScrollAnimation>
+              </div>
+            </ScrollAnimation>
+          )}
         </div>
       </div>
     </section>
