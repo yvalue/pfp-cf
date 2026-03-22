@@ -8,7 +8,6 @@ import {
   useState,
   type ChangeEvent,
   type DragEvent,
-  type ReactNode,
 } from 'react';
 import {
   ChevronsUpDown,
@@ -40,6 +39,7 @@ import {
   DialogContent,
   DialogTitle,
 } from '@/shared/components/ui/dialog';
+import { Label } from '@/shared/components/ui/label';
 import { Progress } from '@/shared/components/ui/progress';
 import {
   Select,
@@ -54,6 +54,7 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/shared/components/ui/tabs';
+import { Textarea } from '@/shared/components/ui/textarea';
 import { useAppContext } from '@/shared/contexts/app';
 import {
   extractImageUrls,
@@ -68,8 +69,6 @@ import {
   type NanoBananaResolution,
 } from '@/shared/lib/ai-image';
 import { cn } from '@/shared/lib/utils';
-
-type FieldBadgeVariant = 'required' | 'muted';
 
 type ToolPanelSelectOption = {
   label: string;
@@ -237,94 +236,6 @@ function calculateProgress(
   return Math.max(0, Math.min(100, Math.round(rawProgress)));
 }
 
-function getTaskStatusText({
-  status,
-  currentTaskNumber,
-  totalTasks,
-}: {
-  status: AITaskStatus | null;
-  currentTaskNumber: number;
-  totalTasks: number;
-}) {
-  if (!status || currentTaskNumber <= 0 || totalTasks <= 0) {
-    return '';
-  }
-
-  const prefix = `${currentTaskNumber}/${totalTasks}`;
-
-  switch (status) {
-    case AITaskStatus.PENDING:
-      return `${prefix} pending`;
-    case AITaskStatus.PROCESSING:
-      return `${prefix} processing`;
-    case AITaskStatus.SUCCESS:
-      return `${prefix} completed`;
-    case AITaskStatus.FAILED:
-      return `${prefix} failed`;
-    default:
-      return prefix;
-  }
-}
-
-function FieldBadge({
-  children,
-  variant = 'muted',
-}: {
-  children: ReactNode;
-  variant?: FieldBadgeVariant;
-}) {
-  return (
-    <span
-      className={
-        variant === 'required'
-          ? 'bg-accent text-primary inline-flex items-center rounded-xl px-2 text-xs leading-5 font-medium'
-          : 'bg-muted text-muted-foreground inline-flex items-center rounded-xl px-2 text-xs leading-5 font-medium'
-      }
-    >
-      {children}
-    </span>
-  );
-}
-
-function FieldHeader({
-  badge,
-  badgeVariant = 'muted',
-  label,
-  trailing,
-}: {
-  badge: string;
-  badgeVariant?: FieldBadgeVariant;
-  label: string;
-  trailing?: ReactNode;
-}) {
-  return (
-    <div className="flex flex-wrap items-center justify-between gap-2">
-      <div className="flex flex-wrap items-center gap-2">
-        <label className="text-sm leading-6 font-medium">{label}</label>
-        <FieldBadge variant={badgeVariant}>{badge}</FieldBadge>
-      </div>
-      {trailing ? <div>{trailing}</div> : null}
-    </div>
-  );
-}
-
-function SelectField({
-  badge,
-  label,
-  children,
-}: {
-  badge: string;
-  label: string;
-  children: ReactNode;
-}) {
-  return (
-    <div className="grid min-w-0 gap-2">
-      <FieldHeader badge={badge} label={label} />
-      {children}
-    </div>
-  );
-}
-
 function EffectThumbnail({
   accentClassName,
   cardClassName,
@@ -390,8 +301,8 @@ export function ToolPanel({ section }: ToolPanelProps) {
   const [aspectRatio, setAspectRatio] = useState(
     NANO_BANANA_MODEL_FAMILIES[0]?.defaultAspectRatio ?? '1:1'
   );
-  const [countValue, setCountValue] = useState(
-    section.selects.batch_size[0]?.value ?? '1'
+  const [count, setCount] = useState(
+    Math.max(1, parseInt(section.selects.batch_size[0]?.value ?? '1', 10) || 1)
   );
   const [referenceImageItems, setReferenceImageItems] = useState<
     ImageUploaderValue[]
@@ -425,7 +336,6 @@ export function ToolPanel({ section }: ToolPanelProps) {
   const promptLength = prompt.trim().length;
   const isPromptTooLong = promptLength > MAX_PROMPT_LENGTH;
   const remainingCredits = user?.credits?.remainingCredits ?? 0;
-  const count = Math.max(1, parseInt(countValue, 10) || 1);
 
   const selectedEffect =
     section.effects.find((item) => item.id === selectedEffectId) ??
@@ -505,11 +415,24 @@ export function ToolPanel({ section }: ToolPanelProps) {
     (item) => item.status === 'error'
   );
 
-  const taskStatusText = getTaskStatusText({
-    status: taskStatus,
-    currentTaskNumber,
-    totalTasks: count,
-  });
+  const taskStatusLabel = useMemo(() => {
+    if (!taskStatus) {
+      return '';
+    }
+
+    switch (taskStatus) {
+      case AITaskStatus.PENDING:
+        return 'Waiting for the model to start';
+      case AITaskStatus.PROCESSING:
+        return 'Generating your image...';
+      case AITaskStatus.SUCCESS:
+        return 'Image generation completed';
+      case AITaskStatus.FAILED:
+        return 'Generation failed';
+      default:
+        return '';
+    }
+  }, [taskStatus]);
 
   useEffect(() => {
     if (!selectedModelFamily) {
@@ -544,11 +467,11 @@ export function ToolPanel({ section }: ToolPanelProps) {
   useEffect(() => {
     if (
       countOptions.length > 0 &&
-      !countOptions.some((item) => item.value === countValue)
+      !countOptions.some((item) => Number(item.value) === count)
     ) {
-      setCountValue(countOptions[0]?.value ?? '1');
+      setCount(Number(countOptions[0]?.value ?? '1'));
     }
-  }, [countOptions, countValue]);
+  }, [count, countOptions]);
 
   function handleRemoveReferenceImage(id: string) {
     setReferenceImageItems((prev) => {
@@ -1007,18 +930,19 @@ export function ToolPanel({ section }: ToolPanelProps) {
 
               <TabsContent value="upload" className="mt-0">
                 <div className="grid gap-4">
-                  <section className="grid gap-2">
-                    <FieldHeader
-                      badge={section.fields.required_badge}
-                      badgeVariant="required"
-                      label={section.fields.upload_label}
-                      trailing={
-                        <span className="text-muted-foreground inline-flex items-center gap-1.5 text-xs leading-5 font-medium">
-                          <RiImageAddLine className="size-3.5" />
-                          {remainingUploadSlotsText}
+                  <section className="space-y-2">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Label>{section.fields.upload_label}</Label>
+                        <span className="bg-accent text-primary inline-flex items-center rounded-xl px-2 text-xs leading-5 font-medium">
+                          {section.fields.required_badge}
                         </span>
-                      }
-                    />
+                      </div>
+                      <span className="text-muted-foreground inline-flex items-center gap-1.5 text-xs leading-5 font-medium">
+                        <RiImageAddLine className="size-3.5" />
+                        {remainingUploadSlotsText}
+                      </span>
+                    </div>
 
                     <input
                       ref={uploadInputRef}
@@ -1124,40 +1048,42 @@ export function ToolPanel({ section }: ToolPanelProps) {
                     ) : null}
                   </section>
 
-                  <section className="grid gap-2">
-                    <FieldHeader
-                      badge={section.fields.optional_badge}
-                      label={section.fields.description_label}
-                      trailing={
-                        <div className="text-muted-foreground flex items-center gap-2 text-xs leading-5">
-                          <Sparkles className="size-3.5" />
-                          <span>
-                            {promptLength}/{MAX_PROMPT_LENGTH}
-                          </span>
-                          {isPromptTooLong ? (
-                            <span className="text-destructive">
-                              {generatorT('form.prompt_too_long')}
-                            </span>
-                          ) : null}
-                        </div>
-                      }
+                  <section className="space-y-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Label htmlFor="tool-panel-prompt">
+                        {section.fields.description_label}
+                      </Label>
+                      <span className="bg-muted text-muted-foreground inline-flex items-center rounded-xl px-2 text-xs leading-5 font-medium">
+                        {section.fields.optional_badge}
+                      </span>
+                    </div>
+                    <Textarea
+                      id="tool-panel-prompt"
+                      value={prompt}
+                      onChange={(event) => setPrompt(event.target.value)}
+                      placeholder={section.description_placeholder}
+                      className="min-h-32 rounded-2xl text-sm leading-5"
                     />
-
-                    <div className="border-border bg-background h-32 overflow-hidden rounded-2xl border">
-                      <textarea
-                        value={prompt}
-                        onChange={(event) => setPrompt(event.target.value)}
-                        placeholder={section.description_placeholder}
-                        className="text-foreground placeholder:text-muted-foreground h-full w-full resize-none border-0 p-2 text-sm leading-5 outline-none"
-                      />
+                    <div className="text-muted-foreground flex items-center justify-between text-xs leading-5">
+                      <span className="inline-flex items-center gap-2">
+                        <Sparkles className="size-3.5" />
+                        {promptLength}/{MAX_PROMPT_LENGTH}
+                      </span>
+                      {isPromptTooLong ? (
+                        <span className="text-destructive">
+                          {generatorT('form.prompt_too_long')}
+                        </span>
+                      ) : null}
                     </div>
                   </section>
 
-                  <section className="grid gap-2">
-                    <FieldHeader
-                      badge={section.fields.optional_badge}
-                      label={section.fields.effect_style_label}
-                    />
+                  <section className="space-y-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Label>{section.fields.effect_style_label}</Label>
+                      <span className="bg-muted text-muted-foreground inline-flex items-center rounded-xl px-2 text-xs leading-5 font-medium">
+                        {section.fields.optional_badge}
+                      </span>
+                    </div>
 
                     <Dialog
                       open={isEffectDialogOpen}
@@ -1230,10 +1156,13 @@ export function ToolPanel({ section }: ToolPanelProps) {
 
               <TabsContent value="parameter" className="mt-0">
                 <div className="grid gap-4">
-                  <SelectField
-                    badge={section.fields.default_badge}
-                    label={section.fields.model_label}
-                  >
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Label>{section.fields.model_label}</Label>
+                      <span className="bg-muted text-muted-foreground inline-flex items-center rounded-xl px-2 text-xs leading-5 font-medium">
+                        {section.fields.default_badge}
+                      </span>
+                    </div>
                     <Select
                       value={modelFamilyId}
                       onValueChange={setModelFamilyId}
@@ -1251,13 +1180,16 @@ export function ToolPanel({ section }: ToolPanelProps) {
                         ))}
                       </SelectContent>
                     </Select>
-                  </SelectField>
+                  </div>
 
                   <div className="grid gap-3">
-                    <SelectField
-                      badge={section.fields.default_badge}
-                      label={section.fields.aspect_ratio_label}
-                    >
+                    <div className="space-y-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Label>{section.fields.aspect_ratio_label}</Label>
+                        <span className="bg-muted text-muted-foreground inline-flex items-center rounded-xl px-2 text-xs leading-5 font-medium">
+                          {section.fields.default_badge}
+                        </span>
+                      </div>
                       <Select
                         value={aspectRatio}
                         onValueChange={setAspectRatio}
@@ -1278,12 +1210,15 @@ export function ToolPanel({ section }: ToolPanelProps) {
                           ))}
                         </SelectContent>
                       </Select>
-                    </SelectField>
+                    </div>
 
-                    <SelectField
-                      badge={section.fields.default_badge}
-                      label={section.fields.quality_label}
-                    >
+                    <div className="space-y-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Label>{section.fields.quality_label}</Label>
+                        <span className="bg-muted text-muted-foreground inline-flex items-center rounded-xl px-2 text-xs leading-5 font-medium">
+                          {section.fields.default_badge}
+                        </span>
+                      </div>
                       <Select
                         value={resolution}
                         onValueChange={(value) =>
@@ -1303,13 +1238,19 @@ export function ToolPanel({ section }: ToolPanelProps) {
                           ))}
                         </SelectContent>
                       </Select>
-                    </SelectField>
+                    </div>
 
-                    <SelectField
-                      badge={section.fields.default_badge}
-                      label={section.fields.count_label}
-                    >
-                      <Select value={countValue} onValueChange={setCountValue}>
+                    <div className="space-y-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Label>{section.fields.count_label}</Label>
+                        <span className="bg-muted text-muted-foreground inline-flex items-center rounded-xl px-2 text-xs leading-5 font-medium">
+                          {section.fields.default_badge}
+                        </span>
+                      </div>
+                      <Select
+                        value={String(count)}
+                        onValueChange={(value) => setCount(Number(value))}
+                      >
                         <SelectTrigger className={selectTriggerClassName}>
                           <SelectValue
                             placeholder={section.fields.count_label}
@@ -1323,7 +1264,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                           ))}
                         </SelectContent>
                       </Select>
-                    </SelectField>
+                    </div>
                   </div>
                 </div>
               </TabsContent>
@@ -1407,7 +1348,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                   </div>
                   {isGenerating ? (
                     <span className="text-muted-foreground text-xs leading-5">
-                      {taskStatusText || `${currentTaskNumber}/${count}`}
+                      {taskStatusLabel}
                     </span>
                   ) : null}
                 </header>
