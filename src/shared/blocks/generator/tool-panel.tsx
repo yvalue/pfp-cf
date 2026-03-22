@@ -19,7 +19,7 @@ import {
   User,
   X,
 } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import {
   ReactCompareSlider,
   ReactCompareSliderImage,
@@ -171,12 +171,10 @@ interface BackendTask {
 
 const POLL_INTERVAL = 5000;
 const GENERATION_TIMEOUT = 180000;
-const MAX_PROMPT_LENGTH = 1000;
+const MAX_PROMPT_LENGTH = 2000;
 const panelClassName = 'rounded-3xl border border-border';
 const toolPanelPaneClassName =
   'border-border bg-background min-w-0 rounded-3xl border p-5 shadow-sm';
-const inactiveTabContentClassName =
-  'data-[state=inactive]:pointer-events-none data-[state=inactive]:absolute data-[state=inactive]:inset-0 data-[state=inactive]:opacity-0';
 
 async function uploadImageFile(file: File) {
   const formData = new FormData();
@@ -362,6 +360,7 @@ function ComparisonHandle() {
 }
 
 export function ToolPanel({ section }: ToolPanelProps) {
+  const locale = useLocale();
   const generatorT = useTranslations('ai.image.generator');
   const [activeTab, setActiveTab] = useState<ToolPanelTab>('upload');
   const [selectedEffectId, setSelectedEffectId] = useState(
@@ -394,12 +393,9 @@ export function ToolPanel({ section }: ToolPanelProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [isUploadDragActive, setIsUploadDragActive] = useState(false);
   const [isEffectDialogOpen, setIsEffectDialogOpen] = useState(false);
-  const [tabViewportMinHeight, setTabViewportMinHeight] = useState(0);
 
   const uploadInputRef = useRef<HTMLInputElement | null>(null);
   const referenceImageItemsRef = useRef<ImageUploaderValue[]>([]);
-  const uploadTabContentRef = useRef<HTMLDivElement | null>(null);
-  const parameterTabContentRef = useRef<HTMLDivElement | null>(null);
 
   const { user, isCheckSign, setIsShowSignModal, fetchUserCredits } =
     useAppContext();
@@ -473,19 +469,13 @@ export function ToolPanel({ section }: ToolPanelProps) {
     0,
     maxReferenceImages - referenceImageItems.length
   );
-  const uploadSupportsText = useMemo(() => {
-    const template = section.upload.supports?.trim();
-
-    if (!template) {
-      return String(remainingUploadSlots);
-    }
-
-    if (template.includes('{count}')) {
-      return template.replace('{count}', String(remainingUploadSlots));
-    }
-
-    return `${template} (${remainingUploadSlots})`;
-  }, [remainingUploadSlots, section.upload.supports]);
+  const remainingUploadSlotsText = useMemo(
+    () =>
+      locale.startsWith('zh')
+        ? `剩余 ${remainingUploadSlots} 张`
+        : `${remainingUploadSlots} left`,
+    [locale, remainingUploadSlots]
+  );
   const uploadFormatsText = useMemo(() => {
     const formatsLabel = getNanoBananaReferenceImageFormatsLabel();
     return `${formatsLabel} (max ${maxReferenceImageSizeMB}MB each)`;
@@ -709,44 +699,6 @@ export function ToolPanel({ section }: ToolPanelProps) {
       });
     };
   }, []);
-
-  const syncTabViewportMinHeight = useCallback(() => {
-    const nextMinHeight = Math.max(
-      uploadTabContentRef.current?.offsetHeight ?? 0,
-      parameterTabContentRef.current?.offsetHeight ?? 0
-    );
-
-    setTabViewportMinHeight((current) =>
-      current === nextMinHeight ? current : nextMinHeight
-    );
-  }, []);
-
-  useEffect(() => {
-    syncTabViewportMinHeight();
-
-    if (typeof ResizeObserver === 'undefined') {
-      return;
-    }
-
-    const resizeObserver = new ResizeObserver(() => {
-      syncTabViewportMinHeight();
-    });
-
-    [uploadTabContentRef.current, parameterTabContentRef.current].forEach(
-      (element) => {
-        if (element) {
-          resizeObserver.observe(element);
-        }
-      }
-    );
-
-    window.addEventListener('resize', syncTabViewportMinHeight);
-
-    return () => {
-      resizeObserver.disconnect();
-      window.removeEventListener('resize', syncTabViewportMinHeight);
-    };
-  }, [syncTabViewportMinHeight]);
 
   const resetGenerationState = useCallback(() => {
     setIsGenerating(false);
@@ -1031,12 +983,12 @@ export function ToolPanel({ section }: ToolPanelProps) {
   return (
     <section id={section.id || section.name} data-slot="generator-tool-panel">
       <div className="grid gap-3 py-3 lg:grid-cols-12 xl:grid-cols-12">
-        <div className={cn(toolPanelPaneClassName, 'lg:col-span-4')}>
-          <div className="flex h-full flex-col gap-3">
+        <div className={cn(toolPanelPaneClassName, 'self-start lg:col-span-4')}>
+          <div className="flex flex-col gap-3">
             <Tabs
               value={activeTab}
               onValueChange={(value) => setActiveTab(value as ToolPanelTab)}
-              className="flex min-h-0 flex-1 flex-col gap-4"
+              className="flex flex-col gap-4"
             >
               <TabsList
                 className={cn(aiPfpSegmentedTabsListClassName, 'grid-cols-2')}
@@ -1055,358 +1007,335 @@ export function ToolPanel({ section }: ToolPanelProps) {
                 </TabsTrigger>
               </TabsList>
 
-              <div
-                className="relative flex-1"
-                style={
-                  tabViewportMinHeight > 0
-                    ? { minHeight: `${tabViewportMinHeight}px` }
-                    : undefined
-                }
-              >
-                <TabsContent
-                  ref={uploadTabContentRef}
-                  value="upload"
-                  forceMount
-                  className={cn('mt-0', inactiveTabContentClassName)}
-                >
-                  <div className="grid gap-4">
-                    <section className="grid gap-2">
-                      <FieldHeader
-                        badge={section.fields.required_badge}
-                        badgeVariant="required"
-                        label={section.fields.upload_label}
-                      />
+              <TabsContent value="upload" className="mt-0">
+                <div className="grid gap-4">
+                  <section className="grid gap-2">
+                    <FieldHeader
+                      badge={section.fields.required_badge}
+                      badgeVariant="required"
+                      label={section.fields.upload_label}
+                      trailing={
+                        <span className="text-muted-foreground inline-flex items-center gap-1.5 text-xs leading-5 font-medium">
+                          <RiImageAddLine className="size-3.5" />
+                          {remainingUploadSlotsText}
+                        </span>
+                      }
+                    />
 
-                      <input
-                        ref={uploadInputRef}
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        onChange={handleUploadInputChange}
-                        className="hidden"
-                      />
+                    <input
+                      ref={uploadInputRef}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleUploadInputChange}
+                      className="hidden"
+                    />
 
-                      <div
-                        role="button"
-                        tabIndex={0}
-                        onClick={openUploadPicker}
-                        onKeyDown={(event) => {
-                          if (event.key === 'Enter' || event.key === ' ') {
-                            event.preventDefault();
-                            openUploadPicker();
-                          }
-                        }}
-                        onDragOver={(event) => {
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={openUploadPicker}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
                           event.preventDefault();
-                          setIsUploadDragActive(true);
-                        }}
-                        onDragLeave={() => setIsUploadDragActive(false)}
-                        onDrop={handleUploadDrop}
-                        className={cn(
-                          'border-primary bg-accent flex min-h-32 flex-col overflow-hidden rounded-3xl border-2 border-dashed p-6 text-center transition-colors',
-                          isUploadDragActive && 'border-primary bg-secondary'
-                        )}
-                      >
-                        {referenceImageItems.length > 0 ? (
-                          <>
-                            <div className="max-h-44 overflow-y-auto pr-1">
-                              <div className="grid grid-cols-4 gap-3">
-                                {referenceImageItems.map((item) => (
-                                  <div
-                                    key={item.id}
-                                    className="border-primary bg-background group relative overflow-hidden rounded-md border"
+                          openUploadPicker();
+                        }
+                      }}
+                      onDragOver={(event) => {
+                        event.preventDefault();
+                        setIsUploadDragActive(true);
+                      }}
+                      onDragLeave={() => setIsUploadDragActive(false)}
+                      onDrop={handleUploadDrop}
+                      className={cn(
+                        'border-primary bg-accent flex min-h-32 flex-col overflow-hidden rounded-3xl border-2 border-dashed p-6 text-center transition-colors',
+                        isUploadDragActive && 'border-primary bg-secondary'
+                      )}
+                    >
+                      {referenceImageItems.length > 0 ? (
+                        <>
+                          <div className="max-h-44 overflow-y-auto pr-1">
+                            <div className="grid grid-cols-4 gap-3">
+                              {referenceImageItems.map((item) => (
+                                <div
+                                  key={item.id}
+                                  className="border-primary bg-background group relative overflow-hidden rounded-md border"
+                                >
+                                  <img
+                                    src={item.preview}
+                                    alt="Reference"
+                                    className="aspect-square w-full object-cover"
+                                  />
+                                  <div className="bg-foreground text-primary-foreground absolute inset-x-0 bottom-0 px-2 py-1 text-xs leading-4">
+                                    {item.status}
+                                  </div>
+                                  <button
+                                    type="button"
+                                    className="bg-foreground text-primary-foreground absolute top-2 right-2 inline-flex h-7 w-7 items-center justify-center rounded-xl"
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      handleRemoveReferenceImage(item.id);
+                                    }}
                                   >
-                                    <img
-                                      src={item.preview}
-                                      alt="Reference"
-                                      className="aspect-square w-full object-cover"
-                                    />
-                                    <div className="bg-foreground text-primary-foreground absolute inset-x-0 bottom-0 px-2 py-1 text-xs leading-4">
-                                      {item.status}
-                                    </div>
-                                    <button
-                                      type="button"
-                                      className="bg-foreground text-primary-foreground absolute top-2 right-2 inline-flex h-7 w-7 items-center justify-center rounded-xl"
-                                      onClick={(event) => {
-                                        event.stopPropagation();
-                                        handleRemoveReferenceImage(item.id);
-                                      }}
-                                    >
-                                      <X className="h-4 w-4" />
-                                    </button>
-                                  </div>
-                                ))}
+                                    <X className="h-4 w-4" />
+                                  </button>
+                                </div>
+                              ))}
 
-                                {remainingUploadSlots > 0 ? (
-                                  <div className="border-primary bg-background flex aspect-square items-center justify-center rounded-lg border border-dashed">
-                                    <RiImageAddLine className="size-7 text-gray-400" />
-                                  </div>
-                                ) : null}
-                              </div>
+                              {remainingUploadSlots > 0 ? (
+                                <div className="border-primary bg-background flex aspect-square items-center justify-center rounded-lg border border-dashed">
+                                  <RiImageAddLine className="size-7 text-gray-400" />
+                                </div>
+                              ) : null}
                             </div>
-
-                            <div className="text-muted-foreground mt-4 grid gap-1 text-xs leading-5">
-                              <p>{uploadFormatsText}</p>
-                              <p className="text-muted-foreground font-medium">
-                                {uploadSupportsText}
+                          </div>
+                        </>
+                      ) : (
+                        <div className="grid flex-1 place-items-center">
+                          <div className="grid gap-2">
+                            <div className="mx-auto flex size-14 items-center justify-center">
+                              <RiImageAddLine className="size-14 text-gray-400" />
+                            </div>
+                            <div className="grid gap-1">
+                              <p className="text-muted-foreground text-sm leading-6 font-medium break-words">
+                                {section.upload.title}
+                              </p>
+                              <p className="text-muted-foreground text-xs leading-5">
+                                {uploadFormatsText}
+                                <br />
+                                <span className="text-muted-foreground font-medium">
+                                  {section.upload.supports}
+                                </span>
                               </p>
                             </div>
-                          </>
-                        ) : (
-                          <div className="grid flex-1 place-items-center">
-                            <div className="grid gap-2">
-                              <div className="mx-auto flex size-14 items-center justify-center">
-                                <RiImageAddLine className="size-14 text-gray-400" />
-                              </div>
-                              <div className="grid gap-1">
-                                <p className="text-muted-foreground text-sm leading-6 font-medium break-words">
-                                  {section.upload.title}
-                                </p>
-                                <p className="text-muted-foreground text-xs leading-5">
-                                  {uploadFormatsText}
-                                  <br />
-                                  <span className="text-muted-foreground font-medium">
-                                    {uploadSupportsText}
-                                  </span>
-                                </p>
-                              </div>
-                            </div>
                           </div>
-                        )}
-                      </div>
+                        </div>
+                      )}
+                    </div>
 
-                      {isReferenceUploading ? (
-                        <p className="text-muted-foreground text-xs leading-5">
-                          Uploading images...
-                        </p>
-                      ) : null}
+                    {isReferenceUploading ? (
+                      <p className="text-muted-foreground text-xs leading-5">
+                        Uploading images...
+                      </p>
+                    ) : null}
 
-                      {hasReferenceUploadError ? (
-                        <p className="text-destructive text-xs leading-5">
-                          {generatorT('form.some_images_failed_to_upload')}
-                        </p>
-                      ) : null}
-                    </section>
+                    {hasReferenceUploadError ? (
+                      <p className="text-destructive text-xs leading-5">
+                        {generatorT('form.some_images_failed_to_upload')}
+                      </p>
+                    ) : null}
+                  </section>
 
-                    <section className="grid gap-2">
-                      <FieldHeader
-                        badge={section.fields.optional_badge}
-                        label={section.fields.description_label}
-                        trailing={
-                          <div className="text-muted-foreground flex items-center gap-2 text-xs leading-5">
-                            <Sparkles className="size-3.5" />
-                            <span>
-                              {promptLength}/{MAX_PROMPT_LENGTH}
+                  <section className="grid gap-2">
+                    <FieldHeader
+                      badge={section.fields.optional_badge}
+                      label={section.fields.description_label}
+                      trailing={
+                        <div className="text-muted-foreground flex items-center gap-2 text-xs leading-5">
+                          <Sparkles className="size-3.5" />
+                          <span>
+                            {promptLength}/{MAX_PROMPT_LENGTH}
+                          </span>
+                          {isPromptTooLong ? (
+                            <span className="text-destructive">
+                              {generatorT('form.prompt_too_long')}
                             </span>
-                            {isPromptTooLong ? (
-                              <span className="text-destructive">
-                                {generatorT('form.prompt_too_long')}
-                              </span>
-                            ) : null}
-                          </div>
-                        }
-                      />
-
-                      <div className="border-border bg-background h-32 overflow-hidden rounded-2xl border">
-                        <textarea
-                          value={prompt}
-                          onChange={(event) => setPrompt(event.target.value)}
-                          placeholder={section.description_placeholder}
-                          className="text-foreground placeholder:text-muted-foreground h-full w-full resize-none border-0 p-2 text-sm leading-5 outline-none"
-                        />
-                      </div>
-                    </section>
-
-                    <section className="grid gap-2">
-                      <FieldHeader
-                        badge={section.fields.optional_badge}
-                        label={section.fields.effect_style_label}
-                      />
-
-                      <Dialog
-                        open={isEffectDialogOpen}
-                        onOpenChange={setIsEffectDialogOpen}
-                      >
-                        <button
-                          type="button"
-                          onClick={() => setIsEffectDialogOpen(true)}
-                          className="border-border bg-background hover:border-border flex h-10 w-full min-w-0 items-center gap-3 rounded-xl border px-3 text-left text-sm leading-6 transition-colors outline-none"
-                        >
-                          {selectedEffect ? (
-                            <EffectThumbnail
-                              size="sm"
-                              accentClassName={selectedEffect.accentClassName}
-                              cardClassName={selectedEffect.cardClassName}
-                              silhouetteClassName={
-                                selectedEffect.silhouetteClassName
-                              }
-                            />
                           ) : null}
-                          <div className="min-w-0 flex-1">
-                            <div className="text-foreground truncate text-sm leading-6 font-semibold">
-                              {selectedEffect?.label ??
-                                section.fields.effect_style_label}
-                            </div>
-                          </div>
-                          <ChevronsUpDown className="text-muted-foreground size-4 shrink-0" />
-                        </button>
+                        </div>
+                      }
+                    />
 
-                        <DialogContent className="rounded-md p-4 sm:max-w-3xl">
-                          <DialogTitle className="text-base font-semibold">
-                            {section.fields.effect_style_label}
-                          </DialogTitle>
-                          <div className="mt-2 grid grid-cols-[repeat(auto-fill,minmax(8rem,1fr))] gap-3">
-                            {section.effects.map((effect) => {
-                              const isSelected = effect.id === selectedEffectId;
+                    <div className="border-border bg-background h-32 overflow-hidden rounded-2xl border">
+                      <textarea
+                        value={prompt}
+                        onChange={(event) => setPrompt(event.target.value)}
+                        placeholder={section.description_placeholder}
+                        className="text-foreground placeholder:text-muted-foreground h-full w-full resize-none border-0 p-2 text-sm leading-5 outline-none"
+                      />
+                    </div>
+                  </section>
 
-                              return (
-                                <button
-                                  key={effect.id}
-                                  type="button"
-                                  className={cn(
-                                    'flex flex-col items-center gap-2 rounded-2xl px-1 py-3 transition-colors',
-                                    isSelected ? 'bg-accent' : 'hover:bg-accent'
-                                  )}
-                                  onClick={() => {
-                                    setSelectedEffectId(effect.id);
-                                    setIsEffectDialogOpen(false);
-                                  }}
-                                >
-                                  <EffectThumbnail
-                                    accentClassName={effect.accentClassName}
-                                    cardClassName={effect.cardClassName}
-                                    silhouetteClassName={
-                                      effect.silhouetteClassName
-                                    }
-                                  />
-                                  <div className="text-foreground w-full truncate text-center text-xs leading-4 font-medium">
-                                    {effect.label}
-                                  </div>
-                                </button>
-                              );
-                            })}
+                  <section className="grid gap-2">
+                    <FieldHeader
+                      badge={section.fields.optional_badge}
+                      label={section.fields.effect_style_label}
+                    />
+
+                    <Dialog
+                      open={isEffectDialogOpen}
+                      onOpenChange={setIsEffectDialogOpen}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setIsEffectDialogOpen(true)}
+                        className="border-border bg-background hover:border-border flex h-10 w-full min-w-0 items-center gap-3 rounded-xl border px-3 text-left text-sm leading-6 transition-colors outline-none"
+                      >
+                        {selectedEffect ? (
+                          <EffectThumbnail
+                            size="sm"
+                            accentClassName={selectedEffect.accentClassName}
+                            cardClassName={selectedEffect.cardClassName}
+                            silhouetteClassName={
+                              selectedEffect.silhouetteClassName
+                            }
+                          />
+                        ) : null}
+                        <div className="min-w-0 flex-1">
+                          <div className="text-foreground truncate text-sm leading-6 font-semibold">
+                            {selectedEffect?.label ??
+                              section.fields.effect_style_label}
                           </div>
-                        </DialogContent>
-                      </Dialog>
-                    </section>
+                        </div>
+                        <ChevronsUpDown className="text-muted-foreground size-4 shrink-0" />
+                      </button>
+
+                      <DialogContent className="rounded-md p-4 sm:max-w-3xl">
+                        <DialogTitle className="text-base font-semibold">
+                          {section.fields.effect_style_label}
+                        </DialogTitle>
+                        <div className="mt-2 grid grid-cols-[repeat(auto-fill,minmax(8rem,1fr))] gap-3">
+                          {section.effects.map((effect) => {
+                            const isSelected = effect.id === selectedEffectId;
+
+                            return (
+                              <button
+                                key={effect.id}
+                                type="button"
+                                className={cn(
+                                  'flex flex-col items-center gap-2 rounded-2xl px-1 py-3 transition-colors',
+                                  isSelected ? 'bg-accent' : 'hover:bg-accent'
+                                )}
+                                onClick={() => {
+                                  setSelectedEffectId(effect.id);
+                                  setIsEffectDialogOpen(false);
+                                }}
+                              >
+                                <EffectThumbnail
+                                  accentClassName={effect.accentClassName}
+                                  cardClassName={effect.cardClassName}
+                                  silhouetteClassName={
+                                    effect.silhouetteClassName
+                                  }
+                                />
+                                <div className="text-foreground w-full truncate text-center text-xs leading-4 font-medium">
+                                  {effect.label}
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </section>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="parameter" className="mt-0">
+                <div className="grid gap-4">
+                  <div className="grid min-w-0 gap-2">
+                    <FieldHeader
+                      badge={section.fields.default_badge}
+                      label={section.fields.model_label}
+                    />
+                    <Select
+                      value={modelFamilyId}
+                      onValueChange={setModelFamilyId}
+                    >
+                      <SelectTrigger className="h-10 w-full rounded-xl text-sm leading-6">
+                        <SelectValue
+                          placeholder={generatorT('form.select_model')}
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {NANO_BANANA_MODEL_FAMILIES.map((item) => (
+                          <SelectItem key={item.id} value={item.id}>
+                            {item.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
-                </TabsContent>
 
-                <TabsContent
-                  ref={parameterTabContentRef}
-                  value="parameter"
-                  forceMount
-                  className={cn('mt-0', inactiveTabContentClassName)}
-                >
-                  <div className="grid gap-4">
+                  <div className="grid gap-3">
                     <div className="grid min-w-0 gap-2">
                       <FieldHeader
                         badge={section.fields.default_badge}
-                        label={section.fields.model_label}
+                        label={section.fields.aspect_ratio_label}
                       />
                       <Select
-                        value={modelFamilyId}
-                        onValueChange={setModelFamilyId}
+                        value={aspectRatio}
+                        onValueChange={setAspectRatio}
                       >
                         <SelectTrigger className="h-10 w-full rounded-xl text-sm leading-6">
-                          <SelectValue
-                            placeholder={generatorT('form.select_model')}
-                          />
+                          <SelectValue aria-label={aspectRatio}>
+                            <AspectRatioOption ratio={aspectRatio} selected />
+                          </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          {NANO_BANANA_MODEL_FAMILIES.map((item) => (
-                            <SelectItem key={item.id} value={item.id}>
-                              {item.label}
+                          {aspectRatios.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              <AspectRatioOption
+                                ratio={option}
+                                selected={aspectRatio === option}
+                              />
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </div>
 
-                    <div className="grid gap-3">
-                      <div className="grid min-w-0 gap-2">
-                        <FieldHeader
-                          badge={section.fields.default_badge}
-                          label={section.fields.aspect_ratio_label}
-                        />
-                        <Select
-                          value={aspectRatio}
-                          onValueChange={setAspectRatio}
-                        >
-                          <SelectTrigger className="h-10 w-full rounded-xl text-sm leading-6">
-                            <SelectValue aria-label={aspectRatio}>
-                              <AspectRatioOption ratio={aspectRatio} selected />
-                            </SelectValue>
-                          </SelectTrigger>
-                          <SelectContent>
-                            {aspectRatios.map((option) => (
-                              <SelectItem key={option} value={option}>
-                                <AspectRatioOption
-                                  ratio={option}
-                                  selected={aspectRatio === option}
-                                />
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                    <div className="grid min-w-0 gap-2">
+                      <FieldHeader
+                        badge={section.fields.default_badge}
+                        label={section.fields.quality_label}
+                      />
+                      <Select
+                        value={resolution}
+                        onValueChange={(value) =>
+                          setResolution(value as NanoBananaResolution)
+                        }
+                      >
+                        <SelectTrigger className="h-10 w-full rounded-xl text-sm leading-6">
+                          <SelectValue
+                            placeholder={generatorT('form.select_quality')}
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {supportedResolutions.map((item) => (
+                            <SelectItem key={item} value={item}>
+                              {item}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                      <div className="grid min-w-0 gap-2">
-                        <FieldHeader
-                          badge={section.fields.default_badge}
-                          label={section.fields.quality_label}
-                        />
-                        <Select
-                          value={resolution}
-                          onValueChange={(value) =>
-                            setResolution(value as NanoBananaResolution)
-                          }
-                        >
-                          <SelectTrigger className="h-10 w-full rounded-xl text-sm leading-6">
-                            <SelectValue
-                              placeholder={generatorT('form.select_quality')}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {supportedResolutions.map((item) => (
-                              <SelectItem key={item} value={item}>
-                                {item}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="grid min-w-0 gap-2">
-                        <FieldHeader
-                          badge={section.fields.default_badge}
-                          label={section.fields.count_label}
-                        />
-                        <Select
-                          value={countValue}
-                          onValueChange={setCountValue}
-                        >
-                          <SelectTrigger className="h-10 w-full rounded-xl text-sm leading-6">
-                            <SelectValue
-                              placeholder={section.fields.count_label}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {countOptions.map((item) => (
-                              <SelectItem key={item.value} value={item.value}>
-                                {item.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                    <div className="grid min-w-0 gap-2">
+                      <FieldHeader
+                        badge={section.fields.default_badge}
+                        label={section.fields.count_label}
+                      />
+                      <Select value={countValue} onValueChange={setCountValue}>
+                        <SelectTrigger className="h-10 w-full rounded-xl text-sm leading-6">
+                          <SelectValue
+                            placeholder={section.fields.count_label}
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {countOptions.map((item) => (
+                            <SelectItem key={item.value} value={item.value}>
+                              {item.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
-                </TabsContent>
-              </div>
+                </div>
+              </TabsContent>
             </Tabs>
 
-            <div className="mt-auto pt-4">
+            <div className="pt-4">
               {!isMounted ? (
                 <Button className="w-full text-sm leading-6" disabled size="lg">
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -1462,11 +1391,11 @@ export function ToolPanel({ section }: ToolPanelProps) {
 
         <div className={cn(toolPanelPaneClassName, 'grid gap-3 lg:col-span-8')}>
           <div className="grid gap-3">
-            <div className="grid gap-3">
-              <h1 className="text-foreground text-lg font-semibold tracking-normal md:text-2xl">
+            <div className="grid gap-0">
+              <h1 className="text-foreground text-lg leading-tight font-semibold tracking-normal md:text-2xl">
                 {section.title}
               </h1>
-              <p className="text-muted-foreground text-sm leading-7 md:text-base">
+              <p className="text-muted-foreground -mt-1 text-sm leading-6 md:text-base">
                 {section.description}
               </p>
             </div>
