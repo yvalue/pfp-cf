@@ -54,7 +54,6 @@ import {
   getNanoBananaMaxReferenceImages,
   getNanoBananaMaxReferenceImageSizeMB,
   getNanoBananaModelFamily,
-  getNanoBananaReferenceImageFormatsLabel,
   getNanoBananaResolution,
   NANO_BANANA_MODEL_FAMILIES,
   resolveNanoBananaGeneration,
@@ -222,7 +221,8 @@ function ComparisonHandle() {
 }
 
 export function ToolPanel({ section }: ToolPanelProps) {
-  const t = useTranslations('tools.tool_panel');
+  const t = useTranslations('common.generator');
+  const uploaderT = useTranslations('common.uploader');
   const [selectedEffectId, setSelectedEffectId] = useState(
     section.effects[0]?.id ?? ''
   );
@@ -316,16 +316,18 @@ export function ToolPanel({ section }: ToolPanelProps) {
       ),
     [maxBatchCount]
   );
-  const uploadHint = t('upload.hint', {
-    formats: getNanoBananaReferenceImageFormatsLabel(),
-    maxSizeMB: maxReferenceImageSizeMB,
-    count: maxReferenceImages,
-  });
-  const uploadPanelDescription = t('upload.panel_description', {
-    formats: getNanoBananaReferenceImageFormatsLabel(),
+  const uploadPanelDescription = uploaderT('reference_image_hint', {
+    formats: uploaderT('reference_formats'),
     maxSizeMB: maxReferenceImageSizeMB,
   });
-  const uploadPanelFooter = t('upload.panel_footer');
+  const uploadPanelFooter = uploaderT('multiple_images');
+  const uploadMessages = useMemo(
+    () => ({
+      imagesStillUploading: uploaderT('images_still_uploading'),
+      someImagesFailed: uploaderT('some_images_failed'),
+    }),
+    [uploaderT]
+  );
 
   const handleReferenceImagesChange = useCallback(
     (items: ImageUploaderValue[]) => {
@@ -412,6 +414,14 @@ export function ToolPanel({ section }: ToolPanelProps) {
 
   const createImageTask = useCallback(
     async (trimmedPrompt: string) => {
+      if (!selectedModelFamily) {
+        throw new Error(t('messages.provider_or_model_not_configured'));
+      }
+
+      if (!resolvedModel) {
+        throw new Error(t('messages.selected_model_unavailable'));
+      }
+
       const options: Record<string, unknown> = {
         aspect_ratio: aspectRatio,
         image_input: referenceImageUrls,
@@ -445,6 +455,10 @@ export function ToolPanel({ section }: ToolPanelProps) {
       const { code, message, data } = await response.json();
       if (code !== 0) {
         throw new Error(message || t('messages.create_task_failed'));
+      }
+
+      if (!data?.id) {
+        throw new Error(t('messages.task_id_missing'));
       }
 
       return data as BackendTask;
@@ -530,7 +544,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
           const errorMessage =
             parsedTaskInfo?.errorMessage ||
             parsedTaskResult?.errorMessage ||
-            t('messages.generate_failed');
+            t('messages.generation_failed');
 
           toast.error(errorMessage);
           return {
@@ -554,13 +568,13 @@ export function ToolPanel({ section }: ToolPanelProps) {
       return;
     }
 
-    if (remainingCredits < totalCost) {
-      toast.error(t('messages.insufficient_credits'));
+    if (!selectedModelFamily) {
+      toast.error(t('messages.provider_or_model_not_configured'));
       return;
     }
 
-    if (!selectedModelFamily || !resolvedModel) {
-      toast.error(t('messages.provider_or_model_not_configured'));
+    if (!resolvedModel) {
+      toast.error(t('messages.selected_model_unavailable'));
       return;
     }
 
@@ -569,8 +583,23 @@ export function ToolPanel({ section }: ToolPanelProps) {
       return;
     }
 
+    if (isReferenceUploading) {
+      toast.error(uploadMessages.imagesStillUploading);
+      return;
+    }
+
+    if (hasReferenceUploadError) {
+      toast.error(uploadMessages.someImagesFailed);
+      return;
+    }
+
     if (isPromptTooLong) {
       toast.error(t('messages.prompt_too_long'));
+      return;
+    }
+
+    if (remainingCredits < totalCost) {
+      toast.error(t('messages.insufficient_credits'));
       return;
     }
 
@@ -634,7 +663,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
       }
     } catch (error: any) {
       console.error('Failed to generate image:', error);
-      toast.error(error?.message || t('messages.generate_failed'));
+      toast.error(error?.message || t('messages.generation_failed'));
     } finally {
       setProgress((current) => (successCount > 0 ? 100 : current));
       resetGenerationState();
@@ -644,6 +673,8 @@ export function ToolPanel({ section }: ToolPanelProps) {
     count,
     createImageTask,
     fetchUserCredits,
+    hasReferenceUploadError,
+    isReferenceUploading,
     isPromptTooLong,
     pollTaskUntilComplete,
     prompt,
@@ -657,6 +688,8 @@ export function ToolPanel({ section }: ToolPanelProps) {
     setIsShowSignModal,
     t,
     totalCost,
+    uploadMessages.imagesStillUploading,
+    uploadMessages.someImagesFailed,
     user,
   ]);
 
@@ -686,7 +719,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
         link.click();
         document.body.removeChild(link);
         setTimeout(() => URL.revokeObjectURL(blobUrl), 200);
-        toast.success(t('messages.download_success'));
+        toast.success(t('messages.image_downloaded'));
       } catch (error) {
         console.error('Failed to download image:', error);
         toast.error(t('messages.download_failed'));
@@ -710,47 +743,34 @@ export function ToolPanel({ section }: ToolPanelProps) {
                   value="upload"
                   className={aiPfpSegmentedTabsTriggerClassName}
                 >
-                  {t('tabs.upload')}
+                  {t('tabs.upload_image')}
                 </TabsTrigger>
                 <TabsTrigger
                   value="parameter"
                   className={aiPfpSegmentedTabsTriggerClassName}
                 >
-                  {t('tabs.parameter')}
+                  {t('tabs.parameters')}
                 </TabsTrigger>
               </TabsList>
 
               <TabsContent value="upload" className="mt-0">
                 <div className="grid gap-4">
                   <section className="space-y-2">
-                    <ImageUploader
+                  <ImageUploader
                       variant="panel"
-                      title={t('labels.upload')}
+                      value={referenceImageItems}
+                      title={t('labels.upload_image')}
                       titleHint={t('badges.required')}
-                      emptyTitle={t('upload.panel_title')}
                       emptyDescription={uploadPanelDescription}
                       emptyFooter={uploadPanelFooter}
                       allowMultiple={maxReferenceImages > 1}
                       maxImages={maxReferenceImages}
                       maxSizeMB={maxReferenceImageSizeMB}
                       onChange={handleReferenceImagesChange}
-                      emptyHint={uploadHint}
                       className="rounded-3xl"
                       emptyTileClassName="rounded-3xl"
                       itemTileClassName="rounded-3xl"
                     />
-
-                    {isReferenceUploading ? (
-                      <p className="text-muted-foreground text-xs leading-5">
-                        {t('upload.uploading')}
-                      </p>
-                    ) : null}
-
-                    {hasReferenceUploadError ? (
-                      <p className="text-destructive text-xs leading-5">
-                        {t('upload.some_images_failed')}
-                      </p>
-                    ) : null}
                   </section>
 
                   <section className="space-y-2">
@@ -1001,7 +1021,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                   ) : (
                     <>
                       <Sparkles className="mr-2 h-4 w-4" />
-                      {t('buttons.submit')}
+                      {t('buttons.generate_images')}
                     </>
                   )}
                   <span className="ml-2 inline-flex items-center gap-2 text-sm leading-6">
@@ -1016,7 +1036,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                   onClick={() => setIsShowSignModal(true)}
                 >
                   <User className="mr-2 h-4 w-4" />
-                  {t('auth.sign_in')}
+                  {t('auth.sign_in_to_generate')}
                 </Button>
               )}
             </div>

@@ -52,5 +52,101 @@
   "locale_detector": {
     "title": "We detected your browser language is {locale}. Switch to it?",
     "switch_to": "Switch to {locale}"
+  },
+  "uploader": {
+    "drop_overlay": "Drop to upload",
+    "reference_alt": "Reference",
+    "reference_formats": "PNG, JPG, JPEG or WEBP",
+    "reference_image_hint": "{formats} (max {maxSizeMB}MB each)",
+    "multiple_images": "Supports multiple images",
+    "replace_image": "Upload a new image to replace",
+    "uploading": "Uploading...",
+    "images_still_uploading": "Reference images are still uploading.",
+    "failed": "Failed",
+    "some_images_failed": "Some images failed to upload, please delete them and re-upload",
+    "remove_image": "Remove image",
+    "empty_title": "Drop files or click to upload",
+    "max_size": "Max {maxSizeMB}MB",
+    "upload_failed": "Upload failed",
+    "upload_failed_with_message": "Upload failed: {message}",
+    "only_images_supported": "Only image files are supported",
+    "not_image": "\"{name}\" is not an image",
+    "size_exceeded": "\"{name}\" exceeds the {maxSizeMB}MB limit",
+    "only_first_added": "Only the first {count} image(s) will be added"
+  },
+  "generator": {
+    "tabs": {
+      "upload_image": "Upload Image",
+      "parameters": "Parameters"
+    },
+    "badges": {
+      "required": "Required",
+      "optional": "Optional",
+      "default": "Default"
+    },
+    "labels": {
+      "upload_image": "Upload Image",
+      "reference_image": "Reference Image",
+      "description": "Description",
+      "model": "Model",
+      "aspect_ratio": "Aspect Ratio",
+      "quality": "Quality",
+      "count": "Count"
+    },
+    "placeholders": {
+      "description": "Describe how your image should look like..."
+    },
+    "buttons": {
+      "generate_images": "Generate Images",
+      "download": "Download"
+    },
+    "auth": {
+      "sign_in_to_generate": "Sign In to Generate Image"
+    },
+    "states": {
+      "loading": "Loading...",
+      "checking_account": "Checking Account...",
+      "generating": "Generating...",
+      "generated_images": "Image Preview",
+      "progress": "Progress",
+      "ready": "Ready for Generating",
+      "preparing_generation": "Preparing generation...",
+      "starting_task": "Starting image {current}/{total}",
+      "queued": "Waiting for the model to start {current}/{total}",
+      "processing": "Generating image {current}/{total}",
+      "status_label": "Status"
+    },
+    "task_status": {
+      "pending": "Waiting for the model to start",
+      "processing": "Generating your image...",
+      "success": "Image generation completed",
+      "failed": "Generation failed"
+    },
+    "messages": {
+      "prompt_too_long": "Prompt is too long.",
+      "prompt_required": "Please enter a prompt before generating.",
+      "request_failed_with_status": "Request failed with status: {status}",
+      "query_task_failed": "Query task failed.",
+      "create_task_failed": "Failed to create an image task.",
+      "generation_failed": "Failed to generate image.",
+      "generation_timeout": "Image generation timed out. Please try again.",
+      "insufficient_credits": "Insufficient credits. Please top up to keep creating.",
+      "provider_or_model_not_configured": "Provider or model is not configured correctly.",
+      "selected_model_unavailable": "The selected model is currently unavailable.",
+      "reference_image_required": "Please upload at least one image before generating.",
+      "provider_returned_no_images": "The provider returned no images.",
+      "task_id_missing": "Task ID is missing from the response.",
+      "no_images_generated": "No images were generated. Please try again.",
+      "generated_count": "Generated {current}/{total} image(s).",
+      "image_generated": "Image generated successfully.",
+      "download_failed": "Failed to download image.",
+      "image_downloaded": "Image downloaded."
+    },
+    "ui": {
+      "switch_mode": "Switch generation mode",
+      "watermark": "Watermark",
+      "settings": "Settings",
+      "generated_image_alt": "Generated image"
+    }
   }
 }

@@ -13,63 +13,6 @@
         "highlight_title": "Create Studio-Quality AI Profile Pictures in Seconds",
         "placeholder": "Describe the PFP you want to generate...",
         "fast_mode_label": "Fast Mode",
-        "generator": {
-          "labels": {
-            "reference_image": "Reference Image",
-            "model": "Model",
-            "quality": "Quality",
-            "count": "Count"
-          },
-          "upload": {
-            "reference_image_hint": "{formats} (max {maxSizeMB}MB each)"
-          },
-          "buttons": {
-            "submit": "Generate Images"
-          },
-          "states": {
-            "loading": "Loading...",
-            "checking_account": "Checking Account...",
-            "generating": "Generating...",
-            "preparing_generation": "Preparing generation...",
-            "starting_task": "Starting image {current}/{total}",
-            "queued": "Waiting for the model to start {current}/{total}",
-            "processing": "Generating image {current}/{total}",
-            "status_label": "Status"
-          },
-          "task_status": {
-            "pending": "Waiting for the model to start",
-            "processing": "Generating your image...",
-            "success": "Image generation completed",
-            "failed": "Generation failed"
-          },
-          "messages": {
-            "prompt_too_long": "Prompt is too long.",
-            "prompt_required": "Please enter a prompt before generating.",
-            "provider_or_model_not_configured": "Provider or model is not configured correctly.",
-            "selected_model_unavailable": "The selected model is currently unavailable.",
-            "reference_image_required": "Please upload at least one image before generating.",
-            "reference_image_uploading": "Reference images are still uploading.",
-            "fix_failed_uploads": "Some images failed to upload. Please delete them and re-upload.",
-            "insufficient_credits": "Insufficient credits. Please top up to keep creating.",
-            "generation_timeout": "Image generation timed out. Please try again.",
-            "query_task_failed": "Query task failed.",
-            "request_failed_with_status": "Request failed with status: {status}",
-            "provider_returned_no_images": "The provider returned no images.",
-            "generation_failed": "Failed to generate image.",
-            "create_task_failed": "Failed to create an image task.",
-            "task_id_missing": "Task ID is missing from the response.",
-            "no_images_generated": "No images were generated. Please try again.",
-            "image_generated": "Image generated successfully.",
-            "download_failed": "Failed to download image.",
-            "image_downloaded": "Image downloaded."
-          },
-          "ui": {
-            "switch_mode": "Switch generation mode",
-            "watermark": "Watermark",
-            "settings": "Settings",
-            "generated_image_alt": "Generated image"
-          }
-        },
         "modes": ["text-to-image", "image-to-image"],
         "default_mode": "text-to-image",
         "description": "Generate realistic AI profile photos from just one selfie—from business headshots to lifestyle portraits. Change your look, swap backgrounds, and create standout PFPs for LinkedIn, Instagram, TikTok, WhatsApp, and your virtual social identity！",

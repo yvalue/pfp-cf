@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { IconRefresh, IconX } from '@tabler/icons-react';
-import { ImageIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { RiImageAddLine } from 'react-icons/ri';
 import { toast } from 'sonner';
 
@@ -26,6 +26,7 @@ interface ImageUploaderProps {
   maxImages?: number;
   maxSizeMB?: number;
   variant?: ImageUploaderVariant;
+  value?: ImageUploaderValue[];
   title?: string;
   titleHint?: string;
   emptyTitle?: string;
@@ -35,8 +36,6 @@ interface ImageUploaderProps {
   className?: string;
   emptyTileClassName?: string;
   itemTileClassName?: string;
-  emptyIconShellClassName?: string;
-  emptyLabelClassName?: string;
   emptyMetaClassName?: string;
   defaultPreviews?: string[];
   onChange?: (items: ImageUploaderValue[]) => void;
@@ -55,6 +54,33 @@ const formatBytes = (bytes?: number) => {
   const mb = kb / 1024;
   return `${mb.toFixed(2)} MB`;
 };
+
+const mapDefaultPreviewsToItems = (defaultPreviews?: string[]): UploadItem[] =>
+  (defaultPreviews || []).map((url, index) => ({
+    id: `preset-${url}-${index}`,
+    preview: url,
+    url,
+    status: 'uploaded' as UploadStatus,
+  }));
+
+const mapValueToItems = (value: ImageUploaderValue[]): UploadItem[] =>
+  value.map((item) => ({
+    ...item,
+  }));
+
+const areItemsEqual = (left: UploadItem[], right: UploadItem[]) =>
+  left.length === right.length &&
+  left.every((item, index) => {
+    const nextItem = right[index];
+    return (
+      nextItem &&
+      item.id === nextItem.id &&
+      item.preview === nextItem.preview &&
+      item.url === nextItem.url &&
+      item.status === nextItem.status &&
+      item.size === nextItem.size
+    );
+  });
 
 const uploadImageFile = async (file: File) => {
   const formData = new FormData();
@@ -82,6 +108,7 @@ export function ImageUploader({
   maxImages = 1,
   maxSizeMB = 10,
   variant = 'default',
+  value,
   title,
   titleHint,
   emptyTitle,
@@ -91,49 +118,44 @@ export function ImageUploader({
   className,
   emptyTileClassName,
   itemTileClassName,
-  emptyIconShellClassName,
-  emptyLabelClassName,
   emptyMetaClassName,
   defaultPreviews,
   onChange,
 }: ImageUploaderProps) {
+  const t = useTranslations('common.uploader');
   const inputRef = useRef<HTMLInputElement | null>(null);
   const isInitializedRef = useRef(false);
   const onChangeRef = useRef(onChange);
   const isInternalChangeRef = useRef(false);
+  const isSyncingFromValueRef = useRef(false);
   const replaceTargetIdRef = useRef<string | null>(null);
   const dragCounterRef = useRef(0);
   const [isDragActive, setIsDragActive] = useState(false);
+  const isControlled = value !== undefined;
 
-  // 使用 defaultPreviews 初始化 items，只在组件挂载时执行一次
   const [items, setItems] = useState<UploadItem[]>(() => {
-    if (defaultPreviews?.length) {
-      return defaultPreviews.map((url, index) => ({
-        id: `preset-${url}-${index}`,
-        preview: url,
-        url,
-        status: 'uploaded' as UploadStatus,
-      }));
+    if (isControlled) {
+      return mapValueToItems(value ?? []);
     }
-    return [];
+    return mapDefaultPreviewsToItems(defaultPreviews);
   });
 
   const maxCount = allowMultiple ? maxImages : 1;
   const maxBytes = maxSizeMB * 1024 * 1024;
 
-  // 更新 onChange ref
   useEffect(() => {
     onChangeRef.current = onChange;
   }, [onChange]);
 
-  // 同步 defaultPreviews 的变化（只在外部变化时同步，避免循环）
   useEffect(() => {
-    // 跳过初始化
+    if (isControlled) {
+      return;
+    }
+
     if (!isInitializedRef.current) {
       return;
     }
 
-    // 如果是内部变化触发的，跳过
     if (isInternalChangeRef.current) {
       isInternalChangeRef.current = false;
       return;
@@ -141,32 +163,39 @@ export function ImageUploader({
 
     const defaultUrls = defaultPreviews || [];
 
-    // 使用函数式更新来访问最新的 items
     setItems((currentItems) => {
       const currentUrls = currentItems
         .filter((item) => item.status === 'uploaded' && item.url)
         .map((item) => item.url as string);
 
-      // 比较当前 items 和 defaultPreviews 是否一致
       const isSame =
         defaultUrls.length === currentUrls.length &&
         defaultUrls.every((url, index) => url === currentUrls[index]);
 
-      // 只有当不一致时才返回新的 items
       if (!isSame) {
-        return defaultUrls.map((url, index) => ({
-          id: `preset-${url}-${index}`,
-          preview: url,
-          url,
-          status: 'uploaded' as UploadStatus,
-        }));
+        return mapDefaultPreviewsToItems(defaultUrls);
       }
 
       return currentItems;
     });
-  }, [defaultPreviews]);
+  }, [defaultPreviews, isControlled]);
 
-  // 清理 blob URLs
+  useEffect(() => {
+    if (!isControlled) {
+      return;
+    }
+
+    const nextItems = mapValueToItems(value ?? []);
+    setItems((currentItems) => {
+      if (areItemsEqual(currentItems, nextItems)) {
+        return currentItems;
+      }
+
+      isSyncingFromValueRef.current = true;
+      return nextItems;
+    });
+  }, [isControlled, value]);
+
   useEffect(() => {
     return () => {
       items.forEach((item) => {
@@ -177,14 +206,17 @@ export function ImageUploader({
     };
   }, [items]);
 
-  // 当 items 变化时触发 onChange，但跳过初始化时的调用
   useEffect(() => {
     if (!isInitializedRef.current) {
       isInitializedRef.current = true;
       return;
     }
 
-    // 标记这是内部变化
+    if (isSyncingFromValueRef.current) {
+      isSyncingFromValueRef.current = false;
+      return;
+    }
+
     isInternalChangeRef.current = true;
 
     onChangeRef.current?.(
@@ -242,8 +274,11 @@ export function ImageUploader({
         })
         .catch((error: any) => {
           console.error('Upload failed:', error);
+          const message = error?.message as string | undefined;
           toast.error(
-            error?.message ? `Upload failed: ${error.message}` : 'Upload failed'
+            message && !message.startsWith('Upload failed')
+              ? t('upload_failed_with_message', { message })
+              : t('upload_failed')
           );
           setItems((prev) =>
             prev.map((item) => {
@@ -268,12 +303,12 @@ export function ImageUploader({
       const file = selectedFiles[0];
       if (!file) return;
       if (!file.type?.startsWith('image/')) {
-        toast.error('Only image files are supported');
+        toast.error(t('only_images_supported'));
         if (inputRef.current) inputRef.current.value = '';
         return;
       }
       if (file.size > maxBytes) {
-        toast.error(`"${file.name}" exceeds the ${maxSizeMB}MB limit`);
+        toast.error(t('size_exceeded', { name: file.name, maxSizeMB }));
         if (inputRef.current) inputRef.current.value = '';
         return;
       }
@@ -285,11 +320,11 @@ export function ImageUploader({
     const filesToAdd = selectedFiles
       .filter((file) => {
         if (!file.type?.startsWith('image/')) {
-          toast.error(`"${file.name}" is not an image`);
+          toast.error(t('not_image', { name: file.name }));
           return false;
         }
         if (file.size > maxBytes) {
-          toast.error(`"${file.name}" exceeds the ${maxSizeMB}MB limit`);
+          toast.error(t('size_exceeded', { name: file.name, maxSizeMB }));
           return false;
         }
         return true;
@@ -324,9 +359,7 @@ export function ImageUploader({
     }
 
     if (availableSlots < selectedFiles.length) {
-      toast.message(
-        `Only the first ${filesToAdd.length} image(s) will be added`
-      );
+      toast.message(t('only_first_added', { count: filesToAdd.length }));
     }
 
     const newItems = filesToAdd.map((file) => ({
@@ -369,8 +402,11 @@ export function ImageUploader({
           });
         } catch (error: any) {
           console.error('Upload failed:', error);
+          const message = error?.message as string | undefined;
           toast.error(
-            error?.message ? `Upload failed: ${error.message}` : 'Upload failed'
+            message && !message.startsWith('Upload failed')
+              ? t('upload_failed_with_message', { message })
+              : t('upload_failed')
           );
           setItems((prev) => {
             const next = prev.map((current) => {
@@ -472,6 +508,15 @@ export function ImageUploader({
   );
   const isPanelVariant = variant === 'panel';
   const showLargeEmptyState = isPanelVariant && items.length === 0;
+  const panelThumbSizeClass = isPanelVariant ? 'h-18 w-18' : 'h-28 w-28';
+  const panelOverlayButtonClass = isPanelVariant ? 'h-7 w-7' : 'h-10 w-10';
+  const panelOverlayIconClass = isPanelVariant ? 'h-4 w-4' : 'h-5 w-5';
+  const panelRemoveButtonClass = isPanelVariant
+    ? 'top-1 right-1 h-5 w-5'
+    : 'top-2 right-2 h-7 w-7';
+  const panelRemoveIconClass = isPanelVariant ? 'h-3 w-3' : 'h-4 w-4';
+  const panelTileRadiusClass = isPanelVariant ? 'rounded-lg' : 'rounded-xl';
+  const panelInnerRadiusClass = isPanelVariant ? 'rounded-md' : 'rounded-lg';
 
   return (
     <div
@@ -491,7 +536,7 @@ export function ImageUploader({
       {isDragActive && (
         <div className="bg-background pointer-events-none absolute inset-0 z-30 flex items-center justify-center backdrop-blur-sm">
           <div className="bg-background text-foreground rounded-full px-4 py-2 text-sm font-medium shadow-sm">
-            Drop to upload
+            {t('drop_overlay')}
           </div>
         </div>
       )}
@@ -507,11 +552,17 @@ export function ImageUploader({
       {title && (
         <div className="text-foreground flex items-center justify-between text-sm font-medium">
           <div className="flex flex-wrap items-center gap-2">
-            <ImageIcon className="text-primary h-4 w-4" />
             <span>{title}</span>
             <span className="text-primary text-xs">({countLabel})</span>
             {titleHint ? (
-              <span className="text-muted-foreground text-xs font-normal">
+              <span
+                className={cn(
+                  'text-xs font-normal',
+                  isPanelVariant
+                    ? 'bg-primary/10 text-primary inline-flex items-center rounded-xl px-2 leading-5 font-medium'
+                    : 'text-muted-foreground'
+                )}
+              >
                 {titleHint}
               </span>
             ) : null}
@@ -531,15 +582,22 @@ export function ImageUploader({
           <div
             key={item.id}
             className={cn(
-              'group border-border bg-muted hover:border-border hover:bg-muted relative overflow-hidden rounded-xl border shadow-sm transition',
-              itemTileClassName
+              'group border-border bg-muted hover:border-border hover:bg-muted relative overflow-hidden border shadow-sm transition',
+              itemTileClassName,
+              panelTileRadiusClass
             )}
           >
-            <div className="relative overflow-hidden rounded-lg">
+            <div
+              className={cn('relative overflow-hidden', panelInnerRadiusClass)}
+            >
               <img
                 src={item.preview}
-                alt="Reference"
-                className="h-28 w-28 rounded-lg object-cover"
+                alt={t('reference_alt')}
+                className={cn(
+                  panelThumbSizeClass,
+                  panelInnerRadiusClass,
+                  'object-cover'
+                )}
               />
               {item.size && (
                 <span className="bg-background text-muted-foreground absolute bottom-2 left-2 rounded-md px-2 py-1 text-xs font-medium">
@@ -552,32 +610,35 @@ export function ImageUploader({
                     type="button"
                     size="icon"
                     variant="secondary"
-                    className="bg-background text-foreground hover:bg-background focus-visible:ring-ring h-10 w-10 rounded-full shadow-sm backdrop-blur focus-visible:ring-2"
-                    onClick={() => openReplacePicker(item.id)}
-                    aria-label="Upload a new image to replace"
-                  >
-                    <IconRefresh className="h-5 w-5" />
-                  </Button>
+                    className={cn(
+                      'bg-background text-foreground hover:bg-background focus-visible:ring-ring rounded-full shadow-sm backdrop-blur focus-visible:ring-2',
+                      panelOverlayButtonClass
+                     )}
+                     onClick={() => openReplacePicker(item.id)}
+                     aria-label={t('replace_image')}
+                   >
+                     <IconRefresh className={panelOverlayIconClass} />
+                   </Button>
                 </div>
               )}
               {item.status === 'uploading' && (
-                <div className="bg-foreground text-background absolute inset-0 z-10 flex items-center justify-center text-xs font-medium">
-                  Uploading...
+                <div className="bg-foreground/60 text-background absolute inset-0 z-10 flex items-center justify-center text-xs font-medium">
+                  {t('uploading')}
                 </div>
               )}
               {item.status === 'error' && (
                 <div className="bg-destructive text-destructive-foreground absolute inset-0 z-10 flex items-center justify-center text-xs font-medium">
-                  Failed
+                  {t('failed')}
                 </div>
               )}
               <Button
                 size="icon"
                 variant="destructive"
-                className="absolute top-2 right-2 z-20 h-7 w-7"
+                className={cn('absolute z-20', panelRemoveButtonClass)}
                 onClick={() => handleRemove(item.id)}
-                aria-label="Remove image"
+                aria-label={t('remove_image')}
               >
-                <IconX className="h-4 w-4" />
+                <IconX className={panelRemoveIconClass} />
               </Button>
             </div>
           </div>
@@ -594,16 +655,16 @@ export function ImageUploader({
               <button
                 type="button"
                 onClick={openFilePicker}
-                className="flex w-full flex-col items-center justify-center gap-2 text-center"
+                className="flex w-full flex-col items-center justify-center gap-3 text-center"
               >
                 <RiImageAddLine className="text-foreground/28 text-primary size-12" />
-                <div className="text-foreground text-sm leading-5 font-medium">
-                  {emptyTitle || 'Drop files or click to upload'}
+                <div className="text-foreground text-lg leading-5 font-medium">
+                  {emptyTitle || t('empty_title')}
                 </div>
                 {emptyDescription ? (
                   <div
                     className={cn(
-                      'text-muted-foreground max-w-xl text-xs leading-5',
+                      'text-muted-foreground max-w-xl text-sm leading-5',
                       emptyMetaClassName
                     )}
                   >
@@ -613,7 +674,7 @@ export function ImageUploader({
                 {emptyFooter ? (
                   <div
                     className={cn(
-                      'text-muted-foreground max-w-xl text-xs leading-5',
+                      'text-muted-foreground max-w-xl text-sm leading-5',
                       emptyMetaClassName
                     )}
                   >
@@ -627,7 +688,7 @@ export function ImageUploader({
                       emptyMetaClassName
                     )}
                   >
-                    {emptyHint || `Max ${maxSizeMB}MB`}
+                    {emptyHint || t('max_size', { maxSizeMB })}
                   </div>
                 ) : null}
               </button>
@@ -636,20 +697,24 @@ export function ImageUploader({
             <div
               className={cn(
                 'group border-border bg-muted hover:border-border hover:bg-muted relative overflow-hidden rounded-xl border border-dashed shadow-sm transition',
-                emptyTileClassName
+                emptyTileClassName,
+                isPanelVariant && 'rounded-lg'
               )}
             >
               <div className="relative overflow-hidden rounded-lg">
                 <button
                   type="button"
-                  className="flex h-28 w-28 flex-col items-center justify-center gap-2"
+                  className={cn(
+                    'flex flex-col items-center justify-center gap-2',
+                    panelThumbSizeClass
+                  )}
                   onClick={openFilePicker}
                 >
                   <RiImageAddLine className="h-8 w-8 text-gray-400" />
                   <span
                     className={cn('text-primary text-xs', emptyMetaClassName)}
                   >
-                    Max {maxSizeMB}MB
+                    {t('max_size', { maxSizeMB })}
                   </span>
                 </button>
               </div>

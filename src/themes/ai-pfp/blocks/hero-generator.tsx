@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import {
   RiDownloadLine,
   RiFlashlightFill,
@@ -42,7 +43,6 @@ import {
   getNanoBananaMaxReferenceImageSizeMB,
   getNanoBananaModelFamily,
   getNanoBananaModelFamilyFromValue,
-  getNanoBananaReferenceImageFormatsLabel,
   getNanoBananaResolution,
   NANO_BANANA_MODEL_FAMILIES,
   resolveNanoBananaGeneration,
@@ -72,13 +72,6 @@ const MAX_PROMPT_LENGTH = 2000;
 const POLL_INTERVAL = 3500;
 const TASK_TIMEOUT = 180000;
 const TYPING_SPEED_MS = 70;
-
-function formatMessage(
-  template: string,
-  values: Record<string, string | number>
-) {
-  return template.replace(/\{(\w+)\}/g, (_, key) => String(values[key] ?? ''));
-}
 
 function parseJson(raw: string | null): any {
   if (!raw) {
@@ -123,134 +116,71 @@ export function HeroGenerator({
   section: Section;
   className?: string;
 }) {
+  const t = useTranslations('common.generator');
+  const uploaderT = useTranslations('common.uploader');
   const modes = useMemo(() => normalizeModes(section.modes), [section.modes]);
   const copy = useMemo(() => {
-    const generator = section.generator ?? {};
-    const labels = generator.labels ?? {};
-    const upload = generator.upload ?? {};
-    const buttons = generator.buttons ?? {};
-    const states = generator.states ?? {};
-    const taskStatus = generator.task_status ?? {};
-    const messages = generator.messages ?? {};
-    const ui = generator.ui ?? {};
-
     return {
       labels: {
-        referenceImage: labels.reference_image ?? 'Reference Image',
-        model: labels.model ?? 'Model',
-        quality: labels.quality ?? 'Quality',
-        count: labels.count ?? 'Count',
-      },
-      upload: {
-        referenceImageHint: (formats: string, maxSizeMB: number) =>
-          formatMessage(
-            upload.reference_image_hint ?? '{formats} (max {maxSizeMB}MB each)',
-            {
-              formats,
-              maxSizeMB,
-            }
-          ),
+        referenceImage: t('labels.reference_image'),
+        model: t('labels.model'),
+        quality: t('labels.quality'),
+        count: t('labels.count'),
       },
       buttons: {
-        submit: buttons.submit ?? 'Generate Images',
+        submit: t('buttons.generate_images'),
       },
       states: {
-        loading: states.loading ?? 'Loading...',
-        checkingAccount: states.checking_account ?? 'Checking Account...',
-        generating: states.generating ?? 'Generating...',
-        preparingGeneration:
-          states.preparing_generation ?? 'Preparing generation...',
+        loading: t('states.loading'),
+        checkingAccount: t('states.checking_account'),
+        generating: t('states.generating'),
+        preparingGeneration: t('states.preparing_generation'),
         startingTask: (current: number, total: number) =>
-          formatMessage(
-            states.starting_task ?? 'Starting image {current}/{total}',
-            {
-              current,
-              total,
-            }
-          ),
+          t('states.starting_task', { current, total }),
         queued: (current: number, total: number) =>
-          formatMessage(
-            states.queued ?? 'Waiting for the model to start {current}/{total}',
-            {
-              current,
-              total,
-            }
-          ),
+          t('states.queued', { current, total }),
         processing: (current: number, total: number) =>
-          formatMessage(
-            states.processing ?? 'Generating image {current}/{total}',
-            {
-              current,
-              total,
-            }
-          ),
-        statusLabel: states.status_label ?? 'Status',
+          t('states.processing', { current, total }),
+        statusLabel: t('states.status_label'),
       },
       taskStatus: {
-        pending: taskStatus.pending ?? 'Waiting for the model to start',
-        processing: taskStatus.processing ?? 'Generating your image...',
-        success: taskStatus.success ?? 'Image generation completed',
-        failed: taskStatus.failed ?? 'Generation failed',
+        pending: t('task_status.pending'),
+        processing: t('task_status.processing'),
+        success: t('task_status.success'),
+        failed: t('task_status.failed'),
       },
       messages: {
-        promptTooLong: messages.prompt_too_long ?? 'Prompt is too long.',
-        promptRequired:
-          messages.prompt_required ??
-          'Please enter a prompt before generating.',
-        providerOrModelNotConfigured:
-          messages.provider_or_model_not_configured ??
-          'Provider or model is not configured correctly.',
-        selectedModelUnavailable:
-          messages.selected_model_unavailable ??
-          'The selected model is currently unavailable.',
-        referenceImageRequired:
-          messages.reference_image_required ??
-          'Please upload at least one image before generating.',
-        referenceImageUploading:
-          messages.reference_image_uploading ??
-          'Reference images are still uploading.',
-        fixFailedUploads:
-          messages.fix_failed_uploads ??
-          'Some images failed to upload. Please delete them and re-upload.',
-        insufficientCredits:
-          messages.insufficient_credits ??
-          'Insufficient credits. Please top up to keep creating.',
-        generationTimeout:
-          messages.generation_timeout ??
-          'Image generation timed out. Please try again.',
-        queryTaskFailed: messages.query_task_failed ?? 'Query task failed.',
+        promptTooLong: t('messages.prompt_too_long'),
+        promptRequired: t('messages.prompt_required'),
+        providerOrModelNotConfigured: t(
+          'messages.provider_or_model_not_configured'
+        ),
+        selectedModelUnavailable: t('messages.selected_model_unavailable'),
+        referenceImageRequired: t('messages.reference_image_required'),
+        referenceImageUploading: uploaderT('images_still_uploading'),
+        fixFailedUploads: uploaderT('some_images_failed'),
+        insufficientCredits: t('messages.insufficient_credits'),
+        generationTimeout: t('messages.generation_timeout'),
+        queryTaskFailed: t('messages.query_task_failed'),
         requestFailedWithStatus: (status: number) =>
-          formatMessage(
-            messages.request_failed_with_status ??
-              'Request failed with status: {status}',
-            { status }
-          ),
-        providerReturnedNoImages:
-          messages.provider_returned_no_images ??
-          'The provider returned no images.',
-        generationFailed:
-          messages.generation_failed ?? 'Failed to generate image.',
-        createTaskFailed:
-          messages.create_task_failed ?? 'Failed to create an image task.',
-        taskIdMissing:
-          messages.task_id_missing ?? 'Task ID is missing from the response.',
-        noImagesGenerated:
-          messages.no_images_generated ??
-          'No images were generated. Please try again.',
-        imageGenerated:
-          messages.image_generated ?? 'Image generated successfully.',
-        downloadFailed: messages.download_failed ?? 'Failed to download image.',
-        imageDownloaded: messages.image_downloaded ?? 'Image downloaded.',
+          t('messages.request_failed_with_status', { status }),
+        providerReturnedNoImages: t('messages.provider_returned_no_images'),
+        generationFailed: t('messages.generation_failed'),
+        createTaskFailed: t('messages.create_task_failed'),
+        taskIdMissing: t('messages.task_id_missing'),
+        noImagesGenerated: t('messages.no_images_generated'),
+        imageGenerated: t('messages.image_generated'),
+        downloadFailed: t('messages.download_failed'),
+        imageDownloaded: t('messages.image_downloaded'),
       },
       ui: {
-        switchMode: ui.switch_mode ?? 'Switch generation mode',
-        watermark: ui.watermark ?? 'Watermark',
-        settings: ui.settings ?? 'Settings',
-        generatedImageAlt: ui.generated_image_alt ?? 'Generated image',
+        switchMode: t('ui.switch_mode'),
+        watermark: t('ui.watermark'),
+        settings: t('ui.settings'),
+        generatedImageAlt: t('ui.generated_image_alt'),
       },
     };
-  }, [section.generator]);
-
+  }, [t, uploaderT]);
   const maxCount = useMemo(
     () => clamp(Number(section.max_count) || 4, 1, 8),
     [section.max_count]
@@ -901,14 +831,12 @@ export function HeroGenerator({
             <div className="border-border bg-background border-t p-3">
               <ImageUploader
                 title={copy.labels.referenceImage}
-                titleHint={copy.upload.referenceImageHint(
-                  getNanoBananaReferenceImageFormatsLabel(),
-                  maxReferenceImageSizeMB
-                )}
+                titleHint={uploaderT('reference_image_hint', {
+                  formats: uploaderT('reference_formats'),
+                  maxSizeMB: maxReferenceImageSizeMB,
+                })}
                 itemTileClassName="border-primary bg-accent hover:border-primary hover:bg-secondary border shadow-none"
                 emptyTileClassName="border-primary bg-accent hover:border-primary hover:bg-secondary border border-dashed"
-                emptyIconShellClassName="border-primary bg-background text-primary border-dashed"
-                emptyLabelClassName="text-primary"
                 emptyMetaClassName="text-primary"
                 allowMultiple={maxReferenceImages > 1}
                 maxImages={maxReferenceImages}

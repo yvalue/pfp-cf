@@ -13,63 +13,6 @@
         "highlight_title": "在几秒钟内创建令人惊叹的 AI 头像",
         "placeholder": "描述你想生成的头像，例如：商务证件照、赛博朋克风、日系插画风",
         "fast_mode_label": "极速模式",
-        "generator": {
-          "labels": {
-            "reference_image": "参考图片",
-            "model": "模型",
-            "quality": "画质",
-            "count": "数量"
-          },
-          "upload": {
-            "reference_image_hint": "{formats}（单张最大 {maxSizeMB}MB）"
-          },
-          "buttons": {
-            "submit": "生成图片"
-          },
-          "states": {
-            "loading": "加载中...",
-            "checking_account": "检查账户中...",
-            "generating": "生成中...",
-            "preparing_generation": "准备生成...",
-            "starting_task": "开始生成第 {current}/{total} 张",
-            "queued": "等待模型启动 {current}/{total}",
-            "processing": "正在生成第 {current}/{total} 张",
-            "status_label": "状态"
-          },
-          "task_status": {
-            "pending": "等待模型启动",
-            "processing": "正在生成图片...",
-            "success": "图片生成完成",
-            "failed": "生成失败"
-          },
-          "messages": {
-            "prompt_too_long": "提示词过长，请精简后再试。",
-            "prompt_required": "请输入提示词后再生成。",
-            "provider_or_model_not_configured": "服务商或模型配置不正确。",
-            "selected_model_unavailable": "当前所选模型暂不可用。",
-            "reference_image_required": "请先上传至少一张参考图。",
-            "reference_image_uploading": "参考图仍在上传中。",
-            "fix_failed_uploads": "部分图片上传失败，请删除后重新上传。",
-            "insufficient_credits": "积分不足，请先充值后继续生成。",
-            "generation_timeout": "图片生成超时，请重试。",
-            "query_task_failed": "查询任务失败。",
-            "request_failed_with_status": "请求失败，状态码：{status}",
-            "provider_returned_no_images": "服务商未返回任何图片。",
-            "generation_failed": "图片生成失败。",
-            "create_task_failed": "创建图片任务失败。",
-            "task_id_missing": "响应中缺少任务 ID。",
-            "no_images_generated": "未生成任何图片，请重试。",
-            "image_generated": "图片生成成功。",
-            "download_failed": "下载图片失败。",
-            "image_downloaded": "图片已下载。"
-          },
-          "ui": {
-            "switch_mode": "切换生成模式",
-            "watermark": "水印",
-            "settings": "设置",
-            "generated_image_alt": "生成结果"
-          }
-        },
         "modes": ["text-to-image", "image-to-image"],
         "default_mode": "text-to-image",
         "description": "一张自拍即可生成职业形象照、生活风格照与创意头像，自由更换穿搭、背景和场景。",
