@@ -1,5 +1,4 @@
 import { Link } from '@/core/i18n/navigation';
-import { LazyImage } from '@/shared/blocks/common';
 import { Badge } from '@/shared/components/ui/badge';
 import {
   SidebarHeader as SidebarHeaderComponent,
@@ -15,13 +14,13 @@ import { SidebarHeader as SidebarHeaderType } from '@/shared/types/blocks/dashbo
 export function SidebarHeader({ header }: { header: SidebarHeaderType }) {
   const { open } = useSidebar();
   return (
-    <SidebarHeaderComponent className="mb-0">
+    <SidebarHeaderComponent className="mb-0 pt-3">
       <SidebarMenu>
         <SidebarMenuItem className="flex items-center justify-between">
           {(open || !header.show_trigger) && (
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
+              className="bg-transparent hover:bg-transparent hover:text-inherit active:bg-transparent active:text-inherit data-[slot=sidebar-menu-button]:!p-1.5"
             >
               {header.brand && (
                 <Link
@@ -38,13 +37,12 @@ export function SidebarHeader({ header }: { header: SidebarHeaderType }) {
                       )}
                     />
                   )}
-                  <div className="relative text-base font-semibold">
-                    {header.brand.title}
+                  <div className="flex items-center gap-3">
+                    <span className="text-base leading-none font-semibold">
+                      {header.brand.title}
+                    </span>
                     {header.version && (
-                      <Badge
-                        variant="secondary"
-                        className="absolute -top-0 -right-16 scale-100 px-1 py-0"
-                      >
+                      <Badge variant="secondary" className="px-1 py-0">
                         v{header.version}
                       </Badge>
                     )}
