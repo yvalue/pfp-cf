@@ -3,9 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { IconRefresh, IconX } from '@tabler/icons-react';
 import { ImageIcon } from 'lucide-react';
-import { toast } from 'sonner';
-
 import { RiImageAddLine } from 'react-icons/ri';
+import { toast } from 'sonner';
 
 import { Button } from '@/shared/components/ui/button';
 import { cn } from '@/shared/lib/utils';
@@ -20,12 +19,18 @@ export interface ImageUploaderValue {
   size?: number;
 }
 
+type ImageUploaderVariant = 'default' | 'panel';
+
 interface ImageUploaderProps {
   allowMultiple?: boolean;
   maxImages?: number;
   maxSizeMB?: number;
+  variant?: ImageUploaderVariant;
   title?: string;
   titleHint?: string;
+  emptyTitle?: string;
+  emptyDescription?: string;
+  emptyFooter?: string;
   emptyHint?: string;
   className?: string;
   emptyTileClassName?: string;
@@ -76,8 +81,12 @@ export function ImageUploader({
   allowMultiple = false,
   maxImages = 1,
   maxSizeMB = 10,
+  variant = 'default',
   title,
   titleHint,
+  emptyTitle,
+  emptyDescription,
+  emptyFooter,
   emptyHint,
   className,
   emptyTileClassName,
@@ -461,12 +470,15 @@ export function ImageUploader({
     () => `${items.length}/${maxCount}`,
     [items.length, maxCount]
   );
+  const isPanelVariant = variant === 'panel';
+  const showLargeEmptyState = isPanelVariant && items.length === 0;
 
   return (
     <div
       className={cn(
         'relative focus:outline-none',
-        isDragActive && 'ring-primary ring-offset-background ring-2 ring-offset-2',
+        isDragActive &&
+          'ring-primary ring-offset-background ring-2 ring-offset-2',
         className
       )}
       tabIndex={0}
@@ -477,7 +489,7 @@ export function ImageUploader({
       onDrop={handleDrop}
     >
       {isDragActive && (
-        <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center bg-background backdrop-blur-sm">
+        <div className="bg-background pointer-events-none absolute inset-0 z-30 flex items-center justify-center backdrop-blur-sm">
           <div className="bg-background text-foreground rounded-full px-4 py-2 text-sm font-medium shadow-sm">
             Drop to upload
           </div>
@@ -509,9 +521,10 @@ export function ImageUploader({
 
       <div
         className={cn(
-          'flex flex-wrap gap-4',
+          'gap-4',
+          showLargeEmptyState ? 'block' : 'flex',
           title && 'mt-3',
-          allowMultiple ? 'flex-wrap' : 'flex-nowrap'
+          !showLargeEmptyState && (allowMultiple ? 'flex-wrap' : 'flex-nowrap')
         )}
       >
         {items.map((item) => (
@@ -539,7 +552,7 @@ export function ImageUploader({
                     type="button"
                     size="icon"
                     variant="secondary"
-                    className="bg-background text-foreground hover:bg-background h-10 w-10 rounded-full shadow-sm backdrop-blur focus-visible:ring-2 focus-visible:ring-ring"
+                    className="bg-background text-foreground hover:bg-background focus-visible:ring-ring h-10 w-10 rounded-full shadow-sm backdrop-blur focus-visible:ring-2"
                     onClick={() => openReplacePicker(item.id)}
                     aria-label="Upload a new image to replace"
                   >
@@ -570,29 +583,78 @@ export function ImageUploader({
           </div>
         ))}
 
-        {items.length < maxCount && (
-          <div
-            className={cn(
-              'group border-border bg-muted hover:border-border hover:bg-muted relative overflow-hidden rounded-xl border border-dashed shadow-sm transition',
-              emptyTileClassName
-            )}
-          >
-            <div className="relative overflow-hidden rounded-lg">
+        {items.length < maxCount &&
+          (showLargeEmptyState ? (
+            <div
+              className={cn(
+                'border-primary rounded-3xl border-2 border-dashed p-3',
+                emptyTileClassName
+              )}
+            >
               <button
                 type="button"
-                className="flex h-28 w-28 flex-col items-center justify-center gap-2"
                 onClick={openFilePicker}
+                className="flex w-full flex-col items-center justify-center gap-2 text-center"
               >
-                <RiImageAddLine className="h-8 w-8 text-gray-400" />
-                <span
-                  className={cn('text-primary text-xs', emptyMetaClassName)}
-                >
-                  Max {maxSizeMB}MB
-                </span>
+                <RiImageAddLine className="text-foreground/28 text-primary size-12" />
+                <div className="text-foreground text-sm leading-5 font-medium">
+                  {emptyTitle || 'Drop files or click to upload'}
+                </div>
+                {emptyDescription ? (
+                  <div
+                    className={cn(
+                      'text-muted-foreground max-w-xl text-xs leading-5',
+                      emptyMetaClassName
+                    )}
+                  >
+                    {emptyDescription}
+                  </div>
+                ) : null}
+                {emptyFooter ? (
+                  <div
+                    className={cn(
+                      'text-muted-foreground max-w-xl text-xs leading-5',
+                      emptyMetaClassName
+                    )}
+                  >
+                    {emptyFooter}
+                  </div>
+                ) : null}
+                {!emptyDescription && !emptyFooter ? (
+                  <div
+                    className={cn(
+                      'text-muted-foreground max-w-2xl text-sm leading-7 sm:text-base',
+                      emptyMetaClassName
+                    )}
+                  >
+                    {emptyHint || `Max ${maxSizeMB}MB`}
+                  </div>
+                ) : null}
               </button>
             </div>
-          </div>
-        )}
+          ) : (
+            <div
+              className={cn(
+                'group border-border bg-muted hover:border-border hover:bg-muted relative overflow-hidden rounded-xl border border-dashed shadow-sm transition',
+                emptyTileClassName
+              )}
+            >
+              <div className="relative overflow-hidden rounded-lg">
+                <button
+                  type="button"
+                  className="flex h-28 w-28 flex-col items-center justify-center gap-2"
+                  onClick={openFilePicker}
+                >
+                  <RiImageAddLine className="h-8 w-8 text-gray-400" />
+                  <span
+                    className={cn('text-primary text-xs', emptyMetaClassName)}
+                  >
+                    Max {maxSizeMB}MB
+                  </span>
+                </button>
+              </div>
+            </div>
+          ))}
       </div>
 
       {!title && (

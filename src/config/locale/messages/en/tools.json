@@ -56,6 +56,9 @@
     },
     "upload": {
       "hint": "{formats} (max {maxSizeMB}MB each), Supports multiple images, {count} left",
+      "panel_title": "Drop files or click to upload",
+      "panel_description": "{formats} (max {maxSizeMB}MB each)",
+      "panel_footer": "Supports multiple images",
       "uploading": "Uploading images...",
       "some_images_failed": "Some images failed to upload, please delete them and re-upload"
     },

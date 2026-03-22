@@ -321,6 +321,11 @@ export function ToolPanel({ section }: ToolPanelProps) {
     maxSizeMB: maxReferenceImageSizeMB,
     count: maxReferenceImages,
   });
+  const uploadPanelDescription = t('upload.panel_description', {
+    formats: getNanoBananaReferenceImageFormatsLabel(),
+    maxSizeMB: maxReferenceImageSizeMB,
+  });
+  const uploadPanelFooter = t('upload.panel_footer');
 
   const handleReferenceImagesChange = useCallback(
     (items: ImageUploaderValue[]) => {
@@ -719,8 +724,12 @@ export function ToolPanel({ section }: ToolPanelProps) {
                 <div className="grid gap-4">
                   <section className="space-y-2">
                     <ImageUploader
+                      variant="panel"
                       title={t('labels.upload')}
                       titleHint={t('badges.required')}
+                      emptyTitle={t('upload.panel_title')}
+                      emptyDescription={uploadPanelDescription}
+                      emptyFooter={uploadPanelFooter}
                       allowMultiple={maxReferenceImages > 1}
                       maxImages={maxReferenceImages}
                       maxSizeMB={maxReferenceImageSizeMB}

@@ -56,6 +56,9 @@
     },
     "upload": {
       "hint": "{formats}（每张最大 {maxSizeMB}MB），支持上传多张图片，剩余 {count} 张",
+      "panel_title": "拖拽文件到此处，或点击上传",
+      "panel_description": "{formats}（每张最大 {maxSizeMB}MB）",
+      "panel_footer": "支持上传多张图片",
       "uploading": "正在上传图片...",
       "some_images_failed": "部分图片上传失败，请删除后重新上传"
     },
