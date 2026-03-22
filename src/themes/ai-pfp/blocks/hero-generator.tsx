@@ -37,13 +37,13 @@ import { Textarea } from '@/shared/components/ui/textarea';
 import { useAppContext } from '@/shared/contexts/app';
 import {
   extractImageUrls,
-  getNanoBananaModelFamily,
-  getNanoBananaModelFamilyFromValue,
   getNanoBananaMaxBatchCount,
   getNanoBananaMaxReferenceImages,
   getNanoBananaMaxReferenceImageSizeMB,
-  getNanoBananaResolution,
+  getNanoBananaModelFamily,
+  getNanoBananaModelFamilyFromValue,
   getNanoBananaReferenceImageFormatsLabel,
+  getNanoBananaResolution,
   NANO_BANANA_MODEL_FAMILIES,
   resolveNanoBananaGeneration,
   type NanoBananaResolution,
@@ -72,6 +72,13 @@ const MAX_PROMPT_LENGTH = 2000;
 const POLL_INTERVAL = 3500;
 const TASK_TIMEOUT = 180000;
 const TYPING_SPEED_MS = 70;
+
+function formatMessage(
+  template: string,
+  values: Record<string, string | number>
+) {
+  return template.replace(/\{(\w+)\}/g, (_, key) => String(values[key] ?? ''));
+}
 
 function parseJson(raw: string | null): any {
   if (!raw) {
@@ -117,6 +124,132 @@ export function HeroGenerator({
   className?: string;
 }) {
   const modes = useMemo(() => normalizeModes(section.modes), [section.modes]);
+  const copy = useMemo(() => {
+    const generator = section.generator ?? {};
+    const labels = generator.labels ?? {};
+    const upload = generator.upload ?? {};
+    const buttons = generator.buttons ?? {};
+    const states = generator.states ?? {};
+    const taskStatus = generator.task_status ?? {};
+    const messages = generator.messages ?? {};
+    const ui = generator.ui ?? {};
+
+    return {
+      labels: {
+        referenceImage: labels.reference_image ?? 'Reference Image',
+        model: labels.model ?? 'Model',
+        quality: labels.quality ?? 'Quality',
+        count: labels.count ?? 'Count',
+      },
+      upload: {
+        referenceImageHint: (formats: string, maxSizeMB: number) =>
+          formatMessage(
+            upload.reference_image_hint ?? '{formats} (max {maxSizeMB}MB each)',
+            {
+              formats,
+              maxSizeMB,
+            }
+          ),
+      },
+      buttons: {
+        submit: buttons.submit ?? 'Generate Images',
+      },
+      states: {
+        loading: states.loading ?? 'Loading...',
+        checkingAccount: states.checking_account ?? 'Checking Account...',
+        generating: states.generating ?? 'Generating...',
+        preparingGeneration:
+          states.preparing_generation ?? 'Preparing generation...',
+        startingTask: (current: number, total: number) =>
+          formatMessage(
+            states.starting_task ?? 'Starting image {current}/{total}',
+            {
+              current,
+              total,
+            }
+          ),
+        queued: (current: number, total: number) =>
+          formatMessage(
+            states.queued ?? 'Waiting for the model to start {current}/{total}',
+            {
+              current,
+              total,
+            }
+          ),
+        processing: (current: number, total: number) =>
+          formatMessage(
+            states.processing ?? 'Generating image {current}/{total}',
+            {
+              current,
+              total,
+            }
+          ),
+        statusLabel: states.status_label ?? 'Status',
+      },
+      taskStatus: {
+        pending: taskStatus.pending ?? 'Waiting for the model to start',
+        processing: taskStatus.processing ?? 'Generating your image...',
+        success: taskStatus.success ?? 'Image generation completed',
+        failed: taskStatus.failed ?? 'Generation failed',
+      },
+      messages: {
+        promptTooLong: messages.prompt_too_long ?? 'Prompt is too long.',
+        promptRequired:
+          messages.prompt_required ??
+          'Please enter a prompt before generating.',
+        providerOrModelNotConfigured:
+          messages.provider_or_model_not_configured ??
+          'Provider or model is not configured correctly.',
+        selectedModelUnavailable:
+          messages.selected_model_unavailable ??
+          'The selected model is currently unavailable.',
+        referenceImageRequired:
+          messages.reference_image_required ??
+          'Please upload at least one image before generating.',
+        referenceImageUploading:
+          messages.reference_image_uploading ??
+          'Reference images are still uploading.',
+        fixFailedUploads:
+          messages.fix_failed_uploads ??
+          'Some images failed to upload. Please delete them and re-upload.',
+        insufficientCredits:
+          messages.insufficient_credits ??
+          'Insufficient credits. Please top up to keep creating.',
+        generationTimeout:
+          messages.generation_timeout ??
+          'Image generation timed out. Please try again.',
+        queryTaskFailed: messages.query_task_failed ?? 'Query task failed.',
+        requestFailedWithStatus: (status: number) =>
+          formatMessage(
+            messages.request_failed_with_status ??
+              'Request failed with status: {status}',
+            { status }
+          ),
+        providerReturnedNoImages:
+          messages.provider_returned_no_images ??
+          'The provider returned no images.',
+        generationFailed:
+          messages.generation_failed ?? 'Failed to generate image.',
+        createTaskFailed:
+          messages.create_task_failed ?? 'Failed to create an image task.',
+        taskIdMissing:
+          messages.task_id_missing ?? 'Task ID is missing from the response.',
+        noImagesGenerated:
+          messages.no_images_generated ??
+          'No images were generated. Please try again.',
+        imageGenerated:
+          messages.image_generated ?? 'Image generated successfully.',
+        downloadFailed: messages.download_failed ?? 'Failed to download image.',
+        imageDownloaded: messages.image_downloaded ?? 'Image downloaded.',
+      },
+      ui: {
+        switchMode: ui.switch_mode ?? 'Switch generation mode',
+        watermark: ui.watermark ?? 'Watermark',
+        settings: ui.settings ?? 'Settings',
+        generatedImageAlt: ui.generated_image_alt ?? 'Generated image',
+      },
+    };
+  }, [section.generator]);
 
   const maxCount = useMemo(
     () => clamp(Number(section.max_count) || 4, 1, 8),
@@ -156,8 +289,7 @@ export function HeroGenerator({
     [selectedModelFamily]
   );
   const maxReferenceImageSizeMB = useMemo(
-    () =>
-      getNanoBananaMaxReferenceImageSizeMB(selectedModelFamily?.id ?? ''),
+    () => getNanoBananaMaxReferenceImageSizeMB(selectedModelFamily?.id ?? ''),
     [selectedModelFamily]
   );
   const aspectRatios = selectedModelFamily?.aspectRatios ?? ['1:1'];
@@ -280,7 +412,7 @@ export function HeroGenerator({
       Array.from({ length: effectiveMaxCount }, (_, index) => index + 1).map(
         (value) => ({
           value,
-          label: `${value} Image${value > 1 ? 's' : ''}`,
+          label: String(value),
         })
       ),
     [effectiveMaxCount]
@@ -298,6 +430,25 @@ export function HeroGenerator({
     },
     []
   );
+
+  const taskStatusLabel = useMemo(() => {
+    if (!taskStatus) {
+      return '';
+    }
+
+    switch (taskStatus) {
+      case AITaskStatus.PENDING:
+        return copy.taskStatus.pending;
+      case AITaskStatus.PROCESSING:
+        return copy.taskStatus.processing;
+      case AITaskStatus.SUCCESS:
+        return copy.taskStatus.success;
+      case AITaskStatus.FAILED:
+        return copy.taskStatus.failed;
+      default:
+        return '';
+    }
+  }, [copy, taskStatus]);
 
   const pollTask = useCallback(
     async ({
@@ -319,7 +470,7 @@ export function HeroGenerator({
 
       while (true) {
         if (Date.now() - startAt > TASK_TIMEOUT) {
-          throw new Error('Image generation timed out. Please try again.');
+          throw new Error(copy.messages.generationTimeout);
         }
 
         const resp = await fetch('/api/ai/query', {
@@ -331,12 +482,12 @@ export function HeroGenerator({
         });
 
         if (!resp.ok) {
-          throw new Error(`request failed with status: ${resp.status}`);
+          throw new Error(copy.messages.requestFailedWithStatus(resp.status));
         }
 
         const { code, message, data } = await resp.json();
         if (code !== 0) {
-          throw new Error(message || 'Failed to query generation task');
+          throw new Error(message || copy.messages.queryTaskFailed);
         }
 
         const task = data as BackendTask;
@@ -346,14 +497,14 @@ export function HeroGenerator({
         setTaskStatus(status);
 
         if (status === AITaskStatus.PENDING) {
-          setStatusText(`Queued (${index}/${total})...`);
+          setStatusText(copy.states.queued(index, total));
           setProgress((prev) => Math.max(prev, Math.round(base + 10)));
           await sleep(POLL_INTERVAL);
           continue;
         }
 
         if (status === AITaskStatus.PROCESSING) {
-          setStatusText(`Generating (${index}/${total})...`);
+          setStatusText(copy.states.processing(index, total));
           setProgress((prev) => Math.max(prev, Math.round(base + 70)));
           await sleep(POLL_INTERVAL);
           continue;
@@ -363,7 +514,7 @@ export function HeroGenerator({
           const taskInfo = parseJson(task.taskInfo);
           const urls = extractImageUrls(taskInfo);
           if (urls.length === 0) {
-            throw new Error('The provider returned no images. Please retry.');
+            throw new Error(copy.messages.providerReturnedNoImages);
           }
 
           setProgress((prev) =>
@@ -381,13 +532,15 @@ export function HeroGenerator({
 
         if (status === AITaskStatus.FAILED) {
           const taskInfo = parseJson(task.taskInfo);
-          throw new Error(taskInfo?.errorMessage || 'Image generation failed');
+          throw new Error(
+            taskInfo?.errorMessage || copy.messages.generationFailed
+          );
         }
 
         await sleep(POLL_INTERVAL);
       }
     },
-    []
+    [copy]
   );
 
   const createTask = useCallback(
@@ -401,11 +554,11 @@ export function HeroGenerator({
       total: number;
     }) => {
       if (!selectedModelFamily) {
-        throw new Error('Provider or model is not configured correctly.');
+        throw new Error(copy.messages.providerOrModelNotConfigured);
       }
 
       if (!resolvedGeneration?.model) {
-        throw new Error('Selected model is not available for this mode.');
+        throw new Error(copy.messages.selectedModelUnavailable);
       }
       const resolvedModel = resolvedGeneration.model;
 
@@ -439,22 +592,22 @@ export function HeroGenerator({
       });
 
       if (!resp.ok) {
-        throw new Error(`request failed with status: ${resp.status}`);
+        throw new Error(copy.messages.requestFailedWithStatus(resp.status));
       }
 
       const { code, message, data } = await resp.json();
       if (code !== 0) {
-        throw new Error(message || 'Failed to create an image task');
+        throw new Error(message || copy.messages.createTaskFailed);
       }
 
       if (!data?.id) {
-        throw new Error('Task id missing in response');
+        throw new Error(copy.messages.taskIdMissing);
       }
 
       if (data.status === AITaskStatus.SUCCESS && data.taskInfo) {
         const urls = extractImageUrls(parseJson(data.taskInfo));
         if (urls.length === 0) {
-          throw new Error('The provider returned no images. Please retry.');
+          throw new Error(copy.messages.providerReturnedNoImages);
         }
 
         setProgress((prev) =>
@@ -486,6 +639,7 @@ export function HeroGenerator({
       referenceImageUrls,
       resolvedGeneration,
       selectedModelFamily,
+      copy,
       skipCaptcha,
       watermark,
     ]
@@ -500,44 +654,44 @@ export function HeroGenerator({
     const promptText = prompt.trim();
 
     if (!promptText) {
-      toast.error('Please enter a prompt before generating.');
+      toast.error(copy.messages.promptRequired);
       return;
     }
 
     if (isPromptTooLong) {
-      toast.error(`Prompt is too long (max ${MAX_PROMPT_LENGTH} characters).`);
+      toast.error(copy.messages.promptTooLong);
       return;
     }
 
     if (!selectedModelFamily) {
-      toast.error('Provider or model is not configured correctly.');
+      toast.error(copy.messages.providerOrModelNotConfigured);
       return;
     }
 
     if (mode === 'image-to-image' && referenceImageUrls.length === 0) {
-      toast.error('Please upload a reference image first.');
+      toast.error(copy.messages.referenceImageRequired);
       return;
     }
 
     if (isReferenceUploading) {
-      toast.error('Reference image is still uploading. Please wait.');
+      toast.error(copy.messages.referenceImageUploading);
       return;
     }
 
     if (hasReferenceUploadError) {
-      toast.error('Please fix failed image uploads before submitting.');
+      toast.error(copy.messages.fixFailedUploads);
       return;
     }
 
     if (remainingCredits < totalCost) {
-      toast.error('Insufficient credits. Please top up to keep creating.');
+      toast.error(copy.messages.insufficientCredits);
       return;
     }
 
     setGeneratedImages([]);
     setIsGenerating(true);
     setTaskStatus(AITaskStatus.PENDING);
-    setStatusText('Preparing generation...');
+    setStatusText(copy.states.preparingGeneration);
     setProgress(5);
 
     const total = Math.max(1, count);
@@ -545,7 +699,7 @@ export function HeroGenerator({
 
     try {
       for (let index = 1; index <= total; index += 1) {
-        setStatusText(`Starting task ${index}/${total}...`);
+        setStatusText(copy.states.startingTask(index, total));
         const batch = await createTask({
           promptText,
           index,
@@ -556,18 +710,18 @@ export function HeroGenerator({
       }
 
       if (images.length === 0) {
-        throw new Error('No images were generated. Please try another prompt.');
+        throw new Error(copy.messages.noImagesGenerated);
       }
 
       setTaskStatus(AITaskStatus.SUCCESS);
-      setStatusText('Generation completed');
+      setStatusText(copy.taskStatus.success);
       setProgress(100);
-      toast.success('Image generated successfully');
+      toast.success(copy.messages.imageGenerated);
     } catch (error: any) {
       setTaskStatus(AITaskStatus.FAILED);
-      setStatusText('Generation failed');
+      setStatusText(copy.taskStatus.failed);
       setProgress(0);
-      toast.error(error?.message || 'Failed to generate image');
+      toast.error(error?.message || copy.messages.generationFailed);
     } finally {
       setIsGenerating(false);
       await fetchUserCredits();
@@ -587,49 +741,54 @@ export function HeroGenerator({
     setIsShowSignModal,
     totalCost,
     user,
+    copy,
   ]);
 
-  const handleDownloadImage = useCallback(async (image: GeneratedImage) => {
-    if (!image.url) {
-      return;
-    }
-
-    try {
-      setDownloadingImageId(image.id);
-
-      const resp = await fetch(
-        `/api/proxy/file?url=${encodeURIComponent(image.url)}`
-      );
-
-      if (!resp.ok) {
-        throw new Error('Failed to fetch image');
+  const handleDownloadImage = useCallback(
+    async (image: GeneratedImage) => {
+      if (!image.url) {
+        return;
       }
 
-      const blob = await resp.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.download = `${image.id}.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      setTimeout(() => URL.revokeObjectURL(blobUrl), 200);
-      toast.success('Image downloaded');
-    } catch {
-      toast.error('Failed to download image');
-    } finally {
-      setDownloadingImageId(null);
-    }
-  }, []);
+      try {
+        setDownloadingImageId(image.id);
 
-  const logoName = section.logo_name || section.name || 'Image Fx';
-  const highlightTitle = section.highlight_title || 'AI Image Generator';
+        const resp = await fetch(
+          `/api/proxy/file?url=${encodeURIComponent(image.url)}`
+        );
+
+        if (!resp.ok) {
+          throw new Error(copy.messages.downloadFailed);
+        }
+
+        const blob = await resp.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = `${image.id}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 200);
+        toast.success(copy.messages.imageDownloaded);
+      } catch {
+        toast.error(copy.messages.downloadFailed);
+      } finally {
+        setDownloadingImageId(null);
+      }
+    },
+    [copy]
+  );
+
+  const logoName =
+    section.logo_name || section.name || section.title || 'AI-PFP';
+  const highlightTitle = section.highlight_title || section.title || logoName;
   const [typedHighlightTitle, setTypedHighlightTitle] =
     useState(highlightTitle);
   const [isTypingTitle, setIsTypingTitle] = useState(false);
 
   const logoSrc = section.logo?.src || '';
-  const logoAlt = section.logo?.alt || `${logoName} logo`;
+  const logoAlt = section.logo?.alt || logoName;
 
   const description = section.description || '';
   const announcementTitle = section.announcement?.title || '';
@@ -684,7 +843,7 @@ export function HeroGenerator({
           <Link
             href={announcementUrl}
             target={section.announcement?.target || '_self'}
-            className="text-muted-foreground hover:text-foreground border-border bg-background mx-auto flex w-fit items-center gap-2 rounded-xl border my-4 px-4 py-1 text-xs leading-5 transition-colors"
+            className="text-muted-foreground hover:text-foreground border-border bg-background mx-auto my-4 flex w-fit items-center gap-2 rounded-xl border px-4 py-1 text-xs leading-5 transition-colors"
           >
             <RiInformationLine className="size-4" />
             <span>{announcementTitle}</span>
@@ -732,11 +891,8 @@ export function HeroGenerator({
             <Textarea
               value={prompt}
               onChange={(event) => setPrompt(event.target.value)}
-              placeholder={
-                section.placeholder ||
-                'Describe the PFP you want to generate...'
-              }
-              className="min-h-40 resize-none border-0 p-6 text-lg md:text-base leading-7 focus-visible:ring-0 focus-visible:ring-offset-0"
+              placeholder={section.placeholder || ''}
+              className="min-h-40 resize-none border-0 p-6 text-lg leading-7 focus-visible:ring-0 focus-visible:ring-offset-0 md:text-base"
             />
             <RiSparkling2Line className="text-primary absolute right-5 bottom-5 size-5" />
           </div>
@@ -744,8 +900,11 @@ export function HeroGenerator({
           {mode === 'image-to-image' && (
             <div className="border-border bg-background border-t p-3">
               <ImageUploader
-                title="Reference image"
-                titleHint={`${getNanoBananaReferenceImageFormatsLabel()}, up to ${maxReferenceImageSizeMB}MB each`}
+                title={copy.labels.referenceImage}
+                titleHint={copy.upload.referenceImageHint(
+                  getNanoBananaReferenceImageFormatsLabel(),
+                  maxReferenceImageSizeMB
+                )}
                 itemTileClassName="border-primary bg-accent hover:border-primary hover:bg-secondary border shadow-none"
                 emptyTileClassName="border-primary bg-accent hover:border-primary hover:bg-secondary border border-dashed"
                 emptyIconShellClassName="border-primary bg-background text-primary border-dashed"
@@ -764,7 +923,7 @@ export function HeroGenerator({
               <div className="flex flex-wrap items-center gap-2">
                 <Select value={modelFamilyId} onValueChange={setModelFamilyId}>
                   <SelectTrigger className="h-10 min-w-32 rounded-xl text-sm leading-6">
-                    <SelectValue placeholder="Model" />
+                    <SelectValue placeholder={copy.labels.model} />
                   </SelectTrigger>
                   <SelectContent>
                     {NANO_BANANA_MODEL_FAMILIES.map((item) => (
@@ -788,7 +947,7 @@ export function HeroGenerator({
                           : 'text-to-image'
                       )
                     }
-                    title="Switch between text-to-image and image-to-image"
+                    title={copy.ui.switchMode}
                   >
                     <RiImageAddLine className="size-4" />
                   </Button>
@@ -819,7 +978,7 @@ export function HeroGenerator({
                   }
                 >
                   <SelectTrigger className="h-10 min-w-24 rounded-xl text-sm leading-6">
-                    <SelectValue placeholder="Quality" />
+                    <SelectValue placeholder={copy.labels.quality} />
                   </SelectTrigger>
                   <SelectContent>
                     {supportedResolutions.map((option) => (
@@ -837,7 +996,7 @@ export function HeroGenerator({
                   }
                 >
                   <SelectTrigger className="h-10 min-w-28 rounded-xl text-sm leading-6">
-                    <SelectValue placeholder="Count" />
+                    <SelectValue placeholder={copy.labels.count} />
                   </SelectTrigger>
                   <SelectContent>
                     {countOptions.map((option) => (
@@ -858,7 +1017,7 @@ export function HeroGenerator({
                 size="icon"
                 className="text-foreground size-10 rounded-xl"
                 disabled
-                aria-label="Settings"
+                aria-label={copy.ui.settings}
               >
                 <RiSettings3Line className="size-5" />
               </Button>
@@ -878,7 +1037,7 @@ export function HeroGenerator({
             <label className="inline-flex items-center gap-2">
               <Switch checked={watermark} onCheckedChange={setWatermark} />
               <span className="inline-flex items-center gap-1 text-sm leading-6 font-medium">
-                Watermark
+                {copy.ui.watermark}
                 <RiVipCrown2Fill className="size-4 text-amber-400" />
               </span>
             </label>
@@ -901,21 +1060,21 @@ export function HeroGenerator({
             {!isMounted ? (
               <>
                 <RiLoader4Line className="mr-2 size-4 animate-spin" />
-                Loading...
+                {copy.states.loading}
               </>
             ) : isCheckSign ? (
               <>
                 <RiLoader4Line className="mr-2 size-4 animate-spin" />
-                Checking account...
+                {copy.states.checkingAccount}
               </>
             ) : isGenerating ? (
               <>
                 <RiLoader4Line className="mr-2 size-4 animate-spin" />
-                Generating...
+                {copy.states.generating}
               </>
             ) : (
               <>
-                Submit
+                {copy.buttons.submit}
                 <span className="ml-2 inline-flex items-center gap-2 text-sm leading-6">
                   {totalCost}
                   <RiVipDiamondFill className="size-4 text-amber-400" />
@@ -932,13 +1091,13 @@ export function HeroGenerator({
                 <div className="flex items-center justify-between gap-3 text-sm leading-6">
                   <div className="flex items-center gap-2">
                     <RiLoader4Line className="text-primary size-4 animate-spin" />
-                    <span>{statusText || 'Generating image...'}</span>
+                    <span>{statusText || copy.taskStatus.processing}</span>
                   </div>
                   <span>{progress}%</span>
                 </div>
                 {taskStatus && (
                   <p className="text-muted-foreground text-xs leading-5 uppercase">
-                    Status: {taskStatus}
+                    {copy.states.statusLabel}: {taskStatusLabel}
                   </p>
                 )}
                 <Progress value={progress} />
@@ -954,7 +1113,7 @@ export function HeroGenerator({
                   >
                     <LazyImage
                       src={image.url}
-                      alt={image.prompt || 'Generated image'}
+                      alt={image.prompt || copy.ui.generatedImageAlt}
                       className="h-full w-full object-cover"
                     />
                     <div className="absolute right-2 bottom-2">

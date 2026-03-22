@@ -10,29 +10,7 @@
         "id": "generator",
         "title": "专业证件照生成器",
         "description": "通过可复用的对比与引导布局，在几秒内生成专业证件照。",
-        "tabs": {
-          "upload": "上传图片",
-          "parameter": "参数"
-        },
-        "fields": {
-          "required_badge": "必填",
-          "optional_badge": "可选",
-          "default_badge": "默认",
-          "upload_label": "上传图片",
-          "description_label": "描述",
-          "effect_style_label": "风格效果",
-          "model_label": "模型",
-          "aspect_ratio_label": "比例",
-          "quality_label": "质量",
-          "count_label": "数量"
-        },
-        "upload": {
-          "title": "拖拽文件或点击上传",
-          "formats": "支持 PNG、JPG、JPEG 或 WEBP（单张最大 10MB）",
-          "supports": "支持上传多张图片",
-          "remaining": "剩余 {count} 张"
-        },
-        "description_placeholder": "描述你想要的证件照效果...",
+        "effect_style_label": "风格效果",
         "effects": [
           {
             "id": "linkedin-headshot",
@@ -105,62 +83,6 @@
             "silhouetteClassName": "bg-[linear-gradient(180deg,rgba(219,39,119,0.25),rgba(244,114,182,0.15))]"
           }
         ],
-        "selects": {
-          "aspect_ratio": [
-            {
-              "label": "匹配原图",
-              "value": "Match Input"
-            },
-            {
-              "label": "9:16",
-              "value": "9:16"
-            },
-            {
-              "label": "16:9",
-              "value": "16:9"
-            },
-            {
-              "label": "1:1",
-              "value": "1:1"
-            }
-          ],
-          "resolution": [
-            {
-              "label": "1K",
-              "value": "1K"
-            },
-            {
-              "label": "2K",
-              "value": "2K"
-            },
-            {
-              "label": "4K",
-              "value": "4K"
-            }
-          ],
-          "batch_size": [
-            {
-              "label": "1",
-              "value": "1"
-            },
-            {
-              "label": "2",
-              "value": "2"
-            },
-            {
-              "label": "3 高级",
-              "value": "3"
-            },
-            {
-              "label": "4 高级",
-              "value": "4"
-            },
-            {
-              "label": "5 高级",
-              "value": "5"
-            }
-          ]
-        },
         "result": {
           "example_title": "示例",
           "before_label": "处理前",
@@ -174,10 +96,6 @@
           ],
           "tip_prefix": "提示：",
           "tip_text": "如果预设效果不理想，可以上传参考图并补充描述。"
-        },
-        "buttons": {
-          "submit": "提交",
-          "download": "下载"
         },
         "credits": {
           "submit_cost": 15

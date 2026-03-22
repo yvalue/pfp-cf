@@ -1,34 +1,26 @@
 'use client';
 
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type ChangeEvent,
-  type DragEvent,
-} from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ChevronsUpDown,
   Download,
   Loader2,
   Sparkles,
   User,
-  X,
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import {
   ReactCompareSlider,
   ReactCompareSliderImage,
 } from 'react-compare-slider';
-import { RiImageAddLine, RiVipDiamondFill } from 'react-icons/ri';
+import { RiVipDiamondFill } from 'react-icons/ri';
 import { toast } from 'sonner';
 
 import { AIMediaType, AITaskStatus } from '@/extensions/ai/types';
 import {
   aiPfpSegmentedTabsListClassName,
   aiPfpSegmentedTabsTriggerClassName,
+  ImageUploader,
   LazyImage,
   type ImageUploaderValue,
 } from '@/shared/blocks/common';
@@ -70,11 +62,6 @@ import {
 } from '@/shared/lib/ai-image';
 import { cn } from '@/shared/lib/utils';
 
-type ToolPanelSelectOption = {
-  label: string;
-  value: string;
-};
-
 type ToolPanelEffectOption = {
   id: string;
   label: string;
@@ -93,35 +80,8 @@ export type ToolPanelSection = {
   name?: string;
   title: string;
   description: string;
-  tabs: {
-    upload: string;
-    parameter: string;
-  };
-  fields: {
-    required_badge: string;
-    optional_badge: string;
-    default_badge: string;
-    upload_label: string;
-    description_label: string;
-    effect_style_label: string;
-    model_label: string;
-    aspect_ratio_label: string;
-    quality_label: string;
-    count_label: string;
-  };
-  upload: {
-    title: string;
-    formats: string;
-    supports: string;
-    remaining: string;
-  };
-  description_placeholder: string;
+  effect_style_label: string;
   effects: ToolPanelEffectOption[];
-  selects: {
-    aspect_ratio: ToolPanelSelectOption[];
-    resolution: ToolPanelSelectOption[];
-    batch_size: ToolPanelSelectOption[];
-  };
   result: {
     example_title: string;
     before_label: string;
@@ -130,10 +90,6 @@ export type ToolPanelSection = {
     usage_steps: string[];
     tip_prefix: string;
     tip_text: string;
-  };
-  buttons: {
-    submit: string;
-    download: string;
   };
   credits: {
     submit_cost: number;
@@ -173,27 +129,6 @@ const panelClassName = 'rounded-3xl border border-border';
 const selectTriggerClassName = 'h-10 w-full rounded-xl text-sm leading-6';
 const toolPanelPaneClassName =
   'border-border bg-background min-w-0 rounded-3xl border p-5 shadow-sm';
-
-async function uploadImageFile(file: File) {
-  const formData = new FormData();
-  formData.append('files', file);
-
-  const response = await fetch('/api/storage/upload-image', {
-    method: 'POST',
-    body: formData,
-  });
-
-  if (!response.ok) {
-    throw new Error(`Upload failed with status ${response.status}`);
-  }
-
-  const result = await response.json();
-  if (result.code !== 0 || !result.data?.urls?.length) {
-    throw new Error(result.message || 'Upload failed');
-  }
-
-  return result.data.urls[0] as string;
-}
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -287,7 +222,7 @@ function ComparisonHandle() {
 }
 
 export function ToolPanel({ section }: ToolPanelProps) {
-  const generatorT = useTranslations('ai.image.generator');
+  const t = useTranslations('tools.tool_panel');
   const [selectedEffectId, setSelectedEffectId] = useState(
     section.effects[0]?.id ?? ''
   );
@@ -301,12 +236,11 @@ export function ToolPanel({ section }: ToolPanelProps) {
   const [aspectRatio, setAspectRatio] = useState(
     NANO_BANANA_MODEL_FAMILIES[0]?.defaultAspectRatio ?? '1:1'
   );
-  const [count, setCount] = useState(
-    Math.max(1, parseInt(section.selects.batch_size[0]?.value ?? '1', 10) || 1)
-  );
+  const [count, setCount] = useState(1);
   const [referenceImageItems, setReferenceImageItems] = useState<
     ImageUploaderValue[]
   >([]);
+  const [referenceImageUrls, setReferenceImageUrls] = useState<string[]>([]);
   const [generatedImages, setGeneratedImages] = useState<GeneratedImage[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -316,11 +250,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
     null
   );
   const [isMounted, setIsMounted] = useState(false);
-  const [isUploadDragActive, setIsUploadDragActive] = useState(false);
   const [isEffectDialogOpen, setIsEffectDialogOpen] = useState(false);
-
-  const uploadInputRef = useRef<HTMLInputElement | null>(null);
-  const referenceImageItemsRef = useRef<ImageUploaderValue[]>([]);
 
   const { user, isCheckSign, setIsShowSignModal, fetchUserCredits } =
     useAppContext();
@@ -328,10 +258,6 @@ export function ToolPanel({ section }: ToolPanelProps) {
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
-  useEffect(() => {
-    referenceImageItemsRef.current = referenceImageItems;
-  }, [referenceImageItems]);
 
   const promptLength = prompt.trim().length;
   const isPromptTooLong = promptLength > MAX_PROMPT_LENGTH;
@@ -377,42 +303,45 @@ export function ToolPanel({ section }: ToolPanelProps) {
   const maxReferenceImageSizeMB = getNanoBananaMaxReferenceImageSizeMB(
     selectedModelFamily?.id ?? ''
   );
+  const maxBatchCount = getNanoBananaMaxBatchCount(
+    selectedModelFamily?.id ?? ''
+  );
   const countOptions = useMemo(
     () =>
-      section.selects.batch_size.filter((item) => {
-        const optionCount = parseInt(item.value, 10);
-        return (
-          !Number.isNaN(optionCount) &&
-          optionCount <=
-            getNanoBananaMaxBatchCount(selectedModelFamily?.id ?? '')
-        );
-      }),
-    [section.selects.batch_size, selectedModelFamily]
+      Array.from({ length: maxBatchCount }, (_, index) => index + 1).map(
+        (value) => ({
+          value: String(value),
+          label: String(value),
+        })
+      ),
+    [maxBatchCount]
   );
-  const remainingUploadSlots = Math.max(
-    0,
-    maxReferenceImages - referenceImageItems.length
-  );
-  const remainingUploadSlotsText = section.upload.remaining.replace(
-    '{count}',
-    String(remainingUploadSlots)
-  );
-  const uploadFormatsText = `${getNanoBananaReferenceImageFormatsLabel()} (max ${maxReferenceImageSizeMB}MB each)`;
+  const uploadHint = t('upload.hint', {
+    formats: getNanoBananaReferenceImageFormatsLabel(),
+    maxSizeMB: maxReferenceImageSizeMB,
+    count: maxReferenceImages,
+  });
 
-  const referenceImageUrls = useMemo(
-    () =>
-      referenceImageItems
-        .filter((item) => item.status === 'uploaded' && item.url)
-        .map((item) => item.url as string),
+  const handleReferenceImagesChange = useCallback(
+    (items: ImageUploaderValue[]) => {
+      setReferenceImageItems(items);
+      setReferenceImageUrls(
+        items
+          .filter((item) => item.status === 'uploaded' && item.url)
+          .map((item) => item.url as string)
+      );
+    },
+    []
+  );
+
+  const isReferenceUploading = useMemo(
+    () => referenceImageItems.some((item) => item.status === 'uploading'),
     [referenceImageItems]
   );
 
-  const isReferenceUploading = referenceImageItems.some(
-    (item) => item.status === 'uploading'
-  );
-
-  const hasReferenceUploadError = referenceImageItems.some(
-    (item) => item.status === 'error'
+  const hasReferenceUploadError = useMemo(
+    () => referenceImageItems.some((item) => item.status === 'error'),
+    [referenceImageItems]
   );
 
   const taskStatusLabel = useMemo(() => {
@@ -422,17 +351,17 @@ export function ToolPanel({ section }: ToolPanelProps) {
 
     switch (taskStatus) {
       case AITaskStatus.PENDING:
-        return 'Waiting for the model to start';
+        return t('task_status.pending');
       case AITaskStatus.PROCESSING:
-        return 'Generating your image...';
+        return t('task_status.processing');
       case AITaskStatus.SUCCESS:
-        return 'Image generation completed';
+        return t('task_status.success');
       case AITaskStatus.FAILED:
-        return 'Generation failed';
+        return t('task_status.failed');
       default:
         return '';
     }
-  }, [taskStatus]);
+  }, [t, taskStatus]);
 
   useEffect(() => {
     if (!selectedModelFamily) {
@@ -465,165 +394,10 @@ export function ToolPanel({ section }: ToolPanelProps) {
   }, [aspectRatio, aspectRatios, defaultAspectRatio]);
 
   useEffect(() => {
-    if (
-      countOptions.length > 0 &&
-      !countOptions.some((item) => Number(item.value) === count)
-    ) {
-      setCount(Number(countOptions[0]?.value ?? '1'));
+    if (count > maxBatchCount) {
+      setCount(maxBatchCount);
     }
-  }, [count, countOptions]);
-
-  function handleRemoveReferenceImage(id: string) {
-    setReferenceImageItems((prev) => {
-      const target = prev.find((item) => item.id === id);
-      if (target?.preview.startsWith('blob:')) {
-        URL.revokeObjectURL(target.preview);
-      }
-      return prev.filter((item) => item.id !== id);
-    });
-  }
-
-  const handleUploadFiles = useCallback(
-    async (selectedFiles: File[]) => {
-      const maxBytes = maxReferenceImageSizeMB * 1024 * 1024;
-      const availableSlots = Math.max(
-        0,
-        maxReferenceImages - referenceImageItems.length
-      );
-
-      const filesToAdd = selectedFiles
-        .filter((file) => {
-          if (!file.type.startsWith('image/')) {
-            toast.error(`"${file.name}" is not an image`);
-            return false;
-          }
-
-          if (file.size > maxBytes) {
-            toast.error(
-              `"${file.name}" exceeds the ${maxReferenceImageSizeMB}MB limit`
-            );
-            return false;
-          }
-
-          return true;
-        })
-        .slice(0, availableSlots);
-
-      if (filesToAdd.length === 0) {
-        if (selectedFiles.length > 0 && availableSlots === 0) {
-          toast.error(`You can upload up to ${maxReferenceImages} images.`);
-        }
-        return;
-      }
-
-      const nextItems: ImageUploaderValue[] = filesToAdd.map((file) => ({
-        id: `${file.name}-${file.lastModified}-${Math.random()}`,
-        preview: URL.createObjectURL(file),
-        status: 'uploading',
-        size: file.size,
-      }));
-
-      setReferenceImageItems((prev) => [...prev, ...nextItems]);
-
-      await Promise.all(
-        nextItems.map(async (item, index) => {
-          try {
-            const uploadedUrl = await uploadImageFile(filesToAdd[index]);
-            setReferenceImageItems((prev) =>
-              prev.map((current) => {
-                if (current.id !== item.id) {
-                  return current;
-                }
-
-                if (current.preview.startsWith('blob:')) {
-                  URL.revokeObjectURL(current.preview);
-                }
-
-                return {
-                  ...current,
-                  preview: uploadedUrl,
-                  url: uploadedUrl,
-                  status: 'uploaded',
-                };
-              })
-            );
-          } catch (error: any) {
-            console.error('Upload failed:', error);
-            toast.error(error?.message || 'Upload failed');
-            setReferenceImageItems((prev) =>
-              prev.map((current) =>
-                current.id === item.id
-                  ? {
-                      ...current,
-                      status: 'error',
-                    }
-                  : current
-              )
-            );
-          }
-        })
-      );
-    },
-    [maxReferenceImageSizeMB, maxReferenceImages, referenceImageItems.length]
-  );
-
-  const handleUploadInputChange = useCallback(
-    async (event: ChangeEvent<HTMLInputElement>) => {
-      const files = Array.from(event.target.files || []);
-      if (files.length > 0) {
-        await handleUploadFiles(files);
-      }
-      event.target.value = '';
-    },
-    [handleUploadFiles]
-  );
-
-  function openUploadPicker() {
-    uploadInputRef.current?.click();
-  }
-
-  const handleUploadDrop = useCallback(
-    async (event: DragEvent<HTMLDivElement>) => {
-      event.preventDefault();
-      setIsUploadDragActive(false);
-      const files = Array.from(event.dataTransfer.files || []);
-      if (files.length > 0) {
-        await handleUploadFiles(files);
-      }
-    },
-    [handleUploadFiles]
-  );
-
-  useEffect(() => {
-    if (referenceImageItems.length <= maxReferenceImages) {
-      return;
-    }
-
-    setReferenceImageItems((prev) => {
-      if (prev.length <= maxReferenceImages) {
-        return prev;
-      }
-
-      const overflowItems = prev.slice(maxReferenceImages);
-      overflowItems.forEach((item) => {
-        if (item.preview.startsWith('blob:')) {
-          URL.revokeObjectURL(item.preview);
-        }
-      });
-
-      return prev.slice(0, maxReferenceImages);
-    });
-  }, [maxReferenceImages, referenceImageItems.length]);
-
-  useEffect(() => {
-    return () => {
-      referenceImageItemsRef.current.forEach((item) => {
-        if (item.preview.startsWith('blob:')) {
-          URL.revokeObjectURL(item.preview);
-        }
-      });
-    };
-  }, []);
+  }, [count, maxBatchCount]);
 
   const resetGenerationState = useCallback(() => {
     setIsGenerating(false);
@@ -658,12 +432,14 @@ export function ToolPanel({ section }: ToolPanelProps) {
       });
 
       if (!response.ok) {
-        throw new Error(`request failed with status: ${response.status}`);
+        throw new Error(
+          t('messages.request_failed_with_status', { status: response.status })
+        );
       }
 
       const { code, message, data } = await response.json();
       if (code !== 0) {
-        throw new Error(message || 'Failed to create an image task');
+        throw new Error(message || t('messages.create_task_failed'));
       }
 
       return data as BackendTask;
@@ -674,6 +450,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
       resolvedGeneration,
       resolvedModel,
       selectedModelFamily,
+      t,
     ]
   );
 
@@ -699,12 +476,16 @@ export function ToolPanel({ section }: ToolPanelProps) {
         });
 
         if (!response.ok) {
-          throw new Error(`request failed with status: ${response.status}`);
+          throw new Error(
+            t('messages.request_failed_with_status', {
+              status: response.status,
+            })
+          );
         }
 
         const { code, message, data } = await response.json();
         if (code !== 0) {
-          throw new Error(message || 'Query task failed');
+          throw new Error(message || t('messages.query_task_failed'));
         }
 
         const task = data as BackendTask;
@@ -744,7 +525,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
           const errorMessage =
             parsedTaskInfo?.errorMessage ||
             parsedTaskResult?.errorMessage ||
-            'Generate image failed';
+            t('messages.generate_failed');
 
           toast.error(errorMessage);
           return {
@@ -757,9 +538,9 @@ export function ToolPanel({ section }: ToolPanelProps) {
         await sleep(POLL_INTERVAL);
       }
 
-      throw new Error('Image generation timed out. Please try again.');
+      throw new Error(t('messages.generation_timeout'));
     },
-    []
+    [t]
   );
 
   const handleGenerate = useCallback(async () => {
@@ -769,22 +550,22 @@ export function ToolPanel({ section }: ToolPanelProps) {
     }
 
     if (remainingCredits < totalCost) {
-      toast.error('Insufficient credits. Please top up to keep creating.');
+      toast.error(t('messages.insufficient_credits'));
       return;
     }
 
     if (!selectedModelFamily || !resolvedModel) {
-      toast.error('Provider or model is not configured correctly.');
+      toast.error(t('messages.provider_or_model_not_configured'));
       return;
     }
 
     if (referenceImageUrls.length === 0) {
-      toast.error('Please upload at least one image before generating.');
+      toast.error(t('messages.reference_image_required'));
       return;
     }
 
     if (isPromptTooLong) {
-      toast.error('Prompt is too long.');
+      toast.error(t('messages.prompt_too_long'));
       return;
     }
 
@@ -840,13 +621,15 @@ export function ToolPanel({ section }: ToolPanelProps) {
       }
 
       if (successCount > 0) {
-        toast.success(`Generated ${successCount}/${count} image(s).`);
+        toast.success(
+          t('messages.generated_count', { current: successCount, total: count })
+        );
       } else {
-        toast.error('No images were generated. Please try again.');
+        toast.error(t('messages.no_images_generated'));
       }
     } catch (error: any) {
       console.error('Failed to generate image:', error);
-      toast.error(error?.message || 'Failed to generate image');
+      toast.error(error?.message || t('messages.generate_failed'));
     } finally {
       setProgress((current) => (successCount > 0 ? 100 : current));
       resetGenerationState();
@@ -867,43 +650,47 @@ export function ToolPanel({ section }: ToolPanelProps) {
     selectedEffect,
     selectedModelFamily,
     setIsShowSignModal,
+    t,
     totalCost,
     user,
   ]);
 
-  const handleDownloadImage = useCallback(async (image: GeneratedImage) => {
-    if (!image.url) {
-      return;
-    }
-
-    try {
-      setDownloadingImageId(image.id);
-
-      const response = await fetch(
-        `/api/proxy/file?url=${encodeURIComponent(image.url)}`
-      );
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch image');
+  const handleDownloadImage = useCallback(
+    async (image: GeneratedImage) => {
+      if (!image.url) {
+        return;
       }
 
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.download = `${image.id}.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      setTimeout(() => URL.revokeObjectURL(blobUrl), 200);
-      toast.success('Image downloaded');
-    } catch (error) {
-      console.error('Failed to download image:', error);
-      toast.error('Failed to download image');
-    } finally {
-      setDownloadingImageId(null);
-    }
-  }, []);
+      try {
+        setDownloadingImageId(image.id);
+
+        const response = await fetch(
+          `/api/proxy/file?url=${encodeURIComponent(image.url)}`
+        );
+
+        if (!response.ok) {
+          throw new Error(t('messages.download_failed'));
+        }
+
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = `${image.id}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 200);
+        toast.success(t('messages.download_success'));
+      } catch (error) {
+        console.error('Failed to download image:', error);
+        toast.error(t('messages.download_failed'));
+      } finally {
+        setDownloadingImageId(null);
+      }
+    },
+    [t]
+  );
 
   return (
     <section id={section.id || section.name} data-slot="generator-tool-panel">
@@ -918,132 +705,41 @@ export function ToolPanel({ section }: ToolPanelProps) {
                   value="upload"
                   className={aiPfpSegmentedTabsTriggerClassName}
                 >
-                  {section.tabs.upload}
+                  {t('tabs.upload')}
                 </TabsTrigger>
                 <TabsTrigger
                   value="parameter"
                   className={aiPfpSegmentedTabsTriggerClassName}
                 >
-                  {section.tabs.parameter}
+                  {t('tabs.parameter')}
                 </TabsTrigger>
               </TabsList>
 
               <TabsContent value="upload" className="mt-0">
                 <div className="grid gap-4">
                   <section className="space-y-2">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <Label>{section.fields.upload_label}</Label>
-                        <span className="bg-accent text-primary inline-flex items-center rounded-xl px-2 text-xs leading-5 font-medium">
-                          {section.fields.required_badge}
-                        </span>
-                      </div>
-                      <span className="text-muted-foreground inline-flex items-center gap-1.5 text-xs leading-5 font-medium">
-                        <RiImageAddLine className="size-3.5" />
-                        {remainingUploadSlotsText}
-                      </span>
-                    </div>
-
-                    <input
-                      ref={uploadInputRef}
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={handleUploadInputChange}
-                      className="hidden"
+                    <ImageUploader
+                      title={t('labels.upload')}
+                      titleHint={t('badges.required')}
+                      allowMultiple={maxReferenceImages > 1}
+                      maxImages={maxReferenceImages}
+                      maxSizeMB={maxReferenceImageSizeMB}
+                      onChange={handleReferenceImagesChange}
+                      emptyHint={uploadHint}
+                      className="rounded-3xl"
+                      emptyTileClassName="rounded-3xl"
+                      itemTileClassName="rounded-3xl"
                     />
-
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={openUploadPicker}
-                      onKeyDown={(event) => {
-                        if (event.key === 'Enter' || event.key === ' ') {
-                          event.preventDefault();
-                          openUploadPicker();
-                        }
-                      }}
-                      onDragOver={(event) => {
-                        event.preventDefault();
-                        setIsUploadDragActive(true);
-                      }}
-                      onDragLeave={() => setIsUploadDragActive(false)}
-                      onDrop={handleUploadDrop}
-                      className={cn(
-                        'border-primary bg-accent flex min-h-32 flex-col overflow-hidden rounded-3xl border-2 border-dashed p-6 text-center transition-colors',
-                        isUploadDragActive && 'border-primary bg-secondary'
-                      )}
-                    >
-                      {referenceImageItems.length > 0 ? (
-                        <>
-                          <div className="max-h-44 overflow-y-auto pr-1">
-                            <div className="grid grid-cols-4 gap-3">
-                              {referenceImageItems.map((item) => (
-                                <div
-                                  key={item.id}
-                                  className="border-primary bg-background group relative overflow-hidden rounded-md border"
-                                >
-                                  <img
-                                    src={item.preview}
-                                    alt="Reference"
-                                    className="aspect-square w-full object-cover"
-                                  />
-                                  <div className="bg-foreground text-primary-foreground absolute inset-x-0 bottom-0 px-2 py-1 text-xs leading-4">
-                                    {item.status}
-                                  </div>
-                                  <button
-                                    type="button"
-                                    className="bg-foreground text-primary-foreground absolute top-2 right-2 inline-flex h-7 w-7 items-center justify-center rounded-xl"
-                                    onClick={(event) => {
-                                      event.stopPropagation();
-                                      handleRemoveReferenceImage(item.id);
-                                    }}
-                                  >
-                                    <X className="h-4 w-4" />
-                                  </button>
-                                </div>
-                              ))}
-
-                              {remainingUploadSlots > 0 ? (
-                                <div className="border-primary bg-background flex aspect-square items-center justify-center rounded-lg border border-dashed">
-                                  <RiImageAddLine className="size-7 text-gray-400" />
-                                </div>
-                              ) : null}
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        <div className="grid flex-1 place-items-center">
-                          <div className="grid gap-2">
-                            <div className="mx-auto flex size-14 items-center justify-center">
-                              <RiImageAddLine className="size-14 text-gray-400" />
-                            </div>
-                            <div className="grid gap-1">
-                              <p className="text-muted-foreground text-sm leading-6 font-medium break-words">
-                                {section.upload.title}
-                              </p>
-                              <p className="text-muted-foreground text-xs leading-5">
-                                {uploadFormatsText}
-                                <br />
-                                <span className="text-muted-foreground font-medium">
-                                  {section.upload.supports}
-                                </span>
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
 
                     {isReferenceUploading ? (
                       <p className="text-muted-foreground text-xs leading-5">
-                        Uploading images...
+                        {t('upload.uploading')}
                       </p>
                     ) : null}
 
                     {hasReferenceUploadError ? (
                       <p className="text-destructive text-xs leading-5">
-                        {generatorT('form.some_images_failed_to_upload')}
+                        {t('upload.some_images_failed')}
                       </p>
                     ) : null}
                   </section>
@@ -1051,17 +747,17 @@ export function ToolPanel({ section }: ToolPanelProps) {
                   <section className="space-y-2">
                     <div className="flex flex-wrap items-center gap-2">
                       <Label htmlFor="tool-panel-prompt">
-                        {section.fields.description_label}
+                        {t('labels.description')}
                       </Label>
                       <span className="bg-muted text-muted-foreground inline-flex items-center rounded-xl px-2 text-xs leading-5 font-medium">
-                        {section.fields.optional_badge}
+                        {t('badges.optional')}
                       </span>
                     </div>
                     <Textarea
                       id="tool-panel-prompt"
                       value={prompt}
                       onChange={(event) => setPrompt(event.target.value)}
-                      placeholder={section.description_placeholder}
+                      placeholder={t('placeholders.description')}
                       className="min-h-32 rounded-2xl text-sm leading-5"
                     />
                     <div className="text-muted-foreground flex items-center justify-between text-xs leading-5">
@@ -1071,7 +767,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                       </span>
                       {isPromptTooLong ? (
                         <span className="text-destructive">
-                          {generatorT('form.prompt_too_long')}
+                          {t('messages.prompt_too_long')}
                         </span>
                       ) : null}
                     </div>
@@ -1079,9 +775,9 @@ export function ToolPanel({ section }: ToolPanelProps) {
 
                   <section className="space-y-2">
                     <div className="flex flex-wrap items-center gap-2">
-                      <Label>{section.fields.effect_style_label}</Label>
+                      <Label>{section.effect_style_label}</Label>
                       <span className="bg-muted text-muted-foreground inline-flex items-center rounded-xl px-2 text-xs leading-5 font-medium">
-                        {section.fields.optional_badge}
+                        {t('badges.optional')}
                       </span>
                     </div>
 
@@ -1107,7 +803,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                         <div className="min-w-0 flex-1">
                           <div className="text-foreground truncate text-sm leading-6 font-semibold">
                             {selectedEffect?.label ??
-                              section.fields.effect_style_label}
+                              section.effect_style_label}
                           </div>
                         </div>
                         <ChevronsUpDown className="text-muted-foreground size-4 shrink-0" />
@@ -1115,7 +811,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
 
                       <DialogContent className="rounded-md p-4 sm:max-w-3xl">
                         <DialogTitle className="text-base font-semibold">
-                          {section.fields.effect_style_label}
+                          {section.effect_style_label}
                         </DialogTitle>
                         <div className="mt-2 grid grid-cols-[repeat(auto-fill,minmax(8rem,1fr))] gap-3">
                           {section.effects.map((effect) => {
@@ -1158,9 +854,9 @@ export function ToolPanel({ section }: ToolPanelProps) {
                 <div className="grid gap-4">
                   <div className="space-y-2">
                     <div className="flex flex-wrap items-center gap-2">
-                      <Label>{section.fields.model_label}</Label>
+                      <Label>{t('labels.model')}</Label>
                       <span className="bg-muted text-muted-foreground inline-flex items-center rounded-xl px-2 text-xs leading-5 font-medium">
-                        {section.fields.default_badge}
+                        {t('badges.default')}
                       </span>
                     </div>
                     <Select
@@ -1168,9 +864,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                       onValueChange={setModelFamilyId}
                     >
                       <SelectTrigger className={selectTriggerClassName}>
-                        <SelectValue
-                          placeholder={generatorT('form.select_model')}
-                        />
+                        <SelectValue placeholder={t('labels.model')} />
                       </SelectTrigger>
                       <SelectContent>
                         {NANO_BANANA_MODEL_FAMILIES.map((item) => (
@@ -1185,9 +879,9 @@ export function ToolPanel({ section }: ToolPanelProps) {
                   <div className="grid gap-3">
                     <div className="space-y-2">
                       <div className="flex flex-wrap items-center gap-2">
-                        <Label>{section.fields.aspect_ratio_label}</Label>
+                        <Label>{t('labels.aspect_ratio')}</Label>
                         <span className="bg-muted text-muted-foreground inline-flex items-center rounded-xl px-2 text-xs leading-5 font-medium">
-                          {section.fields.default_badge}
+                          {t('badges.default')}
                         </span>
                       </div>
                       <Select
@@ -1214,9 +908,9 @@ export function ToolPanel({ section }: ToolPanelProps) {
 
                     <div className="space-y-2">
                       <div className="flex flex-wrap items-center gap-2">
-                        <Label>{section.fields.quality_label}</Label>
+                        <Label>{t('labels.quality')}</Label>
                         <span className="bg-muted text-muted-foreground inline-flex items-center rounded-xl px-2 text-xs leading-5 font-medium">
-                          {section.fields.default_badge}
+                          {t('badges.default')}
                         </span>
                       </div>
                       <Select
@@ -1226,9 +920,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                         }
                       >
                         <SelectTrigger className={selectTriggerClassName}>
-                          <SelectValue
-                            placeholder={generatorT('form.select_quality')}
-                          />
+                          <SelectValue placeholder={t('labels.quality')} />
                         </SelectTrigger>
                         <SelectContent>
                           {supportedResolutions.map((item) => (
@@ -1242,9 +934,9 @@ export function ToolPanel({ section }: ToolPanelProps) {
 
                     <div className="space-y-2">
                       <div className="flex flex-wrap items-center gap-2">
-                        <Label>{section.fields.count_label}</Label>
+                        <Label>{t('labels.count')}</Label>
                         <span className="bg-muted text-muted-foreground inline-flex items-center rounded-xl px-2 text-xs leading-5 font-medium">
-                          {section.fields.default_badge}
+                          {t('badges.default')}
                         </span>
                       </div>
                       <Select
@@ -1252,9 +944,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                         onValueChange={(value) => setCount(Number(value))}
                       >
                         <SelectTrigger className={selectTriggerClassName}>
-                          <SelectValue
-                            placeholder={section.fields.count_label}
-                          />
+                          <SelectValue placeholder={t('labels.count')} />
                         </SelectTrigger>
                         <SelectContent>
                           {countOptions.map((item) => (
@@ -1274,12 +964,12 @@ export function ToolPanel({ section }: ToolPanelProps) {
               {!isMounted ? (
                 <Button className="w-full text-sm leading-6" disabled size="lg">
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {generatorT('loading')}
+                  {t('states.loading')}
                 </Button>
               ) : isCheckSign ? (
                 <Button className="w-full text-sm leading-6" disabled size="lg">
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {generatorT('checking_account')}
+                  {t('states.checking_account')}
                 </Button>
               ) : user ? (
                 <Button
@@ -1297,12 +987,12 @@ export function ToolPanel({ section }: ToolPanelProps) {
                   {isGenerating ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      {generatorT('generating')}
+                      {t('states.generating')}
                     </>
                   ) : (
                     <>
                       <Sparkles className="mr-2 h-4 w-4" />
-                      {section.buttons.submit}
+                      {t('buttons.submit')}
                     </>
                   )}
                   <span className="ml-2 inline-flex items-center gap-2 text-sm leading-6">
@@ -1317,7 +1007,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                   onClick={() => setIsShowSignModal(true)}
                 >
                   <User className="mr-2 h-4 w-4" />
-                  {generatorT('sign_in_to_generate')}
+                  {t('auth.sign_in')}
                 </Button>
               )}
             </div>
@@ -1340,7 +1030,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                 <header className="mb-3 flex items-center justify-between gap-3">
                   <div>
                     <h3 className="text-foreground text-lg font-semibold tracking-normal md:text-xl">
-                      {generatorT('generated_images')}
+                      {t('states.generated_images')}
                     </h3>
                     <div className="text-muted-foreground text-xs leading-5">
                       {generatedImages.length}/{count}
@@ -1356,7 +1046,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                 {(isGenerating || progress > 0) && (
                   <div className="border-border bg-muted mb-3 grid gap-2 rounded-3xl border p-5">
                     <div className="flex items-center justify-between text-sm leading-6">
-                      <span>{generatorT('progress')}</span>
+                      <span>{t('states.progress')}</span>
                       <span>{progress}%</span>
                     </div>
                     <Progress value={progress} />
@@ -1402,7 +1092,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                               ) : (
                                 <>
                                   <Download className="size-4" />
-                                  {section.buttons.download}
+                                  {t('buttons.download')}
                                 </>
                               )}
                             </Button>
@@ -1414,7 +1104,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                 ) : (
                   <div className="border-border bg-muted flex min-h-52 items-center justify-center rounded-3xl border border-dashed p-6 text-center">
                     <p className="text-muted-foreground text-sm leading-7 md:text-base">
-                      {generatorT('ready_for_generating')}
+                      {t('states.ready')}
                     </p>
                   </div>
                 )}
