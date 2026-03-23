@@ -223,18 +223,9 @@ export function HeroGenerator({
     [selectedModelFamily]
   );
   const aspectRatios = selectedModelFamily?.aspectRatios ?? ['1:1'];
-  const defaultAspectRatio = useMemo(() => {
-    if (aspectRatios.includes('auto')) {
-      return 'auto';
-    }
-
-    const configured = section.default_aspect_ratio as string | undefined;
-    if (configured && aspectRatios.includes(configured)) {
-      return configured;
-    }
-
-    return selectedModelFamily?.defaultAspectRatio ?? aspectRatios[0] ?? '1:1';
-  }, [aspectRatios, section.default_aspect_ratio, selectedModelFamily]);
+  const defaultAspectRatio = aspectRatios.includes('auto')
+    ? 'auto'
+    : (selectedModelFamily?.defaultAspectRatio ?? aspectRatios[0] ?? '1:1');
   const [prompt, setPrompt] = useState('');
   const [aspectRatio, setAspectRatio] = useState(defaultAspectRatio);
   const [resolution, setResolution] = useState(

@@ -230,12 +230,22 @@ export function ToolPanel({ section }: ToolPanelProps) {
   const [modelFamilyId, setModelFamilyId] = useState(
     NANO_BANANA_MODEL_FAMILIES[0]?.id ?? ''
   );
+  const selectedModelFamily = useMemo(
+    () =>
+      getNanoBananaModelFamily(modelFamilyId) ?? NANO_BANANA_MODEL_FAMILIES[0],
+    [modelFamilyId]
+  );
+  const supportedResolutions = selectedModelFamily?.supportedResolutions ?? [
+    '1K',
+  ];
+  const aspectRatios = selectedModelFamily?.aspectRatios ?? ['1:1'];
+  const defaultAspectRatio = aspectRatios.includes('auto')
+    ? 'auto'
+    : (selectedModelFamily?.defaultAspectRatio ?? aspectRatios[0] ?? '1:1');
   const [resolution, setResolution] = useState<NanoBananaResolution>(
     NANO_BANANA_MODEL_FAMILIES[0]?.defaultResolution ?? '1K'
   );
-  const [aspectRatio, setAspectRatio] = useState(
-    NANO_BANANA_MODEL_FAMILIES[0]?.defaultAspectRatio ?? '1:1'
-  );
+  const [aspectRatio, setAspectRatio] = useState(defaultAspectRatio);
   const [count, setCount] = useState(1);
   const [referenceImageItems, setReferenceImageItems] = useState<
     ImageUploaderValue[]
@@ -265,20 +275,6 @@ export function ToolPanel({ section }: ToolPanelProps) {
   const selectedEffect =
     section.effects.find((item) => item.id === selectedEffectId) ??
     section.effects[0];
-
-  const selectedModelFamily = useMemo(
-    () =>
-      getNanoBananaModelFamily(modelFamilyId) ?? NANO_BANANA_MODEL_FAMILIES[0],
-    [modelFamilyId]
-  );
-
-  const supportedResolutions = selectedModelFamily?.supportedResolutions ?? [
-    '1K',
-  ];
-  const aspectRatios = selectedModelFamily?.aspectRatios ?? ['1:1'];
-  const defaultAspectRatio = aspectRatios.includes('auto')
-    ? 'auto'
-    : (selectedModelFamily?.defaultAspectRatio ?? aspectRatios[0] ?? '1:1');
 
   const resolvedGeneration = useMemo(() => {
     if (!selectedModelFamily) {

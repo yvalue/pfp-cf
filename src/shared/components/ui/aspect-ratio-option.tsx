@@ -94,7 +94,7 @@ export function AspectRatioOption({
       <span
         className={cn(
           'truncate transition-colors',
-          selected ? 'text-primary' : 'text-foreground'
+          'text-foreground'
         )}
       >
         {ratio}
