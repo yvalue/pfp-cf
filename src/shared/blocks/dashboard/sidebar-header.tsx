@@ -8,7 +8,6 @@ import {
   SidebarTrigger,
   useSidebar,
 } from '@/shared/components/ui/sidebar';
-import { cn } from '@/shared/lib/utils';
 import { SidebarHeader as SidebarHeaderType } from '@/shared/types/blocks/dashboard';
 
 export function SidebarHeader({ header }: { header: SidebarHeaderType }) {
@@ -31,10 +30,7 @@ export function SidebarHeader({ header }: { header: SidebarHeaderType }) {
                     <img
                       src={header.brand.logo.src}
                       alt={header.brand.logo.alt || ''}
-                      className={cn(
-                        'h-auto w-8 shrink-0',
-                        open ? 'rounded-md' : 'rounded-full'
-                      )}
+                      className="h-auto w-8 shrink-0"
                     />
                   )}
                   <div className="flex items-center gap-3">

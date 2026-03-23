@@ -687,14 +687,14 @@ export function ImageUploader({
                       {emptyFooter}
                     </div>
                   ) : null}
-                  {!emptyDescription && !emptyFooter ? (
+                  {!emptyDescription && !emptyFooter && emptyHint ? (
                     <div
                       className={cn(
                         'text-muted-foreground max-w-2xl text-sm leading-7 sm:text-base',
                         emptyMetaClassName
                       )}
                     >
-                      {emptyHint || t('max_size', { maxSizeMB })}
+                      {emptyHint}
                     </div>
                   ) : null}
                 </button>
@@ -717,11 +717,6 @@ export function ImageUploader({
                     onClick={openFilePicker}
                   >
                     <RiImageAddLine className="h-8 w-8 text-gray-400" />
-                    <span
-                      className={cn('text-primary text-xs', emptyMetaClassName)}
-                    >
-                      {t('max_size', { maxSizeMB })}
-                    </span>
                   </button>
                 </div>
               </div>
