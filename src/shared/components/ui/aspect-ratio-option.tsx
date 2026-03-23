@@ -75,7 +75,7 @@ function AspectRatioIcon({
       <span
         className={cn(
           'border transition-colors',
-          selected ? 'border-primary' : 'border-foreground/35'
+          'border-foreground/35'
         )}
         style={style}
       />
