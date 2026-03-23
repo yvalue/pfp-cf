@@ -830,14 +830,13 @@ export function HeroGenerator({
           {mode === 'image-to-image' && (
             <div className="border-border bg-background border-t p-3">
               <ImageUploader
+                value={referenceImageItems}
                 title={copy.labels.referenceImage}
                 titleHint={uploaderT('reference_image_hint', {
                   formats: uploaderT('reference_formats'),
                   maxSizeMB: maxReferenceImageSizeMB,
                 })}
-                itemTileClassName="border-primary bg-accent hover:border-primary hover:bg-secondary border shadow-none"
-                emptyTileClassName="border-primary bg-accent hover:border-primary hover:bg-secondary border border-dashed"
-                emptyMetaClassName="text-primary"
+                tone="brand"
                 allowMultiple={maxReferenceImages > 1}
                 maxImages={maxReferenceImages}
                 maxSizeMB={maxReferenceImageSizeMB}

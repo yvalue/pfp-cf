@@ -766,9 +766,7 @@ export function ToolPanel({ section }: ToolPanelProps) {
                       maxImages={maxReferenceImages}
                       maxSizeMB={maxReferenceImageSizeMB}
                       onChange={handleReferenceImagesChange}
-                      className="rounded-3xl"
-                      emptyTileClassName="rounded-3xl"
-                      itemTileClassName="rounded-3xl"
+                      tone="brand"
                     />
                   </section>
 

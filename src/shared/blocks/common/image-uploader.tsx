@@ -20,12 +20,14 @@ export interface ImageUploaderValue {
 }
 
 type ImageUploaderVariant = 'default' | 'panel';
+type ImageUploaderTone = 'default' | 'brand';
 
 interface ImageUploaderProps {
   allowMultiple?: boolean;
   maxImages?: number;
   maxSizeMB?: number;
   variant?: ImageUploaderVariant;
+  tone?: ImageUploaderTone;
   value?: ImageUploaderValue[];
   title?: string;
   titleHint?: string;
@@ -108,6 +110,7 @@ export function ImageUploader({
   maxImages = 1,
   maxSizeMB = 10,
   variant = 'default',
+  tone = 'default',
   value,
   title,
   titleHint,
@@ -517,6 +520,15 @@ export function ImageUploader({
   const panelRemoveIconClass = isPanelVariant ? 'h-3 w-3' : 'h-4 w-4';
   const panelTileRadiusClass = isPanelVariant ? 'rounded-lg' : 'rounded-xl';
   const panelInnerRadiusClass = isPanelVariant ? 'rounded-md' : 'rounded-lg';
+  const itemTileToneClass =
+    tone === 'brand'
+      ? 'border-primary bg-accent hover:border-primary hover:bg-secondary border shadow-none'
+      : undefined;
+  const emptyTileToneClass =
+    tone === 'brand'
+      ? 'border-primary bg-accent hover:border-primary hover:bg-secondary border border-dashed'
+      : undefined;
+  const emptyMetaToneClass = tone === 'brand' ? 'text-primary' : undefined;
 
   return (
     <div
@@ -591,6 +603,7 @@ export function ImageUploader({
               key={item.id}
               className={cn(
                 'group border-border bg-muted hover:border-border hover:bg-muted relative overflow-hidden border shadow-sm transition',
+                itemTileToneClass,
                 itemTileClassName,
                 panelTileRadiusClass
               )}
@@ -671,6 +684,7 @@ export function ImageUploader({
                     <div
                       className={cn(
                         'text-muted-foreground max-w-xl text-sm leading-5',
+                        emptyMetaToneClass,
                         emptyMetaClassName
                       )}
                     >
@@ -681,6 +695,7 @@ export function ImageUploader({
                     <div
                       className={cn(
                         'text-muted-foreground max-w-xl text-sm leading-5',
+                        emptyMetaToneClass,
                         emptyMetaClassName
                       )}
                     >
@@ -691,6 +706,7 @@ export function ImageUploader({
                     <div
                       className={cn(
                         'text-muted-foreground max-w-2xl text-sm leading-7 sm:text-base',
+                        emptyMetaToneClass,
                         emptyMetaClassName
                       )}
                     >
@@ -703,6 +719,7 @@ export function ImageUploader({
               <div
                 className={cn(
                   'group border-border bg-muted hover:border-border hover:bg-muted relative overflow-hidden rounded-xl border border-dashed shadow-sm transition',
+                  emptyTileToneClass,
                   emptyTileClassName,
                   isPanelVariant && 'rounded-lg'
                 )}
